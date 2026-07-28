@@ -262,7 +262,84 @@ course-<slug>/
 
 ---
 
-## 5. Sources
+## 5. The `course-site` skill
+
+**Location:** `.claude/skills/course-site/`
+
+A separate skill, invoked by the user **after** the markdown and `course.json` have been reviewed and
+approved. It turns an approved course directory into a static website at `<course-dir>/dist/` that
+anyone can open from a link.
+
+```
+course-site/
+  SKILL.md
+  references/
+    visuals.md              composing tldraw-skill + infographic; budgets and fallbacks
+    site-spec.md            pages, components, design system, accessibility, no-JS baseline
+    state.md                localStorage contract and every failure mode
+    build-gates.md          S1–S12 verification + a reusable verify.sh
+  assets/
+    site.css                design system — customize tokens only
+    site.js                 store, quiz grading, flashcards, confetti, search, reset, certificate
+    page.template.html      page skeleton with every wiring hook
+```
+
+`site.css` and `site.js` are **copied verbatim**, not regenerated per course. The storage-safety,
+grading, and accessibility behavior is written once and correctly, rather than improvised each build —
+which is also what makes the gates meaningful.
+
+### Constraints, all load-bearing
+
+- **No auth, no backend.** Every page is a static file.
+- **No external requests.** No CDN fonts, no analytics, no remote images, no `fetch` off-origin. It
+  renders fully offline.
+- **State lives only in `localStorage`**, namespaced `course:<slug>:v1`, and the site stays usable
+  when storage is disabled, full, or corrupt.
+- **Path-independent.** Works at a bucket root or a subpath; every URL is relative.
+- **Content works without JavaScript.** JS adds progress, grading, and flair — never the words.
+
+### What it builds
+
+Home with a progress ring, resume link, syllabus and FAQ · one page per topic carrying reading,
+flashcards and quiz · unit tests · project pages with persisted step checklists · a printable
+certificate · client-side search.
+
+Quizzes give **immediate per-question feedback**, score first attempts only, and — because every
+explanation cites `(objective N)` — report a **per-objective breakdown** of what to review. That is
+the payoff of the citation contract from §2.3. Short answers are self-graded and labelled as such;
+without a backend, pretending otherwise would be a lie.
+
+A quiz passed at or above `passingScore` triggers a hand-rolled canvas confetti burst (no library,
+~50 lines, suppressed under `prefers-reduced-motion`). Finishing below the threshold gets a calm
+review list instead — celebrating a fail reads as mockery.
+
+The certificate shows per-unit scores, an overall average, and the date of the last test taken. It
+states on its face that it is a **self-reported completion record** stored only in that browser. The
+architecture can verify nothing, so the page never implies it does.
+
+### Images
+
+Composed from two existing skills, each with a gotcha the reference file pins down:
+
+- **`tldraw-skill`** → structural diagrams, exported as SVG. Probed with `command -v tldraw` first.
+  Fallback is hand-authored inline SVG or a table — deliberately **not** Mermaid, which would need a
+  runtime library and break the no-external-requests rule.
+- **`infographic`** → unit heroes. This skill emits a **prompt file, not an image**, so it is always
+  two calls: prompt, then `nano-banana` (or `codex-cli`) to render it. It must be given explicit
+  scope or it goes hunting for a merge request, and `make it technical` when the course is technical,
+  or its default rules strip the API names that *are* the content.
+
+Either may fail. A missing image degrades to a styled text panel and the prompt file is kept in
+`dist/assets/prompts/` for later — the build never blocks on a picture.
+
+### Deployment
+
+Out of scope for now. The build reports a local preview command and notes that the contents of
+`dist/` can be uploaded to any static host or bucket. A CDN upload tool is left as a future addition.
+
+---
+
+## 6. Sources
 
 The CUDA figures used in the worked examples above (T4 spec, the timing progression, the prefetch
 speedup) come from NVIDIA's public introductory CUDA material and their T4 datasheet. Everything

@@ -171,6 +171,14 @@ If a topic agent fails, re-run that one topic. Never leave a contract without co
 
 Report honestly. If a gate still fails, say so plainly rather than declaring completion.
 
+Then offer the handoff, once, in one line:
+
+> Review the markdown and `course.json`. When you're happy with them, run `course-site` to build a
+> shareable interactive website into `dist/`.
+
+Do not run `course-site` yourself. It is a separate skill, invoked after the user has approved the
+material.
+
 ## Notes
 
 - Prefer fewer, deeper topics over more, thinner ones. Three real objectives beat eight vague ones.

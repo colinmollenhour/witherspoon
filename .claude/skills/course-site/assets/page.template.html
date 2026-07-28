@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<!-- course-site page skeleton. Every {{…}} is filled at build time.
+     Relative paths only: {{rel}} is "" at the root, "../" one level down, etc. -->
+<html lang="{{lang}}" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{pageTitle}} — {{courseTitle}}</title>
+<meta name="description" content="{{description}}">
+<link rel="stylesheet" href="{{rel}}assets/site.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>📘</text></svg>">
+<script type="application/json" id="course-config">
+{"slug":"{{slug}}","passingScore":{{passingScore}},"totalTopics":{{totalTopics}},
+ "units":[{"id":"u1","title":"{{unitTitle}}","topics":["u1t1","u1t2"]}]}
+</script>
+</head>
+
+<body data-page-path="{{pathFromRoot}}">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="{{rel}}index.html">{{courseTitle}}</a>
+    <span class="crumb">{{breadcrumb}}</span>
+    <div class="search" data-search>
+      <input type="search" placeholder="Search  /" aria-label="Search the course">
+      <div class="search__results" role="listbox" hidden></div>
+    </div>
+    <button class="btn btn--quiet" data-theme-toggle aria-label="Change theme">◒</button>
+  </div>
+</header>
+
+<!-- polite live region: quiz results, reset confirmation -->
+<div class="wrap"><p data-live aria-live="polite" class="visually-hidden" style="position:absolute;left:-9999px"></p></div>
+
+<main id="main" class="wrap">
+
+<!-- ============ TOPIC PAGE ============ -->
+<nav class="subnav" aria-label="Sections">
+  <a href="#reading">Reading</a><a href="#flashcards">Flashcards</a><a href="#quiz">Quiz</a>
+</nav>
+
+<h1>{{topicTitle}}</h1>
+
+<div class="callout">
+  <h2 style="font-size:1rem;margin:0 0 .4rem">By the end of this topic you can</h2>
+  <ol class="objectives">{{#objectives}}<li>{{text}}</li>{{/objectives}}</ol>
+</div>
+
+<section id="reading" class="reading">
+  {{readingHtml}}
+
+  <figure class="figure">
+    <div class="figure__frame">
+      <img src="{{rel}}assets/img/{{img}}" alt="{{alt}}" width="{{w}}" height="{{h}}" loading="lazy">
+    </div>
+    <figcaption>{{caption}}</figcaption>
+  </figure>
+  <!-- when the image could not be generated: -->
+  <figure class="figure figure--placeholder">
+    <div class="figure__frame"><p><strong>{{before}}</strong> → <strong>{{after}}</strong></p></div>
+    <figcaption>Visual pending — prompt kept at assets/prompts/{{promptFile}}.</figcaption>
+  </figure>
+
+  <p><button class="btn btn--primary" data-mark-read="u1t1">Mark as read</button></p>
+</section>
+
+<section id="flashcards">
+  <h2>Flashcards</h2>
+  <div class="deck" data-deck>
+    {{#cards}}
+    <div class="fc"><div class="fc__inner">
+      <div class="fc__face"><p>{{front}}</p></div>
+      <div class="fc__face fc__face--back"><p>{{back}}</p></div>
+    </div></div>
+    {{/cards}}
+    <div class="deck__bar">
+      <button class="btn" data-deck-prev aria-label="Previous card">←</button>
+      <button class="btn" data-deck-next aria-label="Next card">→</button>
+      <button class="btn btn--quiet" data-deck-shuffle>Shuffle</button>
+      <span class="deck__count"></span>
+    </div>
+  </div>
+</section>
+
+<section id="quiz">
+  <h2>Quiz</h2>
+  <div class="quiz" data-quiz>
+
+    <!-- MULTIPLE_CHOICE / TRUE_FALSE -->
+    <div class="q">
+      <fieldset>
+        <legend>{{n}}. {{question}}</legend>
+        {{#options}}
+        <label class="opt">
+          <input type="radio" name="q{{n}}" value="{{i}}">
+          <span>{{option}}</span>
+        </label>
+        {{/options}}
+      </fieldset>
+      <p><button class="btn" data-check type="button">Check</button></p>
+      <div class="explain"><strong>Explanation</strong>{{explanation}}</div>
+      <!-- no-JS fallback; site.js removes it once the answer is revealed -->
+      <details><summary>Show answer</summary><p>{{correctText}} — {{explanation}}</p></details>
+    </div>
+
+    <!-- SHORT_ANSWER: self-graded, and labelled as such -->
+    <div class="q">
+      <fieldset>
+        <legend>{{n}}. {{question}}</legend>
+        <label for="sa{{n}}" class="visually-hidden">Your answer</label>
+        <textarea id="sa{{n}}" rows="4" placeholder="Your answer…"></textarea>
+      </fieldset>
+      <p><button class="btn" data-check type="button">Check</button></p>
+      <div class="explain"><strong>Sample answer</strong>{{sampleAnswer}}<br>{{explanation}}</div>
+      <div class="self-grade">
+        <button class="btn" data-self="got" type="button">I got it</button>
+        <button class="btn" data-self="missed" type="button">I missed it</button>
+        <span class="note">Short answers are self-graded — nothing is sent anywhere.</span>
+      </div>
+      <details><summary>Show sample answer</summary><p>{{sampleAnswer}}</p></details>
+    </div>
+
+    <div class="quiz__result" hidden></div>
+  </div>
+</section>
+
+<script type="application/json" id="quiz-data">
+{"id":"u1t1","kind":"quiz","objectiveNames":{"1":"{{objectiveText}}"},
+ "questions":[{"type":"MULTIPLE_CHOICE","correctOptionIndex":2,"objectives":[1,2]},
+              {"type":"SHORT_ANSWER","objectives":[3]}]}
+</script>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>
+      <a href="{{rel}}{{prevHref}}">← {{prevTitle}}</a> ·
+      <a href="{{rel}}index.html">Syllabus</a> ·
+      <a href="{{rel}}certificate.html">Certificate</a> ·
+      <a href="{{rel}}{{nextHref}}">{{nextTitle}} →</a>
+    </p>
+    <p><button class="btn btn--quiet" data-reset type="button">Reset progress</button></p>
+    <noscript><p>JavaScript is off — readings, answers, and explanations are all still here, but
+    progress tracking, grading, and search are disabled.</p></noscript>
+  </div>
+</footer>
+
+<dialog id="reset-dialog">
+  <h2 style="margin-top:0">Reset progress?</h2>
+  <p>This erases all quiz scores, reading progress, project checklists, and your name on the
+  certificate — for this course, in this browser. It cannot be undone.</p>
+  <div class="dialog__actions">
+    <button class="btn" data-reset-cancel type="button">Cancel</button>
+    <button class="btn btn--primary" data-reset-confirm type="button">Erase everything</button>
+  </div>
+</dialog>
+
+<script src="{{rel}}assets/site.js"></script>
+</body>
+</html>
