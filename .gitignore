@@ -8,4 +8,5 @@ course-template/.build/
 # Sandbox mount stubs the agent harness creates inside each project root.
 # Not config — character devices. The repo's own .claude/skills/ is tracked.
 course-template/.claude/
+course-template/.mcp.json
 .cc-writes/
