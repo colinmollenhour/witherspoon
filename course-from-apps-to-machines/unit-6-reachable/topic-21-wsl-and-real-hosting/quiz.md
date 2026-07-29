@@ -1,6 +1,7 @@
 # Quiz — WSL, and the shape of real hosting
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 ## Question 1
 
@@ -17,7 +18,9 @@ Your phone, on the same Wi-Fi, cannot load the address `ip addr` reported. What 
 
 **Correct option index:** 2
 
-**Explanation:** WSL 2 "has a virtualized ethernet adapter with its own unique IP address", so `ip
+**Explanation:**
+
+WSL 2 "has a virtualized ethernet adapter with its own unique IP address", so `ip
 addr` inside WSL answers a different question than "what address does my Wi-Fi know this laptop by?"
 The NAT between Windows and WSL carries connections outward but routes nothing inward, which is
 exactly why the two local checks pass and the phone fails. The server is not bound to `127.0.0.1` —
@@ -42,7 +45,9 @@ the Windows machine's LAN address?
 
 **Correct option index:** 3
 
-**Explanation:** `ipconfig.exe` is a Windows program, and WSL's interop feature means "WSL can run
+**Explanation:**
+
+`ipconfig.exe` is a Windows program, and WSL's interop feature means "WSL can run
 Windows tools directly from the WSL command line using `[tool-name].exe`" — so it reports the Windows
 side, including the Wi-Fi address. `ip addr` is the Linux command and reports the WSL virtual
 machine's address, typically a `172.x` one, which is the address that got you stuck. `hostname -i` is
@@ -63,7 +68,9 @@ town and they will reach your server, because `192.168.1.42` is a real address t
 
 **Correct answer:** false
 
-**Explanation:** The opposite is true, and "real address" is exactly the misreading. `192.168.1.42`
+**Explanation:**
+
+The opposite is true, and "real address" is exactly the misreading. `192.168.1.42`
 comes from an RFC 1918 private block, and anyone may use those blocks "without any coordination with
 IANA or an Internet registry" — so millions of networks contain that address, including, very likely,
 your friend's. Their phone asks their own network and gets an honest answer about somebody else's TV.
@@ -86,7 +93,9 @@ would actually give you that your laptop cannot?
 
 **Correct option index:** 1
 
-**Explanation:** Those three things are the product: an address that is yours alone rather than one
+**Explanation:**
+
+Those three things are the product: an address that is yours alone rather than one
 every home network on Earth also has, a name that keeps pointing at it, and a computer somebody else
 keeps powered on when your lid closes. Server software is a separate question — you would indeed swap
 `python3 -m http.server` out, since Python's docs say it "is not recommended for production", but a
@@ -106,7 +115,6 @@ A WSL learner runs `ip addr` and gets an address inside `172.16.0.0 - 172.31.255
 to give up. Explain which address their phone should use, why the other one appeared, and what still
 has to change before the phone can connect.
 
-**Sample answer:** The phone should use `192.168.1.42`, the Windows address from `ipconfig.exe`,
 because that is the address the Wi-Fi network knows the laptop by. The `172.` address came from `ip
 addr` because WSL 2 is a virtual machine with its own ethernet adapter, so it has a separate NAT'd
 address on a private network that exists only between Windows and WSL. Typing the Windows address
@@ -114,7 +122,19 @@ alone is not enough: WSL still defaults to `NAT`, so `networkingMode=mirrored` h
 `[wsl2]` in `%UserProfile%\.wslconfig`, followed by `wsl --shutdown` and about eight seconds; then a
 Hyper-V firewall rule has to allow inbound TCP on port 8000, because that firewall is on by default.
 
-**Explanation:** A grader must see three things: that `ipconfig.exe`'s address is the one the phone
+**Sample answer:**
+
+The phone should use `192.168.1.42`, the Windows address from `ipconfig.exe`,
+because that is the address the Wi-Fi network knows the laptop by. The `172.` address came from `ip
+addr` because WSL 2 is a virtual machine with its own ethernet adapter, so it has a separate NAT'd
+address on a private network that exists only between Windows and WSL. Typing the Windows address
+alone is not enough: WSL still defaults to `NAT`, so `networkingMode=mirrored` has to go under
+`[wsl2]` in `%UserProfile%\.wslconfig`, followed by `wsl --shutdown` and about eight seconds; then a
+Hyper-V firewall rule has to allow inbound TCP on port 8000, because that firewall is on by default.
+
+**Explanation:**
+
+A grader must see three things: that `ipconfig.exe`'s address is the one the phone
 needs, that the `172.` address is the WSL virtual machine's own NAT'd address rather than a wrong
 answer, and that at least one further change is required — mirrored mode, the restart, or the Hyper-V
 firewall rule. The trap is treating this as a choice between two addresses only, which is where the

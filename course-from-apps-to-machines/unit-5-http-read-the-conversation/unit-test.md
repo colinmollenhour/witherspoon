@@ -1,20 +1,11 @@
-# Unit test — HTTP: reading the conversation, and joining it
+# Unit 5 test — Reading and producing an HTTP conversation
 
-**Title:** Reading and producing an HTTP conversation
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
-**Description:** Assesses whether you can take a URL apart into its six labelled slots and say which
-slot the server never receives; write a raw HTTP/1.1 request with its compulsory header; split
-`curl -v` output into the half you sent and the half you received; choose `curl -I` when you want
-headers without a body; assign blame from a status code; read `Content-Type`, `Content-Length`, and
-the DevTools Network columns; start `python3 -m http.server 8000` and read its access log; and show
-that the same page over `file://` has no status code and no headers while over `http://` it has both.
+**Assesses:** Assesses whether you can take a URL apart into its six labelled slots and say which slot the server never receives; write a raw HTTP/1.1 request with its compulsory header; split `curl -v` output into the half you sent and the half you received; choose `curl -I` when you want headers without a body; assign blame from a status code; read `Content-Type`, `Content-Length`, and the DevTools Network columns; start `python3 -m http.server 8000` and read its access log; and show that the same page over `file://` has no status code and no headers while over `http://` it has both.
 
-**Passing score:** 70
-
-**Questions:** 10 — eight multiple choice, one true/false, one short answer. Two are synthesis
-questions drawing on more than one topic at once.
-
----
+**Passing score:** 70%
 
 ## Question 1
 
@@ -35,7 +26,9 @@ Which line names its port and its path correctly?
 
 **Correct option index:** 0
 
-**Explanation:** The authority is "separated from the scheme by the character pattern `://`" and
+**Explanation:**
+
+The authority is "separated from the scheme by the character pattern `://`" and
 "includes both the _domain_... and the _port_... separated by a colon" — so `192.168.1.42` is the
 host and `8000` is the port. The path runs from the first `/` after the authority up to the first
 `?`, which makes it `/about/index.html`. The second option swaps host and port: everything before
@@ -44,8 +37,6 @@ the query into the path — `?v=2` is a separate slot, and everything after the 
 it. The fourth option invents a port that is not written down: `443` is the default the browser
 supplies for `https`, and this URL both is `http` and states its port explicitly, so nothing is
 being defaulted at all. It also drags `#top` into the path, where it never belongs (objective 1).
-
----
 
 ## Question 2
 
@@ -61,7 +52,9 @@ does the machine at `192.168.1.42` actually learn about?
 
 **Correct option index:** 0
 
-**Explanation:** MDN is blunt about this: "It is worth noting that the part after the **#**, also
+**Explanation:**
+
+MDN is blunt about this: "It is worth noting that the part after the **#**, also
 known as the **fragment identifier**, is never sent to the server with the request," and again, "The
 fragment is not sent to the server when the URI is requested; it is processed by the client (e.g.,
 the browser) after the resource is retrieved." Your browser cuts the URL at the `#`, asks for
@@ -73,8 +66,6 @@ being asked for. The fourth option keeps the fragment and drops the scheme, whic
 twice over: the scheme decided *how* to make the request in the first place, and the fragment is the
 one part that stays home. Two URLs differing only after the `#` are, to the far machine, the same
 URL (objective 2).
-
----
 
 ## Question 3
 
@@ -90,7 +81,9 @@ As long as your friend is on the same Wi-Fi as you, that link will open your pag
 
 **Correct answer:** false
 
-**Explanation:** The opposite is true, and being on the same Wi-Fi has nothing to do with it. That
+**Explanation:**
+
+The opposite is true, and being on the same Wi-Fi has nothing to do with it. That
 line is not an address *of your page* — it is an instruction to open
 `/home/you/projects/first-site/index.html` **on the reader's own disk**, where no such file exists.
 It is a documented, ordinary student failure: "If the address contains a drive letter (usually
@@ -99,8 +92,6 @@ will work only on your computer.**" Put the two URL forms side by side and three
 `file://` one are empty: a host, a port, and a program listening. They are not omitted, there is no
 room for them, because nothing is being asked of anyone. The `file` scheme means *read something off
 a disk* — and the only disk in reach is the reader's (objective 3).
-
----
 
 ## Question 4
 
@@ -126,7 +117,9 @@ MUST respond with a 400 (Bad Request) status code to any HTTP/1.1 request messag
 header field." After the header comes an empty line, marking the end of the head; a `GET` has no
 body, because it is asking, not sending.
 
-**Explanation:** A grader must see three things. First, a request line with the three slots in the
+**Explanation:**
+
+A grader must see three things. First, a request line with the three slots in the
 right order — `GET`, then the target, then the version — not `HTTP/1.1 GET /` and not `GET
 developer.mozilla.org HTTP/1.1`, since the target is the path, and the host travels in a header.
 Second, a `Host:` header naming the site. Third, `400` as the consequence of omitting it. Credit the
@@ -135,8 +128,6 @@ The reason `Host` earns that status is worth stating — it "provides the host a
 from the target URI, enabling the origin server to distinguish among resources while servicing
 requests for multiple host names," which is how one machine at one address holds a thousand websites
 apart (objective 4).
-
----
 
 ## Question 5
 
@@ -154,14 +145,14 @@ Which reading is correct?
 
 - curl sent the two `>` lines; the `<` line came back from example.com
 - curl sent the `<` line; the two `>` lines are what came back
-- All three lines came back from example.com — `curl -v` prints the response in more detail, not
-  the request
-- The `>` lines are curl narrating the connection to itself; only the `<` line is part of an HTTP
-  message
+- All three lines came back from example.com — `curl -v` prints the response in more detail, not the request
+- The `>` lines are curl narrating the connection to itself; only the `<` line is part of an HTTP message
 
 **Correct option index:** 0
 
-**Explanation:** `-v` is verbose: curl shows you the conversation instead of only the result, and it
+**Explanation:**
+
+`-v` is verbose: curl shows you the conversation instead of only the result, and it
 marks every line by direction. A line beginning `>` is a line curl **sent** — part of the request.
 A line beginning `<` is a line curl **received** — part of the response. So the request line and the
 compulsory `Host:` header went out, and `HTTP/2 200` came back as the status line. The second option
@@ -171,8 +162,6 @@ seeing both halves at once is the entire reason to use `-v`. The fourth option c
 lines with the unmarked ones: lines with neither `>` nor `<` are curl talking about itself, and
 those are not part of either HTTP message — but `>` lines certainly are (objective 5).
 
----
-
 ## Question 6
 
 **Type:** MULTIPLE_CHOICE
@@ -180,15 +169,16 @@ those are not part of either HTTP message — but `>` lines certainly are (objec
 You want to find out whether a very large video file is still at a URL, and what the server says
 that file is, without downloading it. Which command, and why?
 
-- `curl -I <url>` — it sends a `HEAD` request, so the status line and the headers come back with no
-  body at all
+- `curl -I <url>` — it sends a `HEAD` request, so the status line and the headers come back with no body at all
 - `curl -v <url>` — verbose mode prints the headers *instead of* the body
 - `curl <url>` — the body is only downloaded if you redirect the output to a file
 - `curl -I <url>` — it downloads the whole file and then throws away everything but the first line
 
 **Correct option index:** 0
 
-**Explanation:** `curl -I` sends a `HEAD` request: the same question as a `GET`, but asking only for
+**Explanation:**
+
+`curl -I` sends a `HEAD` request: the same question as a `GET`, but asking only for
 the description of the resource rather than its contents. You get a status line, then the response
 headers, and then nothing — which is precisely what you want when the question is *about* the
 resource. The second option misreads `-v`: verbose adds the request and curl's own narration to what
@@ -198,24 +188,22 @@ command with the wrong mechanism, and the difference matters: with `HEAD` the by
 server, so nothing is downloaded to discard. Head describes, body carries; `-I` asks for the head
 (objective 6).
 
----
-
 ## Question 7
 
 **Type:** MULTIPLE_CHOICE
 
 Three different paths on the same website answer `200`, `404`, and `500`. What can you conclude?
 
-- The server is running in all three cases; the `404` says your path was wrong, and the `500` says
-  something broke inside the server
+- The server is running in all three cases; the `404` says your path was wrong, and the `500` says something broke inside the server
 - The server is down for the `404` and running for the other two
 - The `404` and the `500` both mean the server broke; only the `200` proves it is alive
-- The `404` is the server's fault and the `500` is yours — those two digits run the opposite way to
-  what people expect
+- The `404` is the server's fault and the `500` is yours — those two digits run the opposite way to what people expect
 
 **Correct option index:** 0
 
-**Explanation:** The first digit says whose problem it is. `4xx` is a client error — your request was
+**Explanation:**
+
+The first digit says whose problem it is. `4xx` is a client error — your request was
 wrong — and `5xx` is a server error. RFC 9110: "The 404 (Not Found) status code indicates that the
 origin server did not find a current representation for the target resource," against "The 500
 (Internal Server Error) status code indicates that the server encountered an unexpected condition
@@ -226,8 +214,6 @@ nothing, composed a reply, and sent it. "**The server is working fine** — it j
 you're looking for." A `404` is proof the server is alive and talking to you; a dead server does not
 answer `404`, it does not answer at all. The third option makes the same error about `404` while
 getting `500` right by accident. The fourth simply swaps the two classes (objective 7).
-
----
 
 ## Question 8
 
@@ -246,15 +232,16 @@ You then open your browser's DevTools, go to the Network panel, and reload the p
 second reload, the Status column for that row reads `304` and the Size column collapses. What
 happened?
 
-- The browser asked for the file *only if* it had changed; it had not, so the head came back with no
-  body — the 31 bytes never crossed the second time
+- The browser asked for the file *only if* it had changed; it had not, so the head came back with no body — the 31 bytes never crossed the second time
 - The file shrank to zero bytes between the two reloads, which is what the Size column is reporting
 - `Content-Length: 31` was wrong, and the browser corrected it on the second attempt
 - A `304` means the request failed, so nothing was transferred and nothing was displayed
 
 **Correct option index:** 0
 
-**Explanation:** `Content-Length` "indicates the associated representation's data length as a
+**Explanation:**
+
+`Content-Length` "indicates the associated representation's data length as a
 decimal non-negative integer number of octets" — a promise that 31 bytes of body follow the empty
 line, so the receiver knows exactly where the message ends. `Content-Type` is the other half of the
 declaration: `text/html` tells the browser to treat those bytes as HTML rather than guess from the
@@ -267,8 +254,6 @@ the Size column as the file's size on disk rather than as bytes transferred — 
 at 31 bytes. The third invents a correction that no status code performs. The fourth puts `304` in
 the wrong class entirely: `3xx` is Redirection, not failure, and the page is on your screen the whole
 time — displayed from the copy you already had (objectives 8, 9).
-
----
 
 ## Question 9
 
@@ -289,16 +274,16 @@ then visit `http://localhost:8000/nope` in your browser. The terminal prints:
 
 Which reading of that line is correct?
 
-- Method `GET`, path `/nope`, status `404` — the server looked inside `~/projects/first-site` for
-  `nope`, did not find it, and said so
-- Method `GET`, path `/nope`, status `404` — the server crashed on the request and wrote the crash
-  into its log
+- Method `GET`, path `/nope`, status `404` — the server looked inside `~/projects/first-site` for `nope`, did not find it, and said so
+- Method `GET`, path `/nope`, status `404` — the server crashed on the request and wrote the crash into its log
 - The `HTTP/1.1` in that line is the server's own version, so this response went out as HTTP/1.1
 - The trailing `-` is the size of the response, so the server sent zero bytes back
 
 **Correct option index:** 0
 
-**Explanation:** The `cd` is what makes the first option true: "By default, the server uses the
+**Explanation:**
+
+The `cd` is what makes the first option true: "By default, the server uses the
 current directory," and "The request is mapped to a local file by interpreting the request as a path
 relative to the current working directory." So `/nope` was looked for inside `~/projects/first-site`,
 was not there, and produced a `404` — a client error, written down and answered. The second option
@@ -309,8 +294,6 @@ this server hard-codes as `protocol_version = "HTTP/1.0"`. Two versions in play,
 neither of them a mistake. The fourth option reads the trailing `-` as a byte count, but that field
 is always `-` on this server — it is `-` on a `200` too, and the 404 page it just sent has a body
 (objectives 10, 11).
-
----
 
 ## Question 10
 
@@ -324,21 +307,16 @@ laptop — by double-clicking it, so the address bar reads
 you pick up your phone, confirm it is on the same Wi-Fi, and type `http://localhost:8000` into its
 browser. It does not load. Which set of observations is correct?
 
-- The `file://` load has no status line and no response headers; the `http://` load has
-  `HTTP/1.0 200 OK` plus `Content-type` and `Content-Length`; and the phone's `localhost` named the
-  phone itself, so nothing ever reached the laptop
-- Both loads show `200 OK` and differ only in how many headers they carry, since `file://` sends a
-  shorter set; and the phone failed because the laptop received the request and refused it
-- The `file://` load shows `HTTP/1.0 200 OK` with no headers under it; the `http://` load shows the
-  same status line with headers; and the phone failed because the request had to go through the
-  router
-- The `file://` load has no headers and the `http://` load does; and the phone failed because
-  `localhost`, `127.0.0.1` and `0.0.0.0` all name the one machine everyone on a network shares, so
-  the phone reached the laptop and was turned away
+- The `file://` load has no status line and no response headers; the `http://` load has `HTTP/1.0 200 OK` plus `Content-type` and `Content-Length`; and the phone's `localhost` named the phone itself, so nothing ever reached the laptop
+- Both loads show `200 OK` and differ only in how many headers they carry, since `file://` sends a shorter set; and the phone failed because the laptop received the request and refused it
+- The `file://` load shows `HTTP/1.0 200 OK` with no headers under it; the `http://` load shows the same status line with headers; and the phone failed because the request had to go through the router
+- The `file://` load has no headers and the `http://` load does; and the phone failed because `localhost`, `127.0.0.1` and `0.0.0.0` all name the one machine everyone on a network shares, so the phone reached the laptop and was turned away
 
 **Correct option index:** 0
 
-**Explanation:** There is no status code over `file://` because there is no *status*. A status code
+**Explanation:**
+
+There is no status code over `file://` because there is no *status*. A status code
 is a server's verdict on a request, and nothing was asked: your browser opened the file off your disk
 the way a text editor opens a file. No request, no verdict, no headers to describe a response that
 never existed — the three slots the `file://` URL has no room for are a host, a port, and a program

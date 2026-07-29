@@ -1,0 +1,119 @@
+---
+import { getCollection } from 'astro:content';
+import { rel } from '../lib/rel';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** 0 = site root, 1 = inside a unit directory. Drives every relative URL. */
+  depth?: number;
+  crumb?: string;
+  /** Site-root-relative path recorded as `lastVisited`, e.g. `unit-1/topic-2.html`. */
+  pagePath?: string;
+  /**
+   * Widen the content column past the reading measure. For pages that are a
+   * table or an index rather than something read start to finish — the sources
+   * ledger, the syllabus. Everything else shares one measure so the page has a
+   * single left and right edge.
+   */
+  wide?: boolean;
+}
+
+const {
+  title,
+  description = '',
+  depth = 0,
+  crumb = '',
+  pagePath = '',
+  wide = false,
+} = Astro.props;
+
+// The `course` collection always holds exactly one entry — one course per build.
+const c = (await getCollection('course'))[0]!;
+
+const units = (await getCollection('units')).sort((a, b) => a.data.index - b.data.index);
+
+const r = rel(depth);
+
+// Everything the runtime needs, embedded. The site never fetches its own content.
+const config = {
+  slug: c.data.slug,
+  passingScore: c.data.passingScore,
+  totalTopics: c.data.totalTopics,
+  // This page's relative prefix, so the runtime can resolve the shared search
+  // index — whose hrefs are site-root-relative — from whatever depth it is at.
+  rel: r,
+  units: units.map((u) => ({
+    id: u.data.unitId,
+    title: u.data.title,
+    topics: u.data.topics.map((t) => t.id),
+  })),
+};
+
+const favicon =
+  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E" +
+  "%3Crect width='32' height='32' rx='7' fill='%233f7ac4'/%3E" +
+  "%3Cpath d='M8 21V11h4.5a4.5 4.5 0 0 1 0 9H8z' fill='none' stroke='white' stroke-width='2.4'/%3E" +
+  '%3C/svg%3E';
+---
+
+<html lang="en" class="no-js" style={`--accent: ${c.data.accent}; --accent-ink: ${c.data.accentInk};`}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} — {c.data.title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" href={favicon} />
+    <link rel="stylesheet" href={`${r}assets/site.css`} />
+    <script type="application/json" id="course-config" set:html={JSON.stringify(config)} />
+  </head>
+  <body data-page-path={pagePath}>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href={`${r}index.html`}>{c.data.title}</a>
+        {crumb && <span class="crumb">{crumb}</span>}
+        <div class="search" data-search data-home={`${r}index.html`}>
+          <label class="skip" for="site-search">Search this course</label>
+          <input id="site-search" type="search" placeholder="Search  /" autocomplete="off" />
+          <div class="search__results" role="listbox" aria-label="Search results" hidden></div>
+        </div>
+        <button class="btn btn--quiet" type="button" data-theme-toggle aria-label="Change theme">◒</button>
+      </div>
+    </header>
+
+    <main id="main" class={wide ? 'wrap wrap--wide' : 'wrap'}>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <slot name="footer" />
+        <p>
+          <a href={`${r}index.html`}>Syllabus</a> ·
+          <a href={`${r}certificate.html`}>Completion record</a> ·
+          <a href={`${r}sources.html`}>Sources</a> ·
+          <button class="btn btn--quiet" type="button" data-reset>Reset progress</button>
+        </p>
+      </div>
+    </footer>
+
+    <div aria-live="polite" class="skip" data-live></div>
+
+    <dialog id="reset-dialog">
+      <h2>Erase saved progress?</h2>
+      <p>
+        This erases all quiz scores, reading progress, project checklists, and your name on the
+        certificate. It cannot be undone, and it affects only this course in this browser.
+      </p>
+      <div class="dialog__actions">
+        <button class="btn" type="button" data-reset-cancel>Cancel</button>
+        <button class="btn btn--primary" type="button" data-reset-confirm>Erase</button>
+      </div>
+    </dialog>
+
+    <script src={`${r}assets/search-index.js`} defer is:inline></script>
+    <script src={`${r}assets/site.js`} defer is:inline></script>
+  </body>
+</html>

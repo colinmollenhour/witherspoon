@@ -1,0 +1,138 @@
+---
+import Markdown from './Markdown.astro';
+
+interface Question {
+  question: string;
+  type: 'MULTIPLE_CHOICE' | 'TRUE_FALSE' | 'SHORT_ANSWER';
+  options?: string[];
+  correctOptionIndex?: number;
+  correctAnswer?: boolean;
+  sampleAnswer?: string;
+  graderNotes?: string;
+  explanation: string;
+  objectives: number[];
+}
+
+interface Props {
+  id: string;
+  kind: 'quiz' | 'test';
+  questions: Question[];
+  objectiveNames: Record<string, string>;
+}
+
+const { id, kind, questions, objectiveNames } = Astro.props;
+
+// Only what grading needs crosses into the browser. The prose is already in the
+// HTML, and the browser never parses it (objectives were extracted at load time).
+const quizData = {
+  id,
+  kind,
+  objectiveNames,
+  questions: questions.map((q) => ({
+    type: q.type,
+    correctOptionIndex: q.correctOptionIndex,
+    correctAnswer: q.correctAnswer,
+    objectives: q.objectives,
+  })),
+};
+
+const optionsFor = (q: Question): string[] =>
+  q.type === 'TRUE_FALSE' ? ['False', 'True'] : (q.options ?? []);
+
+const answerText = (q: Question): string => {
+  if (q.type === 'TRUE_FALSE') return q.correctAnswer ? 'True' : 'False';
+  if (q.type === 'SHORT_ANSWER') return q.sampleAnswer ?? '';
+  return q.options?.[q.correctOptionIndex ?? 0] ?? '';
+};
+---
+
+<div class="quiz" data-quiz>
+  <script type="application/json" id="quiz-data" set:html={JSON.stringify(quizData)} />
+
+  {
+    questions.map((q, i) => (
+      <div class="q">
+        <fieldset>
+          <legend>
+            Question {i + 1} of {questions.length}
+          </legend>
+          <div class="qstem">
+            <Markdown text={q.question} />
+          </div>
+
+          {q.type === 'SHORT_ANSWER' ? (
+            <>
+              <label class="skip" for={`sa-${id}-${i}`}>
+                Your answer
+              </label>
+              <textarea id={`sa-${id}-${i}`} rows="4" placeholder="Write your answer…" />
+            </>
+          ) : (
+            optionsFor(q).map((opt, oi) => (
+              <label class="opt">
+                <input type="radio" name={`q-${id}-${i}`} value={oi} />
+                <span>
+                  <Markdown text={opt} inline />
+                </span>
+              </label>
+            ))
+          )}
+        </fieldset>
+
+        <button class="btn btn--primary" type="button" data-check>
+          Check
+        </button>
+
+        {/* Gate S4: with JavaScript off the answer and explanation are still here. */}
+        <details>
+          <summary>Show answer</summary>
+          <p>
+            <strong>Answer:</strong>{' '}
+            <Markdown text={answerText(q)} inline={q.type !== 'SHORT_ANSWER'} />
+          </p>
+          {q.graderNotes && (
+            <p>
+              <strong>A full-credit answer shows:</strong> <Markdown text={q.graderNotes} inline />
+            </p>
+          )}
+          <Markdown text={q.explanation} />
+        </details>
+
+        <div class="explain" hidden>
+          <strong>Explanation</strong>
+          {q.type === 'SHORT_ANSWER' && (
+            <>
+              <p>
+                <strong>Sample answer</strong>
+                <Markdown text={q.sampleAnswer ?? ''} />
+              </p>
+              {q.graderNotes && (
+                <p>
+                  <strong>A full-credit answer shows</strong>
+                  <Markdown text={q.graderNotes} />
+                </p>
+              )}
+            </>
+          )}
+          <Markdown text={q.explanation} />
+        </div>
+
+        {q.type === 'SHORT_ANSWER' && (
+          <div class="self-grade" hidden>
+            <span class="note">
+              Short answers are self-graded — nothing is sent anywhere.
+            </span>
+            <button class="btn" type="button" data-self="got">
+              I got it
+            </button>
+            <button class="btn" type="button" data-self="missed">
+              I missed it
+            </button>
+          </div>
+        )}
+      </div>
+    ))
+  }
+
+  <div class="quiz__result" hidden></div>
+</div>

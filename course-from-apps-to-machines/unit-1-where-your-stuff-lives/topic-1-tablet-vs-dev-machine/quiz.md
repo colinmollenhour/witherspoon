@@ -1,6 +1,7 @@
 # Quiz — A tablet hides the filesystem; a dev machine hands it to you
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 ## Question 1
 
@@ -14,9 +15,11 @@ Which absolute path is your home directory — the folder your own work belongs 
 - `/mnt/c/Users/<you>`
 - `/Users/<you>/Desktop`
 
-**Correct:** `/Users/<you>`
+**Correct option index:** 1
 
-**Explanation:** Apple documents it in one line: "`/Users`—This directory contains one or more user
+**Explanation:**
+
+Apple documents it in one line: "`/Users`—This directory contains one or more user
 home directories. The user home directory is where user-related files are stored." `/home/<you>` is
 the Linux and WSL answer, and typing it on a Mac gets you nowhere. `/mnt/c/Users/<you>` only exists
 inside WSL, where it is the Windows drive seen from Linux — a Mac has no such mount. And
@@ -33,16 +36,19 @@ desktop/not using file directories" (objective 1).
 You are running Ubuntu inside WSL on Windows 11. You are about to create `projects/first-site`. Which
 location, and for which reason?
 
-- `/mnt/c/Users/<you>/projects/first-site`, because that is the only place Windows apps can see it
-- `/home/<you>/projects/first-site`, because `/mnt/c` is read-only from inside WSL
-- `/home/<you>/projects/first-site`, because Microsoft recommends storing files in the WSL file
-  system when you are working in a Linux command line
-- `/mnt/c/Users/<you>/Desktop/first-site`, because you can then see the folder on your Windows desktop
 
-**Correct:** `/home/<you>/projects/first-site`, because Microsoft recommends storing files in the WSL
 file system when you are working in a Linux command line
 
-**Explanation:** Microsoft's own guidance is explicit: "We recommend against working across operating
+- `/mnt/c/Users/<you>/projects/first-site`, because that is the only place Windows apps can see it
+- `/home/<you>/projects/first-site`, because `/mnt/c` is read-only from inside WSL
+- `/home/<you>/projects/first-site`, because Microsoft recommends storing files in the WSL file system when you are working in a Linux command line
+- `/mnt/c/Users/<you>/Desktop/first-site`, because you can then see the folder on your Windows desktop
+
+**Correct option index:** 2
+
+**Explanation:**
+
+Microsoft's own guidance is explicit: "We recommend against working across operating
 systems with your files... For the fastest performance speed, store your files in the WSL file system
 if you are working in a Linux command line (Ubuntu, OpenSUSE, etc)", and they spell out the contrast
 as "Use the Linux file system root directory: `/home/<user name>/Project` — Not the Windows file
@@ -65,9 +71,11 @@ desktop or laptop machine but not on a stock phone or tablet?
 - Take a photo and attach it to a message
 - Join a Wi-Fi network and load a web page
 
-**Correct:** Hold the same `index.html` open in a text editor while a browser loads that same file
+**Correct option index:** 1
 
-**Explanation:** Two independent programs reading and writing one file, addressed by its path, is a
+**Explanation:**
+
+Two independent programs reading and writing one file, addressed by its path, is a
 desktop capability — and it is exactly the workflow of this course, where you edit `index.html` in
 one window and reload it in another. Installing from an app store is something tablets do well; the
 desktop-only version of that capability is installing a program that did *not* come from a store,
@@ -88,15 +96,19 @@ colin@seamus:~$
 
 What can you correctly conclude?
 
+
+Mac
+
 - The username is `colin`, and the trailing `$` means this is bash — so Linux or WSL, not a Mac
 - The username is `seamus`, and the `$` means the machine is waiting for a password
 - This is a Mac, because macOS is the platform that shows your username in the prompt
 - The `$` is the first character of the command you are supposed to type
 
-**Correct:** The username is `colin`, and the trailing `$` means this is bash — so Linux or WSL, not a
-Mac
+**Correct option index:** 0
 
-**Explanation:** The stock bash prompt is `\u@\h:\w\$` — user, then `@`, then the machine's name — so
+**Explanation:**
+
+The stock bash prompt is `\u@\h:\w\$` — user, then `@`, then the machine's name — so
 `colin` is the username and `seamus` is the machine, not the other way round. The last character is
 the platform tell: bash ends its prompt with `$` and is the default on Linux and WSL, while macOS has
 used zsh since Catalina and zsh prints `%`. So this cannot be a Mac. And the `$` is printed by the
@@ -113,9 +125,11 @@ to be typed in" — copy-pasting it is common enough that a tool exists purely t
 On a dev machine, it does not much matter which folder a file is in, because you can always find it
 again by searching for its name.
 
-**Correct:** False
+**Correct answer:** false
 
-**Explanation:** The opposite is true. Search is how a phone works, and it is why "where is that
+**Explanation:**
+
+The opposite is true. Search is how a phone works, and it is why "where is that
 file?" can feel like a question with no answer — but the terminal you just opened cannot search on
 your behalf. It has to be handed one written address, spelled from the top of the machine downward,
 like `/home/colin/projects/first-site/index.html`. Search *finds* a file; a path *names* it, and from

@@ -1,0 +1,144 @@
+---
+import { getCollection } from 'astro:content';
+import Page from '../layouts/Page.astro';
+import ProgressRing from '../components/ProgressRing.astro';
+import Markdown from '../components/Markdown.astro';
+
+const c = (await getCollection('course'))[0]!;
+const units = (await getCollection('units')).sort((a, b) => a.data.index - b.data.index);
+
+const totalQuizzes = c.data.totalQuizzes;
+const aboutParagraphs = c.data.about.split(/\n{2,}/).filter(Boolean);
+---
+
+<Page title="Home" description={c.data.subtitle} depth={0} pagePath="index.html">
+  <section>
+    <h1>{c.data.title}</h1>
+    <p class="lede">{c.data.subtitle}</p>
+    <p>
+      {units.length} units · {c.data.totalTopics} topics · {totalQuizzes} quizzes and tests
+    </p>
+  </section>
+
+  {/* Shown only once progress exists — the most valuable element for a returning learner. */}
+  <p class="card" data-resume hidden style="margin:1.5rem 0">
+    <a href="index.html">Resume where you left off →</a>
+  </p>
+
+  <section class="card" style="margin:1.5rem 0; display:flex; gap:2rem; flex-wrap:wrap; align-items:center">
+    <ProgressRing />
+    <div class="grid" style="flex:1; min-width:16rem">
+      <div>
+        <p class="stat" data-stat="topics">0 / {c.data.totalTopics}</p>
+        <p>Topics read</p>
+      </div>
+      <div>
+        <p class="stat" data-stat="quizzes">0</p>
+        <p>Quizzes taken</p>
+      </div>
+      <div>
+        <p class="stat" data-stat="quiz-avg">—</p>
+        <p>Quiz average</p>
+      </div>
+      <div>
+        <p class="stat" data-stat="test-avg">—</p>
+        <p>Unit-test average</p>
+      </div>
+    </div>
+  </section>
+
+  <noscript>
+    <p class="card">
+      JavaScript is off, so progress tracking, grading and search are unavailable. Every reading,
+      flashcard and quiz answer is still on the page.
+    </p>
+  </noscript>
+
+  <section>
+    <h2>About this course</h2>
+    <div class="reading">
+      {aboutParagraphs.map((p) => <p>{p}</p>)}
+    </div>
+  </section>
+
+  {
+    c.data.spine && (
+      <section class="callout" style="margin:1.5rem 0">
+        <h2 class="callout__title">Where you start, and where you finish</h2>
+        <p>
+          <strong>Before:</strong> {c.data.spine.transformation.before}
+        </p>
+        <p>
+          <strong>After:</strong> {c.data.spine.transformation.after}
+        </p>
+      </section>
+    )
+  }
+
+  {
+    c.data.skills.length > 0 && (
+      <section>
+        <h2>What you'll be able to do</h2>
+        <div class="grid">
+          {c.data.skills.map((s) => (
+            <div class="card">
+              <h3 style="margin-top:0">{s.title}</h3>
+              <p>{s.description}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <section>
+    <h2>Syllabus</h2>
+    <div class="stack">
+      {
+        units.map((u) => (
+          <div class="card">
+            <h3 style="margin-top:0">
+              <a href={`${u.data.slug}/index.html`}>
+                Unit {u.data.index} — {u.data.title}
+              </a>
+            </h3>
+            <p>{u.data.description}</p>
+            <div class="bar" data-unit-bar={u.data.unitId}>
+              <span style="width:0%"></span>
+            </div>
+            {u.data.topics.map((t) => (
+              <div class="topic-row" data-topic-state={t.id}>
+                <span class="dot" />
+                <a href={`${u.data.slug}/${t.slug}.html`}>{t.title}</a>
+                <span class="score" />
+              </div>
+            ))}
+            <p style="margin:.6rem 0 0">
+              {u.data.test && <a href={`${u.data.slug}/test.html`}>Unit test</a>}
+              {u.data.projects.map((p) => (
+                <>
+                  {' · '}
+                  <a href={`${u.data.slug}/${p.slug}.html`}>{p.title}</a>
+                </>
+              ))}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  {
+    c.data.faqs.length > 0 && (
+      <section>
+        <h2>Questions</h2>
+        {c.data.faqs.map((f) => (
+          <details class="card" style="margin:.5rem 0">
+            <summary>{f.question}</summary>
+            <Markdown text={f.answer} />
+          </details>
+        ))}
+      </section>
+    )
+  }
+</Page>

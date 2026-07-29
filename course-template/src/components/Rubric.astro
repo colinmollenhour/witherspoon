@@ -1,0 +1,44 @@
+---
+import Markdown from './Markdown.astro';
+
+interface Props {
+  rubric: Array<{ criterion: string; weight: number; description: string }>;
+}
+
+const { rubric } = Astro.props;
+const total = rubric.reduce((s, r) => s + r.weight, 0);
+---
+
+{
+  rubric.length > 0 && (
+    <div class="scroll-x">
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Criterion</th>
+            <th scope="col">What earns it</th>
+            <th scope="col">Weight</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rubric.map((r) => (
+            <tr>
+              <th scope="row">{r.criterion}</th>
+              <td>
+                <Markdown text={r.description} inline />
+              </td>
+              <td>{r.weight}</td>
+            </tr>
+          ))}
+          <tr>
+            <th scope="row">Total</th>
+            <td />
+            <td>
+              <strong>{total}</strong>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  )
+}

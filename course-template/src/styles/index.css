@@ -1,0 +1,8 @@
+/* course-site design system.
+   Bundled by tools/build.mjs into .build/public/assets/site.css and delivered as a
+   plain stylesheet with a relative href — never through Astro's bundler, which would
+   emit a root-absolute /_astro/ URL and break a subpath deploy (gates S2, S12). */
+@import './tokens.css';
+@import './base.css';
+@import './components.css';
+@import './print.css';

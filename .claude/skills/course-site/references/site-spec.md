@@ -1,6 +1,8 @@
 # Site spec
 
-Read at Stage 4.
+**This is the design contract the shared Astro template at `course-template/` is held to.** Read it
+when changing the template, not when building a course — building a course is one command, and the
+template already implements everything below.
 
 ## Layout
 
@@ -8,20 +10,26 @@ Read at Stage 4.
 dist/
   index.html                     home — hero, progress ring, syllabus, resume
   certificate.html               completion record, printable
+  sources.html                   the grounding ledger
   404.html                       relative-link-safe not-found
   unit-<n>/
     index.html                   unit overview + hero infographic + topic list
     topic-<m>.html               reading + flashcards + quiz, one page
     test.html                    unit test
-    project-<p>.html             brief, steps checklist, rubric
+    project-<p>.html             brief, steps checklist, rubric, starter files
   assets/
-    site.css  site.js            copied from this skill, customized via variables only
-    course.json                  the graph, for search and labels
-    search.json                  prebuilt index
-    img/                         svg + png
-    diagrams/                    .tldr sources
-    prompts/                     infographic prompt files, kept
+    site.css  site.js            the design system and runtime, bundled by the template
+    search-index.js              prebuilt index, one global, loaded once and cached
+    img/  diagrams/  prompts/    copied from <course-dir>/assets/
 ```
+
+Topics are numbered **per unit** in the URL (`unit-5/topic-1.html`) even though the source tree
+numbers them globally across the course (`topic-15-url-anatomy`). That mapping, and the positional
+`u<N>t<M>` ids, are what localStorage progress is keyed on — changing either orphans every learner's
+saved progress.
+
+`course.json` is deliberately **not** copied into `dist/`. Everything a page needs is baked into it
+at build time; shipping a 700 KB graph that nothing loads was pure payload.
 
 One page per topic. Reading, flashcards, and quiz are sections on it, reachable from a sticky in-page
 nav. Three thin pages and three clicks is worse.
@@ -119,7 +127,14 @@ Fires once, on quiz completion, at the moment the score is computed.
 
 Build-time index of unit/topic titles, headings, and the first ~200 characters of each reading.
 
-- Inline into `site.js` when under 100 KB; otherwise `assets/search.json`, loaded on first use.
+- Emitted as `assets/search-index.js`, a plain script setting one global, loaded with a relative
+  `src` alongside `site.js`. Downloaded and cached once for the whole site.
+- **Not** fetched, and **not** inlined per page. Fetching it resolved page-relative, so it 404'd on
+  every page below the root and silently hid the search box there — and it was the site's only
+  network request, breaking offline use and gate S1. Inlining it into each page instead would
+  duplicate ~50 KB across forty-odd pages.
+- Its hrefs are site-root-relative; the runtime prefixes them with the depth the build recorded in
+  `#course-config`.
 - `/` focuses the field; `Esc` clears; `↑`/`↓` move through results; `Enter` opens.
 - Substring and token match is plenty. No fuzzy-matching library.
 - No results → say so, and offer the syllabus link.

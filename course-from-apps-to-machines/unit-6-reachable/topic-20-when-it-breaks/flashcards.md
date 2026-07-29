@@ -1,6 +1,7 @@
 # Flashcards — When it doesn't work
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 **Front:** `Address already in use`
 
@@ -9,16 +10,14 @@ about ownership, not about the port being broken.
 
 ---
 
-**Front:** The same failure prints `[Errno 98]` on your Linux laptop and `[Errno 48]` on your friend's
-Mac. Which part do you match on?
+**Front:** The same failure prints `[Errno 98]` on your Linux laptop and `[Errno 48]` on your friend's Mac. Which part do you match on?
 
 **Back:** The words — `Address already in use`. The number is the operating system's internal code and
 differs by platform; the sentence is the condition.
 
 ---
 
-**Front:** `PermissionError: [Errno 13] Permission denied`, raised from
-`self.socket.bind(self.server_address)`
+**Front:** `PermissionError: [Errno 13] Permission denied`, raised from `self.socket.bind(self.server_address)`
 
 **Back:** The program asked for a port it is not allowed to have. It fails at the moment of binding the
 port, so it is nothing to do with file permissions on `index.html`.
@@ -53,8 +52,7 @@ listing is generated only when no index page is found.
 
 ---
 
-**Front:** `curl` fails **instantly** with exit code 7 vs. `curl` **hangs** and then fails with exit
-code 28
+**Front:** `curl` fails **instantly** with exit code 7 vs. `curl` **hangs** and then fails with exit code 28
 
 **Back:** Instant = something answered "no" (`Connection refused`) — nothing is listening on that port.
 A hang = nobody answered at all — packets are being dropped, which usually means a firewall.
@@ -72,5 +70,3 @@ A hang = nobody answered at all — packets are being dropped, which usually mea
 
 **Back:** Whether the server is still running at all — `ss -tlnp` or `lsof -i :8000`, looking for
 `0.0.0.0:8000`. If it exited, its last line names the reason.
-
----

@@ -1,0 +1,44 @@
+/* The only intended customization surface. `--accent` and `--accent-ink` are
+   overridden per course by Page.astro from course.json's brandColors. */
+:root {
+  --accent: #3f7ac4;
+  --accent-ink: #ffffff;
+
+  --bg: #fbfbfc;
+  --surface: #ffffff;
+  --surface-2: #f2f3f5;
+  --figure-bg: #ffffff;          /* stays light in both themes — see visuals.md */
+  --text: #16181d;
+  --text-dim: #5c626e;
+  --border: #dfe2e8;
+  --ok: #1f7a4d;
+  --bad: #b3261e;
+  --ok-bg: #e8f5ee;
+  --bad-bg: #fdecea;
+
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 4px 12px rgb(16 24 40 / 5%);
+  --speed: 170ms;
+  --read-width: 72ch;
+  --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* The toggle must win over the system setting in both directions, so the dark
+   values are declared twice: once behind the media query for `system`, once
+   unconditionally for an explicit `data-theme="dark"`. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1115; --surface: #171a20; --surface-2: #1e222a;
+    --text: #e7e9ee; --text-dim: #a0a7b4; --border: #2c313b;
+    --ok: #6ee7a8; --bad: #ff9d94; --ok-bg: #14301f; --bad-bg: #331916;
+    --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 14px rgb(0 0 0 / 30%);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1115; --surface: #171a20; --surface-2: #1e222a;
+  --text: #e7e9ee; --text-dim: #a0a7b4; --border: #2c313b;
+  --ok: #6ee7a8; --bad: #ff9d94; --ok-bg: #14301f; --bad-bg: #331916;
+  --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 14px rgb(0 0 0 / 30%);
+}

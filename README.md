@@ -159,12 +159,17 @@ course
       title, description
       instructions                # "Topic generation prompt: …" + "Requested activities:"
       learningGoals[]             # 3 per topic, observable, API-bearing
+      activities[]                # { type, path } — the join to read.md
+      flashcards[]                # { front, back }
+      quiz { questions[] }        # same question shape as the unit test
     test
       title, description, passingScore
       questions[]                 # MULTIPLE_CHOICE | TRUE_FALSE | SHORT_ANSWER
         question, options[], correctOptionIndex | correctAnswer | sampleAnswer
+        graderNotes?              # SHORT_ANSWER: what full credit requires
         explanation               # MUST cite "(objective N)"
     projects[]
+      path                        # the project directory — how brief.md is found
       goal, type, learningGoals[]
       config { title, description, language, instructions, starterCells[] }
       steps[]        { title, description, completionCriteria }   # machine-checkable
@@ -178,6 +183,22 @@ course
 
 **Activity types** (9): readings, lectures, flashcards, podcasts, quizzes, games, music (jam),
 comics, AI chat.
+
+### `course.json` holds all the assessment data
+
+Quizzes, flashcards and unit tests live **in the JSON**. The markdown files `quiz.md`,
+`flashcards.md` and `unit-test.md` are reviewable views rendered *from* it — the same relationship
+`README.md` already has to the JSON — and nothing downstream parses them back.
+
+That direction is load-bearing. When topic quizzes existed only as prose, the site builder had to
+recover each answer key from five different hand-written markdown dialects through a ranked cascade
+of eight guessing strategies, including one dialect where `**Correct:** 2` meant a 1-based ordinal
+and another where `**Correct option index:** 2` meant a 0-based index. A course should not infer
+which answer is correct; the model that wrote the question already knew.
+
+```bash
+node course-template/tools/render-views.mjs --course <course-dir> [--check]
+```
 
 ---
 
@@ -270,23 +291,42 @@ A separate skill, invoked by the user **after** the markdown and `course.json` h
 approved. It turns an approved course directory into a static website at `<course-dir>/dist/` that
 anyone can open from a link.
 
-```
-course-site/
-  SKILL.md
-  references/
-    visuals.md              composing tldraw-skill + infographic; budgets and fallbacks
-    site-spec.md            pages, components, design system, accessibility, no-JS baseline
-    state.md                localStorage contract and every failure mode
-    build-gates.md          S1–S12 verification + a reusable verify.sh
-  assets/
-    site.css                design system — customize tokens only
-    site.js                 store, quiz grading, flashcards, confetti, search, reset, certificate
-    page.template.html      page skeleton with every wiring hook
+The site is built by a **shared Astro template** at `course-template/`. The skill validates the
+course, plans and generates its visuals, runs the template, and checks the gates — it does not write
+pages and does not write a builder.
+
+```bash
+cd course-template
+npm install                                     # first run only
+npm run build  -- --course ../course-<slug>     # → ../course-<slug>/dist
+npm run verify -- ../course-<slug>/dist         # gates S1–S12
+npm run test   -- ../course-<slug>/dist         # runtime behaviour in jsdom
 ```
 
-`site.css` and `site.js` are **copied verbatim**, not regenerated per course. The storage-safety,
-grading, and accessibility behavior is written once and correctly, rather than improvised each build —
-which is also what makes the gates meaningful.
+```
+course-site/                  the skill: what to build and how to check it
+  SKILL.md
+  references/
+    visuals.md                composing tldraw-skill + infographic; budgets and fallbacks
+    site-spec.md              the design contract the template implements
+    state.md                  localStorage contract and every failure mode
+    build-gates.md            what each of S1–S12 means
+
+course-template/              the builder: one Astro project, every course
+  src/content.config.ts       four collections, zod-validated
+  src/lib/                    loaders, relative-path helper, search index, nav
+  src/layouts/ components/    the pages
+  src/runtime/ styles/        the TypeScript runtime and the design system
+  tools/                      build · verify · test-runtime · render-views
+```
+
+Courses hold content; the template holds the site. Fixing a bug in the template fixes it for every
+course, which is the whole reason it exists — the first course was built by a 673-line Python script
+that lived inside that course's own directory, and would have been rewritten from scratch for the
+second.
+
+Content collections validate `course.json` against zod schemas at build time, so a bad answer key
+fails the build naming the entry and the field rather than producing a site that grades wrongly.
 
 ### Constraints, all load-bearing
 
@@ -297,6 +337,13 @@ which is also what makes the gates meaningful.
   when storage is disabled, full, or corrupt.
 - **Path-independent.** Works at a bucket root or a subpath; every URL is relative.
 - **Content works without JavaScript.** JS adds progress, grading, and flair — never the words.
+
+The last two shape the template's architecture. Astro is zero-JS by default, which gives the no-JS
+baseline for free. Path-independence is the one a bundler quietly breaks: Astro emits `/_astro/…`
+root-absolute URLs for anything it processes, so the runtime and stylesheet are bundled by esbuild
+into `assets/site.js` and `assets/site.css` and referenced with a prefix computed from each page's
+depth. Gate S2 fails on any `/_astro/` reference, so a regression is caught rather than discovered
+on deploy.
 
 ### What it builds
 
@@ -329,8 +376,13 @@ Composed from two existing skills, each with a gotcha the reference file pins do
   scope or it goes hunting for a merge request, and `make it technical` when the course is technical,
   or its default rules strip the API names that *are* the content.
 
-Either may fail. A missing image degrades to a styled text panel and the prompt file is kept in
-`dist/assets/prompts/` for later — the build never blocks on a picture.
+Either may fail. A missing image degrades to a styled text panel and the prompt file is kept for
+later — the build never blocks on a picture.
+
+Generated visuals are written to **`<course-dir>/assets/`** and committed with the course; the build
+copies them into `dist/assets/`. Never into `dist/` itself, which is deleted and rewritten on every
+run — an earlier version of the spec pointed there, so every diagram and kept prompt survived exactly
+until the next build.
 
 ### Deployment
 

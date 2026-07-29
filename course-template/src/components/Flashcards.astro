@@ -1,0 +1,39 @@
+---
+import Markdown from './Markdown.astro';
+
+interface Props {
+  cards: Array<{ front: string; back: string }>;
+}
+
+const { cards } = Astro.props;
+---
+
+{/* Both faces are in the HTML. With JavaScript off they stack and stay readable
+    (gate S4); the runtime only handles ordering and flipping. */}
+<div class="deck" data-deck>
+  {
+    cards.map((card, i) => (
+      <div class="fc" hidden={i !== 0}>
+        <div class="fc__inner">
+          <div class="fc__face">
+            <div>
+              <Markdown text={card.front} />
+            </div>
+          </div>
+          <div class="fc__face fc__face--back">
+            <div>
+              <Markdown text={card.back} />
+            </div>
+          </div>
+        </div>
+      </div>
+    ))
+  }
+
+  <div class="deck__bar">
+    <button class="btn" type="button" data-deck-prev aria-label="Previous card">←</button>
+    <button class="btn" type="button" data-deck-next aria-label="Next card">→</button>
+    <button class="btn" type="button" data-deck-shuffle>Shuffle</button>
+    <span class="deck__count">1 / {cards.length}</span>
+  </div>
+</div>

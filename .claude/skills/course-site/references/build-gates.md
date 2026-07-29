@@ -1,7 +1,22 @@
 # Build gates
 
-Read at Stage 5. Most of these are mechanical — run the command, read the answer. A gate that fails
-blocks completion; fix it, or report it plainly as unfixed.
+Read at Stage 5. Nearly all of these are implemented in `course-template/tools/verify.mjs` and run
+in one command:
+
+```bash
+cd course-template
+npm run verify -- ../<course-dir>/dist
+```
+
+Behaviour a static check cannot see — a throwing `localStorage`, a corrupt blob, first-attempt-only
+scoring, reset scope — is covered by `npm run test -- ../<course-dir>/dist`, which drives the built
+runtime against a built page in jsdom.
+
+Two gates stay manual and are called out below: **S4** (load with JavaScript disabled) and **S12**
+(serve from a subpath). Everything else is automated.
+
+A gate that fails blocks completion; fix it, or report it plainly as unfixed. This file explains what
+each gate is *for* — the verifier is the authority on whether it passes.
 
 ## Blocking
 
@@ -10,24 +25,23 @@ blocks completion; fix it, or report it plainly as unfixed.
 The single most important gate. One remote URL breaks offline use, leaks a request, and can be
 blocked by a CSP the user does not control.
 
-```bash
-grep -rnoE '(src|href)="https?://|@import +url\(https?://|fetch\(|XMLHttpRequest|WebSocket|\.woff2?"' dist/ \
-  --include='*.html' --include='*.css' --include='*.js'
-```
+The rule: **`href="https://…"` in prose the course cites is fine** — that is a link a learner may
+click, not a resource the page loads. Any `src`, `@import`, webfont, `fetch(`, `XMLHttpRequest` or
+`WebSocket` is a failure.
 
-Expected: nothing, except `href="https://…"` inside prose the course itself cites. Those are fine —
-they are links a learner may click, not resources the page loads. Any `src`, `@import`, webfont, or
-network call is a failure.
+That distinction matters: an earlier `verify.sh` omitted `fetch(` from its pattern while the prose
+here required it, so the two definitions of S1 disagreed — and the shipped runtime, which called
+`fetch('assets/search.json')`, passed the script while failing the gate as written. The search index
+is now a plain script loaded with a relative `src`, and `verify.mjs` checks the full rule.
 
 ### S2 — No absolute internal paths
 
 Every internal link, script, style, and image is relative, so a subpath deploy works.
 
-```bash
-grep -rnoE '(src|href)="/[^/]' dist/ --include='*.html' --include='*.css'
-```
-
-Expected: nothing.
+The verifier also fails on any `/_astro/` reference. That is the specific way this gate gets broken
+silently: Astro's bundler emits root-absolute URLs for anything it processes, so the template keeps
+`site.css` and `site.js` out of the bundler entirely and sets `build.inlineStylesheets: 'always'` as
+a backstop. A `/_astro/` path in the output means something slipped back in.
 
 ### S3 — Every link resolves
 
@@ -37,7 +51,7 @@ exists. Fragment links must match an `id` on the target page.
 Report broken links with the file and line. Zero tolerance — a dead link in a course reads as
 abandonment.
 
-### S4 — Content without JavaScript
+### S4 — Content without JavaScript *(partly manual)*
 
 Load each page with scripting disabled (or strip `<script>` and inspect the DOM). Every reading,
 flashcard front *and* back, quiz question with its answer and explanation, rubric, and syllabus entry
@@ -56,8 +70,14 @@ If content only appears once JS runs, the build fetched or rendered it client-si
 
 ### S6 — JSON integrity
 
-Every `<script type="application/json">` block parses. `assets/course.json` parses. Quiz blocks have
-a valid `correctOptionIndex` within range for every `MULTIPLE_CHOICE`, and `options.length === 4`.
+Every `<script type="application/json">` block parses. Quiz blocks have a valid `correctOptionIndex`
+within range for every `MULTIPLE_CHOICE`, `options.length === 4` as rendered, and every `TRUE_FALSE`
+carries a boolean `correctAnswer`.
+
+Most of this is now also enforced upstream, by the collection schemas in
+`course-template/src/content.config.ts` — a course with a bad answer key fails the build naming the
+entry and the field, rather than producing a site that grades wrongly. S6 is the check that the
+rendered page agrees with the validated data.
 
 ### S7 — Objective wiring
 
@@ -83,8 +103,11 @@ element on that page.
 ### S10 — Certificate honesty
 
 The page states it is a self-reported record and that progress is stored only in this browser. It must
-not use the words "verified", "accredited", or "certified by" — the architecture supports none of
-them.
+not **claim** to be "verified", "accredited", or "certified by" anyone — the architecture supports
+none of them.
+
+Negated uses are the point, not a violation: "not verified by anyone" is exactly the disclaimer this
+gate exists to require, so the verifier fails only on an affirmative claim.
 
 ### S11 — Image completeness
 
@@ -93,14 +116,15 @@ Every planned visual either exists on disk at its referenced path, or its slot r
 
 ### S12 — Path independence
 
-Serve `dist/` from a subpath and load a deep page:
+The verifier checks that every asset reference carries the right number of `../` for its depth. That
+does not prove the site loads, so also serve `dist/` from a subpath and open a deep page:
 
 ```bash
 mkdir -p /tmp/sub/course && cp -r dist/* /tmp/sub/course/ && cd /tmp/sub && python3 -m http.server 8000
 ```
 
 Open `/course/unit-1/topic-1.html`. Styles, scripts, images, and navigation all work. This catches
-root-absolute paths that S2's grep can miss inside JS.
+root-absolute paths that a grep can miss inside JS.
 
 ## Advisory
 
@@ -116,22 +140,22 @@ Report, do not block.
 - **Empty states** — a fresh browser (no storage) shows sensible home, certificate, and search
   states, not zeros and blanks.
 
-## Smoke script
-
-Worth writing once into `dist/../verify.sh` so re-runs are cheap:
+## Running them
 
 ```bash
-#!/usr/bin/env bash
-set -uo pipefail
-cd "$(dirname "$0")/dist" || exit 1
-fail=0
-echo "S1 external refs";  grep -rnoE '(src)="https?://|@import +url\(https?://|\.woff2?"' . && fail=1
-echo "S2 absolute paths"; grep -rnoE '(src|href)="/[^/]' . --include='*.html' && fail=1
-echo "S5 bare storage";   grep -rn 'localStorage\.' . --include='*.html' && fail=1
-echo "S5 clear()";        grep -rn 'localStorage.clear' . && fail=1
-echo "S6 json";           for f in $(find . -name '*.json'); do python3 -m json.tool "$f" >/dev/null || fail=1; done
-echo "S11 img dims";      grep -rnoE '<img (?![^>]*width=)[^>]*>' -P . --include='*.html' && fail=1
-exit $fail
+cd course-template
+npm run verify -- ../<course-dir>/dist   # S1–S12 and the advisory checks
+npm run test   -- ../<course-dir>/dist   # runtime behaviour in jsdom
 ```
 
-Note the greps are deliberately loud: they print what they find, so a failure names itself.
+`verify.mjs` is deliberately loud: it prints the file and the specific problem, so a failure names
+itself.
+
+`test-runtime.mjs` covers what a static check cannot see — a throwing `localStorage` degrading to an
+in-memory store with exactly one banner, a corrupt blob resetting instead of white-screening, a
+wrong schema version resetting with a notice, first-attempt-only scoring, the no-JS `<details>`
+fallback being present before interaction and removed after, and reset touching exactly one key
+while leaving other courses on the same origin alone.
+
+Neither replaces the two manual checks: load a topic page with scripting disabled (S4), and serve
+`dist/` from a subpath and open a deep page (S12).

@@ -1,0 +1,11 @@
+---
+import Page from '../layouts/Page.astro';
+---
+
+{/* Links are relative, so this page only resolves correctly when served from the
+    site root — which is where a host's 404 handler serves it from. */}
+<Page title="Not found" depth={0}>
+  <h1>That page isn't here</h1>
+  <p class="lede">The link may be out of date, or the address may have a typo in it.</p>
+  <p><a class="btn" href="index.html">Go to the syllabus →</a></p>
+</Page>

@@ -67,7 +67,17 @@ running problem, and `LECTURE` replaces projects as the second activity.
             { "type": "READ" | "QUIZ" | "FLASHCARDS" | "LECTURE" | "PODCAST"
                     | "GAME" | "COMIC" | "JAM" | "CHAT",
               "path": "unit-1-foo/topic-1-bar/read.md" }
-          ]
+          ],
+
+          // Assessment content lives here, in the same shape units[].test uses.
+          // The markdown views (quiz.md, flashcards.md) are RENDERED FROM this —
+          // nothing downstream parses them. See "Assessment data" below.
+          "flashcards": [
+            { "front": "string", "back": "string", "orderIndex": 0 }
+          ],
+          "quiz": {
+            "questions": [ /* identical shape to units[].test.questions[] */ ]
+          }
         }
       ],
 
@@ -84,6 +94,10 @@ running problem, and `LECTURE` replaces projects as the second activity.
             "correctOptionIndex": 2,          // MULTIPLE_CHOICE only
             "correctAnswer": false,           // TRUE_FALSE only
             "sampleAnswer": "string",         // SHORT_ANSWER only
+            "graderNotes": "string",          // SHORT_ANSWER, optional — what a
+                                              // full-credit answer must contain.
+                                              // Shown to the learner when they
+                                              // self-mark, so it is content.
             "explanation": "why right, why the tempting wrong one is wrong (objective 2, 11)"
           }
         ]
@@ -97,6 +111,9 @@ running problem, and `LECTURE` replaces projects as the second activity.
                 | "writing-research" | "image-generation" | "prompt-challenge"
                 | "interactive-form",
           "orderIndex": 0,
+          // The project directory, relative to the course root. Required: it is
+          // how brief.md, rubric.md, starter/ and tests/ are found at all.
+          "path": "unit-1-foo/project-1-bar",
           "learningGoals": [ { "title": "string", "description": "string | null" } ],
 
           "config": {
@@ -137,18 +154,46 @@ running problem, and `LECTURE` replaces projects as the second activity.
 }
 ```
 
+## Assessment data
+
+`course.json` is the **single source of truth for every quiz, flashcard deck and unit test.**
+`quiz.md`, `flashcards.md` and `unit-test.md` are reviewable views rendered *from* it — exactly the
+relationship `README.md` already has to the JSON. Nothing downstream parses them.
+
+```bash
+node course-template/tools/render-views.mjs --course <course-dir>           # write them
+node course-template/tools/render-views.mjs --course <course-dir> --check   # assert they match
+```
+
+This is not a stylistic preference. When topic quizzes existed only as prose, the site builder had to
+recover the answer key from five different hand-written markdown dialects — including one where
+`**Correct:** 2` meant a 1-based ordinal and another where `**Correct option index:** 2` meant a
+0-based index — through a ranked cascade of eight guessing strategies. An educational product must
+not infer which answer is correct.
+
+Emit the structured data; let the markdown be rendered.
+
 ## Invariants
 
 - `rubric[].weight` sums to 100 per project. `testCases[].weight` sums to 100 per project.
 - `learningGoals[].unitObjectiveNumber` is unique and contiguous within a unit, starting at 1.
 - Every `unitObjectiveNumber` appears in at least one `explanation` citation in that unit.
-- `MULTIPLE_CHOICE` has exactly 4 `options` and a valid `correctOptionIndex`.
+- `MULTIPLE_CHOICE` has exactly 4 `options` and a valid `correctOptionIndex` — in **topic quizzes**
+  as well as unit tests.
+- Every topic has a non-empty `flashcards[]` and a non-empty `quiz.questions[]`.
+- Every question's `explanation` carries at least one `(objective N)` citation, and every number it
+  cites exists as a `unitObjectiveNumber` in that unit.
 - Exactly one `test` per unit.
 - Every `activities[].path` exists on disk; every content file is referenced by exactly one activity.
+- Every `projects[].path` exists on disk and contains `brief.md` and `rubric.md`.
 - `environment.image` carries an explicit tag — never `latest`.
 - Every `sources[].id` is referenced by at least one topic's Grounded facts block.
 - `ungrounded[]` is present, even if empty, and matches the **Ungrounded** section of `SOURCES.md`.
 - No field anywhere contains a provisional `?` marker.
+
+Most of these are enforced a second time by the collection schemas in
+`course-template/src/content.config.ts`, so a violation that slips through fails the site build
+naming the entry and the field.
 
 ## `README.md` assembly
 

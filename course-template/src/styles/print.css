@@ -1,0 +1,8 @@
+@media print {
+  .site-header, .site-footer, .subnav, .no-print, #confetti, .banner { display: none !important; }
+  html, body { background: #fff !important; color: #000 !important; }
+  .wrap { width: 100%; }
+  main { padding: 0; }
+  .cert { border-color: #333; box-shadow: none; page-break-inside: avoid; }
+  @page { size: landscape; margin: 12mm; }
+}

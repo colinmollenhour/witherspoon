@@ -1,6 +1,7 @@
 # Quiz — When it doesn't work
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 ## Question 1
 
@@ -17,7 +18,9 @@ you about your machine?
 
 **Correct option index:** 1
 
-**Explanation:** A port is a numbered slot and exactly one program may hold it at a time, so this error
+**Explanation:**
+
+A port is a numbered slot and exactly one program may hold it at a time, so this error
 is a statement about ownership: something already has 8000, very often a server you started in another
 terminal tab and forgot. "The port is damaged, reboot" is the most common misreading — nearly two
 million people have read a single Stack Overflow question about this error, usually looking for a way
@@ -42,7 +45,9 @@ command answers that question?
 
 **Correct option index:** 2
 
-**Explanation:** `-p` is the flag that adds the process column, giving you output like
+**Explanation:**
+
+`-p` is the flag that adds the process column, giving you output like
 `users:(("python3",pid=8,fd=4))` — the program's name and its PID, which is exactly what you need to go
 stop it. You do not need `sudo` for processes you own. `ss -tln` shows that *a* listening socket exists
 on `0.0.0.0:8000` but leaves you no way to identify the owner, which is the whole question. `curl -I`
@@ -61,14 +66,15 @@ On your phone, the LAN address loads a page listing file names, including a fold
 What is the most likely explanation?
 
 - The firewall is letting the connection through but stripping out the HTML
-- You started the server in your home directory, so it is serving that directory and found no
-  `index.html` there
+- You started the server in your home directory, so it is serving that directory and found no `index.html` there
 - The phone should be using `localhost:8000` rather than the LAN address
 - Port 8000 is not IANA-registered for HTTP, so the browser will not render HTML received on it
 
 **Correct option index:** 1
 
-**Explanation:** `http.server` serves the directory it was started in — "By default, the server uses the
+**Explanation:**
+
+`http.server` serves the directory it was started in — "By default, the server uses the
 current directory" — and when a request maps to a directory with no `index.html`, "a directory listing
 is generated." Seeing `projects` in the listing is the giveaway: you are one level above `first-site`.
 This failure is dangerous precisely because it looks like success. The firewall option is wrong because
@@ -89,7 +95,9 @@ server was never started.
 
 **Correct answer:** false
 
-**Explanation:** The opposite is true, and the timing is the tell. When nothing is listening, the reply
+**Explanation:**
+
+The opposite is true, and the timing is the tell. When nothing is listening, the reply
 is instant: `curl: (7) Failed to connect to 127.0.0.1:9999 after 0 ms: Could not connect to server`,
 exit code 7, with `Connection refused` visible under `-v` — the machine is reachable and answers "no"
 immediately. A delay before failure looks like
@@ -108,7 +116,6 @@ the packets*, not *nothing was started* (objective 6).
 `python3 -m http.server 8000` starts normally, on the same machine, in the same folder, as the same
 user. Explain the difference.
 
-**Sample answer:** The number is the only thing that changed, and it is the number that matters. Ports
 below 1024 are privileged: `ip(7)` says "The port numbers below 1024 are called privileged ports (or
 sometimes: reserved ports).  Only a privileged process ... may bind(2) to these sockets." Port 80 is
 under that line, so my ordinary user account is refused at the moment Python calls
@@ -118,7 +125,21 @@ Unix convention; on Linux the boundary is even readable as a setting,
 `net.ipv4.ip_unprivileged_port_start = 1024`, though that particular knob is Linux-only and macOS has
 no equivalent.
 
-**Explanation:** A grader must see three things: that the cause is the port number being below 1024,
+**Sample answer:**
+
+The number is the only thing that changed, and it is the number that matters. Ports
+below 1024 are privileged: `ip(7)` says "The port numbers below 1024 are called privileged ports (or
+sometimes: reserved ports).  Only a privileged process ... may bind(2) to these sockets." Port 80 is
+under that line, so my ordinary user account is refused at the moment Python calls
+`self.socket.bind(self.server_address)` — which is why the error is raised there and the command exits
+with code 1. Port 8000 is above 1024, so no special rights are needed. The 1024 split is a long-standing
+Unix convention; on Linux the boundary is even readable as a setting,
+`net.ipv4.ip_unprivileged_port_start = 1024`, though that particular knob is Linux-only and macOS has
+no equivalent.
+
+**Explanation:**
+
+A grader must see three things: that the cause is the port number being below 1024,
 not anything about the folder or the file; that the failure happens at bind time and so has nothing to
 do with read permissions on `index.html`; and that 8000 works simply because it is above the threshold.
 Mentioning that the 1024 rule is a Unix convention while the sysctl is Linux-specific is the mark of a

@@ -1,6 +1,7 @@
 # Flashcards — Reading files without opening an app
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 **Front:** `cat index.html`
 
@@ -42,7 +43,7 @@ up.
 
 ---
 
-**Front:** `wc /etc/hosts` prints `  7  40 384 /etc/hosts`. What are the three numbers, in order?
+**Front:** `wc /etc/hosts` prints ` 7 40 384 /etc/hosts`. What are the three numbers, in order?
 
 **Back:** Lines, words, bytes — so 7 lines, 40 words, 384 bytes.
 

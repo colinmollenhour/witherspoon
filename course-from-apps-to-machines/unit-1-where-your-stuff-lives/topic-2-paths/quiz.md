@@ -1,6 +1,7 @@
 # Quiz — Paths: every file has an address
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 ## Question 1
 
@@ -16,7 +17,9 @@ identically no matter which directory your terminal is standing in?
 
 **Correct option index:** 2
 
-**Explanation:** `/home/you/projects/first-site/index.html` begins with `/`, so it is absolute —
+**Explanation:**
+
+`/home/you/projects/first-site/index.html` begins with `/`, so it is absolute —
 measured from the root of the machine and identical everywhere. The specification is blunt about it:
 "If the directory operand begins with a &lt;slash&gt; character, set curpath to the operand."
 `projects/first-site/index.html` looks complete but has no leading slash, so it only works if you
@@ -34,12 +37,20 @@ character does (objective 4).
 Your terminal is standing in `/home/you/projects/first-site`. Write out the absolute path that
 `../../projects/first-site/index.html` resolves to, and show the two steps you took to get there.
 
-**Sample answer:** It resolves to `/home/you/projects/first-site/index.html`. Step one: the first `..`
 goes up one level from `/home/you/projects/first-site` to `/home/you/projects`. Step two: the second
 `..` goes up again to `/home/you`. From there `projects/first-site/index.html` walks back down, ending
 at `/home/you/projects/first-site/index.html` — the same file I started next to.
 
-**Explanation:** A grader must see three things: that the first `..` gives `/home/you/projects`, that
+**Sample answer:**
+
+It resolves to `/home/you/projects/first-site/index.html`. Step one: the first `..`
+goes up one level from `/home/you/projects/first-site` to `/home/you/projects`. Step two: the second
+`..` goes up again to `/home/you`. From there `projects/first-site/index.html` walks back down, ending
+at `/home/you/projects/first-site/index.html` — the same file I started next to.
+
+**Explanation:**
+
+A grader must see three things: that the first `..` gives `/home/you/projects`, that
 `../..` gives `/home/you`, and that the final absolute path is
 `/home/you/projects/first-site/index.html`. The tempting mistake is to treat `../..` as "go to the
 root" and answer `/projects/first-site/index.html` — but `..` moves exactly one level per use, and
@@ -57,7 +68,9 @@ On a Mac with the default filesystem, saving a file called `Index.html` next to 
 
 **Correct answer:** false
 
-**Explanation:** The opposite is true, and the visible capital is exactly what makes this misleading.
+**Explanation:**
+
+The opposite is true, and the visible capital is exactly what makes this misleading.
 APFS is "available in case-sensitive and case-insensitive variants on macOS, with case-insensitive
 being the default" — so the two names are not distinguished, and you end up with one file. APFS also
 "preserves both case and normalization of the filename on disk in all variants", which is why the
@@ -81,7 +94,9 @@ Which statement is correct?
 
 **Correct option index:** 2
 
-**Explanation:** A default Mac runs case-insensitive APFS, so the two names match and you have one
+**Explanation:**
+
+A default Mac runs case-insensitive APFS, so the two names match and you have one
 file; Linux filesystems are case-sensitive, so you have two — proven by the two inode numbers
 `4924918` and `4924919` with different contents. The first option assumes case-insensitivity is
 universal, which is the assumption that produces a site working on a Mac and 404-ing on a Linux
@@ -107,7 +122,9 @@ files on the machine rather than something you can rebuild?
 
 **Correct option index:** 2
 
-**Explanation:** `/home/` begins with `/`, so it is absolute and names the top-level directory holding
+**Explanation:**
+
+`/home/` begins with `/`, so it is absolute and names the top-level directory holding
 every user's files. Someone did exactly this: "I used `rm -r /home/` instead of `rm -r home/` as
 root... Unfortunately I have no backups." `home/` has no leading slash, so it is relative and only
 touches a directory named `home` inside wherever you are standing. `./first-site/` and

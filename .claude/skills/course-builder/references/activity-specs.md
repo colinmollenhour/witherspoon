@@ -54,6 +54,11 @@ fixes it. Do not fix it here.
 
 Default 5 questions. Mix of `MULTIPLE_CHOICE`, `TRUE_FALSE`, `SHORT_ANSWER`.
 
+**Emit these as structured data into the topic's `quiz.questions[]` in `course.json`** — the same
+shape `units[].test.questions[]` uses. Do not hand-write `quiz.md`; it is rendered from the JSON by
+`course-template/tools/render-views.mjs`, and anything you write there is overwritten. The answer key
+is a field, not something a later tool infers from prose.
+
 **Every question**
 
 - Tests a **decision or discrimination**, not recall of a sentence from the reading.
@@ -80,8 +85,10 @@ Note the explanation walks *each* distractor. Do that.
 **True/false** — state the *misconception* and mark it false, more often than stating a fact and
 marking it true. Explanation opens by naming the reversal: *"The opposite is true."*
 
-**Short answer** — supply a `sampleAnswer` that would earn full credit, plus the two or three
-elements a grader must see.
+**Short answer** — supply a `sampleAnswer` that would earn full credit, and put the two or three
+elements a grader must see in `graderNotes`. Short answers cannot be auto-graded without a backend,
+so the site shows both and asks the learner to self-mark; `graderNotes` is what makes that honest
+rather than a guess.
 
 Ban: "all of the above", "none of the above", negated stems ("which is NOT…") unless the negation is
 the actual skill, and any question answerable by pattern-matching the longest option.
@@ -91,6 +98,9 @@ the actual skill, and any question answerable by pattern-matching the longest op
 ## FLASHCARDS
 
 8–12 cards unless the contract says otherwise.
+
+**Emit these into the topic's `flashcards[]` in `course.json`**, same as QUIZ. `flashcards.md` is a
+rendered view, not the source.
 
 - Front: a term, a cue, or a situation. Back: one definition or one action. Never both directions of
   the same pair as two cards.

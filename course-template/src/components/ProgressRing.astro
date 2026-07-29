@@ -1,0 +1,24 @@
+---
+interface Props {
+  size?: number;
+}
+const { size = 120 } = Astro.props;
+const r = size / 2 - 6;
+const c = 2 * Math.PI * r;
+---
+
+{/* Rendered as inline SVG so the empty state needs no JavaScript; the runtime
+    only sets stroke-dashoffset once progress exists. */}
+<div class="ring" data-ring>
+  <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} role="img" aria-label="Course progress">
+    <circle class="track" cx={size / 2} cy={size / 2} r={r} />
+    <circle
+      class="value"
+      cx={size / 2}
+      cy={size / 2}
+      r={r}
+      style={`stroke-dasharray: ${c}; stroke-dashoffset: ${c};`}
+    />
+  </svg>
+  <p class="ring__label">0%</p>
+</div>

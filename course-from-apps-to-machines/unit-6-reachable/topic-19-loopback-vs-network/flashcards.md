@@ -1,6 +1,7 @@
 # Flashcards — Loopback versus the network
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 **Front:** `127.0.0.1`
 
@@ -33,8 +34,7 @@ client. `0.0.0.0` is only ever the first kind; `127.0.0.1` can be either.
 
 ---
 
-**Front:** Your phone, on the same Wi-Fi, loaded `http://localhost:8000` and got nothing. What did it
-actually do?
+**Front:** Your phone, on the same Wi-Fi, loaded `http://localhost:8000` and got nothing. What did it actually do?
 
 **Back:** It resolved `localhost` from its own `/etc/hosts` to `127.0.0.1`, then asked *itself* for
 port 8000, found nothing listening, and gave up. No packet left the phone, so the laptop's access log
@@ -72,8 +72,7 @@ loopback line you meant to skip.
 
 ---
 
-**Front:** A real access-log line reads
-`127.0.0.1 - - [29/Jul/2026 04:26:16] "GET /nope HTTP/1.1" 404 -`. What does the first field prove?
+**Front:** A real access-log line reads `127.0.0.1 - - [29/Jul/2026 04:26:16] "GET /nope HTTP/1.1" 404 -`. What does the first field prove?
 
 **Back:** It is the address of whoever asked. `127.0.0.1` means the laptop asked itself. A line whose
 first field is the phone's address is proof that a request crossed the network and was answered — and

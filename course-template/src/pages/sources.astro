@@ -1,0 +1,96 @@
+---
+import { getCollection } from 'astro:content';
+import Page from '../layouts/Page.astro';
+import Markdown from '../components/Markdown.astro';
+import { readIfPresent, stripTitle } from '../lib/course';
+
+const c = (await getCollection('course'))[0]!;
+const { sources, ungrounded } = c.data;
+
+/**
+ * SOURCES.md is the authored ledger: the same claims as course.json's `sources[]`
+ * but grouped into sections with the commentary that explains why each group
+ * exists ("Misconceptions (distractor stock)", and so on). Render it when present
+ * and fall back to a table built from course.json when it is not — a course that
+ * was assembled without the ledger still gets a sources page.
+ */
+const ledger = readIfPresent('SOURCES.md');
+---
+
+<Page
+  title="Sources"
+  description={`Every claim in ${c.data.title}, with the source it came from.`}
+  depth={0}
+  pagePath="sources.html"
+  wide
+>
+  <h1>Sources</h1>
+  <p class="lede">
+    Every factual claim in this course, the exact wording it came from, and where to check it.
+  </p>
+
+  {
+    ungrounded.length > 0 && (
+      <section>
+        <h2>Flagged as ungrounded</h2>
+        <p>
+          These could not be traced to a primary source. They are listed here rather than quietly
+          dropped.
+        </p>
+        <ul>
+          {ungrounded.map((u) => (
+            <li>
+              <Markdown text={u.claim} inline /> — <em>{u.resolution}</em>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  {
+    ledger ? (
+      <section class="reading">
+        <Markdown text={stripTitle(ledger)} />
+      </section>
+    ) : (
+      <section>
+        <h2>{sources.length} grounded claims</h2>
+        <div class="scroll-x">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Claim</th>
+                <th scope="col">Exact wording</th>
+                <th scope="col">Source</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sources.map((s) => (
+                <tr id={`src-${s.id}`}>
+                  <th scope="row">{s.id}</th>
+                  <td>
+                    <Markdown text={s.claim} inline />
+                  </td>
+                  <td>
+                    <Markdown text={s.value} inline />
+                  </td>
+                  <td>
+                    {/^https?:\/\//.test(s.source) ? (
+                      <a href={s.source} rel="noreferrer">
+                        {s.source}
+                      </a>
+                    ) : (
+                      <code>{s.source}</code>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    )
+  }
+</Page>

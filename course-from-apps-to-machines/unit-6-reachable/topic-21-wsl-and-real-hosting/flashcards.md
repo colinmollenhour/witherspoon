@@ -1,9 +1,9 @@
 # Flashcards — WSL, and the shape of real hosting
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
-**Front:** Why does a server inside WSL 2 behave differently from one on plain Linux when another
-device tries to reach it?
+**Front:** Why does a server inside WSL 2 behave differently from one on plain Linux when another device tries to reach it?
 
 **Back:** WSL 2 runs Linux in a virtual machine that "has a virtualized ethernet adapter with its own
 unique IP address" — a second machine inside your laptop, on its own network, so the address WSL
@@ -11,8 +11,7 @@ reports is not the address your Wi-Fi knows.
 
 ---
 
-**Front:** You are in a WSL shell. Which command shows the WSL virtual machine's address, and which
-shows the Windows LAN address?
+**Front:** You are in a WSL shell. Which command shows the WSL virtual machine's address, and which shows the Windows LAN address?
 
 **Back:** `ip addr` shows WSL's own NAT'd address, usually in `172.16.0.0 - 172.31.255.255`.
 `ipconfig.exe` shows the Windows addresses, including the `192.168.x.x` one your phone needs — a Linux
@@ -43,8 +42,7 @@ instances of the distribution shell."
 
 ---
 
-**Front:** Mirrored mode is on and `ip addr` now matches `ipconfig.exe`, but the phone still cannot
-connect. What is the next documented step?
+**Front:** Mirrored mode is on and `ip addr` now matches `ipconfig.exe`, but the phone still cannot connect. What is the next documented step?
 
 **Back:** Add a Hyper-V firewall rule, because that firewall is on by default. In an admin PowerShell:
 `New-NetFirewallHyperVRule -Name "MyWebServer" -DisplayName "My Web Server" -Direction Inbound -VMCreatorId '{40E0AC32-46A5-438A-A0B2-2B479E8F2E90}' -Protocol TCP -LocalPorts 8000`
@@ -79,5 +77,3 @@ outside machine to start a connection inward.
 
 **Back:** Three things your laptop cannot give: a publicly routable IP address, a persistent name
 pointing at it, and a machine that keeps running when your lid closes.
-
----

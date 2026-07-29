@@ -158,6 +158,17 @@ Agents do not talk to each other and do not read sibling topics. The contract is
 each agent its final message is a one-line status, not a summary of what it wrote, and that it must
 not introduce a number absent from its grounded facts.
 
+A topic agent writes `read.md` as prose and returns its **quiz and flashcards as structured data**,
+which you merge into that topic's `quiz.questions[]` and `flashcards[]` in `course.json`. Set
+`projects[].path` for every project. Then render the reviewable markdown views:
+
+```bash
+node course-template/tools/render-views.mjs --course <course-dir>
+```
+
+`quiz.md`, `flashcards.md` and `unit-test.md` are generated from the JSON, the way `README.md`
+already is. Nothing downstream parses them, so the answer key is never inferred.
+
 If a topic agent fails, re-run that one topic. Never leave a contract without content.
 
 ### Stage 8 — Verify
@@ -174,7 +185,7 @@ Report honestly. If a gate still fails, say so plainly rather than declaring com
 Then offer the handoff, once, in one line:
 
 > Review the markdown and `course.json`. When you're happy with them, run `course-site` to build a
-> shareable interactive website into `dist/`.
+> shareable interactive website into `dist/` using the shared template in `course-template/`.
 
 Do not run `course-site` yourself. It is a separate skill, invoked after the user has approved the
 material.

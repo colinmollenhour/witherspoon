@@ -1,0 +1,25 @@
+{
+  "name": "course-template",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Shared Astro template that builds a self-contained static site from any approved course directory.",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "dev": "node tools/build.mjs --dev",
+    "verify": "node tools/verify.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "node tools/test-runtime.mjs"
+  },
+  "dependencies": {
+    "astro": "^5.14.1"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.10",
+    "jsdom": "^30.0.1",
+    "typescript": "^5.9.3"
+  }
+}

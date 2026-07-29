@@ -1,6 +1,7 @@
 # Flashcards — Your first server
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 **Front:** `python3 -m http.server 8000`
 
@@ -32,24 +33,21 @@ listing instead.
 
 ---
 
-**Front:** Name the six fields in
-`127.0.0.1 - - [29/Jul/2026 04:26:16] "GET /nope HTTP/1.1" 404 -`
+**Front:** Name the six fields in `127.0.0.1 - - [29/Jul/2026 04:26:16] "GET /nope HTTP/1.1" 404 -`
 
 **Back:** Client address, two obsolete identity fields (always `-`), local timestamp with no timezone,
 the client's request line in quotes, the status code, and a size field that is always `-`.
 
 ---
 
-**Front:** The server's startup banner and its per-request log lines go to two different places. Which
-is which?
+**Front:** The server's startup banner and its per-request log lines go to two different places. Which is which?
 
 **Back:** The banner goes to stdout; every access-log line goes to stderr. Redirecting one still leaves
 the other on your screen.
 
 ---
 
-**Front:** Your log line says `"GET /nope HTTP/1.1"` but `curl -I` showed `HTTP/1.0 200 OK`. Which
-version does the server actually speak?
+**Front:** Your log line says `"GET /nope HTTP/1.1"` but `curl -I` showed `HTTP/1.0 200 OK`. Which version does the server actually speak?
 
 **Back:** HTTP/1.0 — hard-coded as `protocol_version = "HTTP/1.0"`. The `HTTP/1.1` in the log is copied
 straight out of the client's request line, not the server's answer.

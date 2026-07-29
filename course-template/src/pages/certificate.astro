@@ -1,0 +1,70 @@
+---
+import { getCollection } from 'astro:content';
+import Page from '../layouts/Page.astro';
+
+const c = (await getCollection('course'))[0]!;
+const units = (await getCollection('units')).sort((a, b) => a.data.index - b.data.index);
+---
+
+<Page
+  title="Completion record"
+  description={`Self-reported completion record for ${c.data.title}`}
+  depth={0}
+  pagePath="certificate.html"
+>
+  <div data-certificate>
+    <h1>Completion record</h1>
+    <p class="lede">
+      Issued once every unit test has been attempted. Your progress is stored only in this browser.
+    </p>
+
+    <p class="no-print">
+      <label for="cert-name">Your name</label><br />
+      <input id="cert-name" type="text" data-cert-name placeholder="Type your name" />
+    </p>
+
+    <div data-cert-incomplete hidden>
+      <p class="card">
+        Not issued yet — these unit tests have not been attempted. Take each one and this record
+        fills itself in.
+      </p>
+      <ul>
+        {units.map((u) => <li><a href={`${u.data.slug}/test.html`}>{u.data.title}</a></li>)}
+      </ul>
+    </div>
+
+    <div class="cert" data-cert-issued hidden>
+      <h2>{c.data.title}</h2>
+      <p>This records that</p>
+      <p class="cert__name">Enter your name above</p>
+      <p>worked through all {units.length} units and attempted every unit test.</p>
+
+      <table class="cert__scores">
+        <thead>
+          <tr>
+            <th scope="col">Unit</th>
+            <th scope="col">Score</th>
+          </tr>
+        </thead>
+        <tbody data-cert-rows></tbody>
+      </table>
+
+      <p style="margin-top:1rem">
+        Unit-test average: <strong data-cert-avg>—</strong> · Last test taken:
+        <strong data-cert-date>—</strong>
+      </p>
+
+      {/* Gate S10: the architecture can verify nothing, and the page must not imply it can. */}
+      <p class="cert__disclaimer">
+        Self-reported completion record. It is generated from progress saved in this browser only,
+        was not issued by any institution, and confirms nothing beyond what was recorded on this
+        device.
+      </p>
+    </div>
+
+    <p class="no-print" style="margin-top:1.5rem">
+      <button class="btn btn--primary" type="button" data-print>Print / Save as PDF</button>
+      <button class="btn" type="button" data-reset>Reset progress</button>
+    </p>
+  </div>
+</Page>

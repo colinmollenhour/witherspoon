@@ -1,0 +1,326 @@
+---
+import { getCollection, render } from 'astro:content';
+import Page from '../../layouts/Page.astro';
+import Quiz from '../../components/Quiz.astro';
+import Flashcards from '../../components/Flashcards.astro';
+import Checklist from '../../components/Checklist.astro';
+import Rubric from '../../components/Rubric.astro';
+import Markdown from '../../components/Markdown.astro';
+import { courseSequence, neighbours } from '../../lib/nav';
+
+/**
+ * One dynamic route for every page inside a unit — overview, topic, test, project.
+ *
+ * Sibling `[topic].astro` / `[project].astro` routes would be an Astro route
+ * conflict: two dynamic params cannot share a directory segment. Dispatching on a
+ * `kind` prop avoids that and keeps the URL shape (`unit-1/topic-1.html`).
+ *
+ * The unit overview is `page: 'index'` here rather than a separate `index.astro`,
+ * because under `build.format: 'file'` an index route collapses to the parent
+ * name — `src/pages/[unit]/index.astro` would emit `unit-1.html`, not
+ * `unit-1/index.html`.
+ */
+export async function getStaticPaths() {
+  const [units, topics, projects] = await Promise.all([
+    getCollection('units'),
+    getCollection('topics'),
+    getCollection('projects'),
+  ]);
+
+  const paths = [];
+
+  for (const u of units) {
+    paths.push({
+      params: { unit: u.data.slug, page: 'index' },
+      props: { kind: 'unit' as const, unit: u },
+    });
+  }
+  for (const t of topics) {
+    paths.push({
+      params: { unit: t.data.unitSlug, page: t.data.slug },
+      props: { kind: 'topic' as const, topic: t },
+    });
+  }
+  for (const u of units) {
+    if (u.data.test) {
+      paths.push({
+        params: { unit: u.data.slug, page: 'test' },
+        props: { kind: 'test' as const, unit: u },
+      });
+    }
+  }
+  for (const p of projects) {
+    paths.push({
+      params: { unit: p.data.unitSlug, page: p.data.slug },
+      props: { kind: 'project' as const, project: p },
+    });
+  }
+  return paths;
+}
+
+const props = Astro.props;
+const seq = await courseSequence();
+
+let title = '';
+let description = '';
+let crumb = '';
+let pagePath = '';
+
+if (props.kind === 'unit') {
+  const d = props.unit.data;
+  title = `Unit ${d.index} — ${d.title}`;
+  description = d.description;
+  crumb = `Unit ${d.index}`;
+  pagePath = `${d.slug}/index.html`;
+} else if (props.kind === 'topic') {
+  const d = props.topic.data;
+  title = d.title;
+  description = d.description;
+  crumb = `${d.unitTitle} / ${d.title}`;
+  pagePath = `${d.unitSlug}/${d.slug}.html`;
+} else if (props.kind === 'test') {
+  const d = props.unit.data;
+  title = d.test!.title || `Unit ${d.index} test`;
+  description = d.test!.description;
+  crumb = `${d.title} / Unit test`;
+  pagePath = `${d.slug}/test.html`;
+} else {
+  const d = props.project.data;
+  title = d.title;
+  description = d.goal;
+  crumb = `${d.unitTitle} / ${d.title}`;
+  pagePath = `${d.unitSlug}/${d.slug}.html`;
+}
+
+const { prev, next } = neighbours(seq, pagePath);
+const Reading = props.kind === 'topic' ? (await render(props.topic)).Content : null;
+const Brief = props.kind === 'project' ? (await render(props.project)).Content : null;
+---
+
+<Page title={title} description={description} depth={1} crumb={crumb} pagePath={pagePath}>
+  {
+    props.kind === 'unit' && (
+      <>
+        <h1>
+          Unit {props.unit.data.index} — {props.unit.data.title}
+        </h1>
+        <p class="lede">{props.unit.data.description}</p>
+
+        <div class="bar" data-unit-bar={props.unit.data.unitId}>
+          <span style="width:0%" />
+        </div>
+
+        <section>
+          <h2>Topics</h2>
+          {props.unit.data.topics.map((t) => (
+            <div class="topic-row" data-topic-state={t.id}>
+              <span class="dot" />
+              <a href={`${t.slug}.html`}>{t.title}</a>
+              <span class="score" />
+            </div>
+          ))}
+        </section>
+
+        {props.unit.data.test && (
+          <section>
+            <h2>Unit test</h2>
+            <p>{props.unit.data.test.description}</p>
+            <p>
+              <a class="btn" href="test.html">
+                Take the unit test →
+              </a>
+            </p>
+          </section>
+        )}
+
+        {props.unit.data.projects.length > 0 && (
+          <section>
+            <h2>Project</h2>
+            {props.unit.data.projects.map((p) => (
+              <div class="card" style="margin:.5rem 0">
+                <h3 style="margin-top:0">
+                  <a href={`${p.slug}.html`}>{p.title}</a>
+                </h3>
+                <p>{p.goal}</p>
+              </div>
+            ))}
+          </section>
+        )}
+      </>
+    )
+  }
+
+  {
+    props.kind === 'topic' && (
+      <>
+        <nav class="subnav" aria-label="Sections">
+          <a href="#reading">Reading</a>
+          <a href="#flashcards">Flashcards</a>
+          <a href="#quiz">Quiz</a>
+        </nav>
+
+        <h1>{props.topic.data.title}</h1>
+        <p class="lede">{props.topic.data.description}</p>
+
+        {props.topic.data.objectives.length > 0 && (
+          <div class="callout">
+            <h2 class="callout__title">By the end of this topic you can</h2>
+            <ol class="objectives">
+              {props.topic.data.objectives.map((o) => (
+                <li>
+                  <Markdown text={o.title} inline />
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
+        <section id="reading" class="reading">
+          {Reading && <Reading />}
+          <p>
+            <button class="btn btn--primary" type="button" data-mark-read={props.topic.data.topicId}>
+              Mark as read
+            </button>
+          </p>
+        </section>
+
+        <section id="flashcards">
+          <h2>Flashcards</h2>
+          <Flashcards cards={props.topic.data.flashcards} />
+        </section>
+
+        <section id="quiz">
+          <h2>Quiz</h2>
+          <Quiz
+            id={props.topic.data.topicId}
+            kind="quiz"
+            questions={props.topic.data.questions}
+            objectiveNames={props.topic.data.objectiveNames}
+          />
+        </section>
+      </>
+    )
+  }
+
+  {
+    props.kind === 'test' && (
+      <>
+        <h1>{props.unit.data.test!.title || `Unit ${props.unit.data.index} test`}</h1>
+        <p class="lede">{props.unit.data.test!.description}</p>
+        <p>
+          Passing score: {props.unit.data.test!.passingScore}%. Feedback appears as you go, and only
+          your first answer to each question counts.
+        </p>
+        <Quiz
+          id={props.unit.data.unitId}
+          kind="test"
+          questions={props.unit.data.test!.questions}
+          objectiveNames={props.unit.data.objectiveNames}
+        />
+      </>
+    )
+  }
+
+  {
+    props.kind === 'project' && (
+      <>
+        <h1>{props.project.data.title}</h1>
+        <div class="callout">
+          <h2 class="callout__title">Goal</h2>
+          <Markdown text={props.project.data.goal} />
+        </div>
+
+        <section class="reading">{Brief && <Brief />}</section>
+
+        {props.project.data.steps.length > 0 && (
+          <section>
+            <h2>Steps</h2>
+            <Checklist id={props.project.data.projectId} steps={props.project.data.steps} />
+          </section>
+        )}
+
+        {props.project.data.rubric.length > 0 && (
+          <section id="project-rubric">
+            <h2>How it is graded</h2>
+            <Rubric rubric={props.project.data.rubric} />
+          </section>
+        )}
+
+        {props.project.data.testCases.length > 0 && (
+          <section id="project-test-cases">
+            <h2>Test cases</h2>
+            <div class="scroll-x">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Test</th>
+                    <th scope="col">Checks</th>
+                    <th scope="col">Expected</th>
+                    <th scope="col">Weight</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {props.project.data.testCases.map((tc) => (
+                    <tr>
+                      <th scope="row">{tc.name}</th>
+                      <td>{tc.description}</td>
+                      <td>
+                        <code>{tc.expectedOutput}</code>
+                      </td>
+                      <td>{tc.weight}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            {props.project.data.testCases.some((tc) => tc.source) && (
+              <details class="filelist card" style="margin-top:1rem">
+                <summary>Grader source</summary>
+                {props.project.data.testCases
+                  .filter((tc) => tc.source)
+                  .map((tc) => (
+                    <>
+                      <h3>{tc.path}</h3>
+                      <pre>
+                        <code>{tc.source}</code>
+                      </pre>
+                    </>
+                  ))}
+              </details>
+            )}
+          </section>
+        )}
+
+        {props.project.data.starterFiles.length > 0 && (
+          <section id="project-starter">
+            <h2>Starter files</h2>
+            <details class="filelist card">
+              <summary>{props.project.data.starterFiles.length} files</summary>
+              {props.project.data.starterFiles.map((f) => (
+                <>
+                  <h3>{f.name}</h3>
+                  <pre>
+                    <code>{f.content}</code>
+                  </pre>
+                </>
+              ))}
+            </details>
+          </section>
+        )}
+
+        <p class="card">
+          Projects are not auto-graded here. The rubric and the test cases above are the grading
+          contract — run them yourself on your own machine.
+        </p>
+      </>
+    )
+  }
+
+  <Fragment slot="footer">
+    <p>
+      {prev && <a href={`../${prev.href}`}>← {prev.title}</a>}
+      {prev && next && ' · '}
+      {next && <a href={`../${next.href}`}>{next.title} →</a>}
+    </p>
+  </Fragment>
+</Page>

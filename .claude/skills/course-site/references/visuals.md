@@ -3,6 +3,22 @@
 Read at Stages 2–3. Two skills are composed here, and each has a gotcha that will silently produce
 nothing useful if ignored.
 
+## Where output goes
+
+**Everything you generate is written under `<course-dir>/assets/`**, alongside the course's markdown,
+and is committed with the course. The build copies that directory into `dist/assets/`.
+
+Never write into `dist/`. It is deleted and rewritten on every build, so a diagram, an image, or a
+kept infographic prompt placed there survives exactly until the next run — which is how an earlier
+version of this file silently discarded every visual it produced.
+
+```
+<course-dir>/assets/
+  img/          .svg and .png referenced by pages
+  diagrams/     .tldr sources, kept so a diagram can be edited later
+  prompts/      infographic prompt files, kept so an image can be generated later
+```
+
 ## What gets a picture
 
 | Need | Tool | Output |
@@ -31,7 +47,7 @@ command -v tldraw >/dev/null 2>&1
 
 **Available** → load `tldraw-skill` and follow its generation, layout, export, and self-check rules.
 Export **SVG** (scales, tiny, crisp at any zoom). Write the `.tldr` source to
-`dist/assets/diagrams/<name>.tldr` and the export to `dist/assets/img/<name>.svg`. A successful PATH
+`<course-dir>/assets/diagrams/<name>.tldr` and the export to `<course-dir>/assets/img/<name>.svg`. A successful PATH
 check is sufficient — do not probe further. Do not install it.
 
 **Unavailable** → do **not** fall back to Mermaid. Mermaid needs a runtime library, which would break
@@ -67,7 +83,7 @@ request, find none, ask a question, and stop. Pass:
 
 - the scope, stated plainly: *"for the course unit described below — not a git change"*
 - the unit title, its before→after, its objectives, and the relevant `SOURCES.md` figures, inlined
-- `save it to dist/assets/prompts/unit-<N>.md`
+- `save it to <course-dir>/assets/prompts/unit-<N>.md`
 - **`make it technical`** if the course is technical
 
 That last one matters. The skill's default rules strip file paths, function names, and code
@@ -87,13 +103,16 @@ Feed the prompt file to an image generator, in this order:
 2. `codex-cli` — native raster generation; fallback.
 3. Neither available → **skip the image, keep the prompt file.** The build continues.
 
-Write output to `dist/assets/img/unit-<N>.png`.
+Write output to `<course-dir>/assets/img/unit-<N>.png`.
 
 ### When the image is missing
 
 Render a `.figure--placeholder` panel in its slot: the unit's before→after as styled text, plus a
 small note that a visual can be generated later from the kept prompt. Never leave a broken `<img>`,
 and never silently drop the slot — an empty region reads as a rendering bug.
+
+Because the prompt file lives in `<course-dir>/assets/prompts/`, it survives every rebuild, and the
+image can be generated weeks later without re-running any of Stage 2.
 
 ## Rules for every image
 

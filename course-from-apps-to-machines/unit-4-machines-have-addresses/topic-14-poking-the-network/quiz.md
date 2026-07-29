@@ -1,5 +1,8 @@
 # Quiz — Poking at the network
 
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
+
 ## Question 1
 
 **Type:** MULTIPLE_CHOICE
@@ -19,9 +22,11 @@ What has this told you?
 - A firewall is silently discarding your packets before they arrive
 - The name in the URL could not be resolved to an address
 
-**Correct:** The machine is reachable, and nothing is listening on port 9999
+**Correct option index:** 0
 
-**Explanation:** `after 0 ms` and exit code `7` mean the machine answered — it answered "no". A
+**Explanation:**
+
+`after 0 ms` and exit code `7` mean the machine answered — it answered "no". A
 refusal is an answer, and answers come back instantly, so the host is definitely there and port 9999
 is definitely empty. A machine that is switched off or on a different network cannot answer at all,
 so it would produce a slow timeout ending in `curl: (28) Operation timed out`, not an instant
@@ -43,9 +48,11 @@ ping: => missing cap_net_raw+p capability or setuid?
 
 This proves that networking on that machine is broken.
 
-**Correct:** False
+**Correct answer:** false
 
-**Explanation:** The opposite is true — this output tells you nothing about the network. The address
+**Explanation:**
+
+The opposite is true — this output tells you nothing about the network. The address
 tested was `127.0.0.1`, the machine talking to itself, which cannot be unreachable; on the machine
 where this was captured, `curl` fetched a page from the public internet at the same moment. The third
 line names the real cause: `ping` sends ICMP over a raw socket and the required `cap_net_raw`
@@ -64,9 +71,11 @@ headers, no progress meter. Which command does that?
 - `curl -I https://example.com`
 - `curl -s -o /dev/null -w '%{http_code}\n' https://example.com`
 
-**Correct:** `curl -s -o /dev/null -w '%{http_code}\n' https://example.com`
+**Correct option index:** 3
 
-**Explanation:** Three flags do three jobs: `-s` silences the progress meter, `-o /dev/null` sends the
+**Explanation:**
+
+Three flags do three jobs: `-s` silences the progress meter, `-o /dev/null` sends the
 response body to the system's discard bin, and `-w '%{http_code}\n'` writes out the status code and a
 newline — leaving `200` and nothing else. `curl https://example.com` prints the whole response body,
 raw HTML and all. `curl -s https://example.com` only suppresses the progress meter; the body still
@@ -85,9 +94,11 @@ Which of these lines will you see **only** if you add `-v` to your curl command?
 - `curl: (28) Operation timed out after 4002 milliseconds with 0 bytes received`
 - `200`
 
-**Correct:** `connect to 127.0.0.1 port 9999 from 127.0.0.1 port 48604 failed: Connection refused`
+**Correct option index:** 1
 
-**Explanation:** "Connection refused" is the operating system's underlying reason, and curl reports it
+**Explanation:**
+
+"Connection refused" is the operating system's underlying reason, and curl reports it
 only under `-v`. This matters because the phrase is the one most people go looking for: in ordinary
 output curl summarises the same event as `Could not connect to server`, so anyone hunting for
 "Connection refused" without `-v` will never find it. The `(28)` timeout line and the `(7)` line are
@@ -103,7 +114,6 @@ http://192.0.2.1/`, the terminal sits there doing nothing for about four seconds
 `curl: (28) Operation timed out after 4002 milliseconds with 0 bytes received`. A `ping` to the same
 address also fails. State what the curl result tells you, and what the failed ping adds to it.
 
-**Sample answer:** The curl result says nothing answered at all: it hung and then timed out with exit
 code 28 and zero bytes received, which is the unreachable-host signature rather than the refused-port
 one — a machine that was there with an empty port would have refused instantly with
 `curl: (7) … Could not connect to server` after 0 ms. So the address is wrong, or something between
@@ -116,7 +126,26 @@ i.e. unreachable rather than a closed port, with the instant `(7)` refusal named
 (2) the conclusion that the address is wrong or packets are being dropped in between; (3) that the
 failed `ping` contributes no evidence, with a reason (raw-socket privilege or ICMP being blocked).
 
-**Explanation:** The timing is the discriminator: refusals are instant because a refusal is an answer,
+**Sample answer:**
+
+The curl result says nothing answered at all: it hung and then timed out with exit
+code 28 and zero bytes received, which is the unreachable-host signature rather than the refused-port
+one — a machine that was there with an empty port would have refused instantly with
+`curl: (7) … Could not connect to server` after 0 ms. So the address is wrong, or something between
+me and the machine is discarding packets without replying. The failed `ping` adds nothing: `ping`
+needs a privileged raw socket and ICMP is commonly dropped on purpose, so it fails on plenty of
+machines whose networking is fine. Only a successful `ping` would have been evidence.
+
+**A full-credit answer shows:**
+
+(1) the slow timeout / exit 28 / "0 bytes received" read as *nothing answered*,
+i.e. unreachable rather than a closed port, with the instant `(7)` refusal named as the contrast;
+(2) the conclusion that the address is wrong or packets are being dropped in between; (3) that the
+failed `ping` contributes no evidence, with a reason (raw-socket privilege or ICMP being blocked).
+
+**Explanation:**
+
+The timing is the discriminator: refusals are instant because a refusal is an answer,
 while an unreachable host produces silence that curl can only end with a timeout. Reading the failed
 `ping` as confirmation is the tempting mistake — two failures feel like more evidence than one, but a
 `ping` that never had the privilege to send, or whose ICMP was dropped by a firewall, fails

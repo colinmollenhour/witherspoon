@@ -7,7 +7,11 @@ description: Build a self-contained, interactive static website from an approved
 
 Turn an approved course directory into a static website anyone can open from a link.
 
-Hard constraints, all of them load-bearing:
+The site itself is built by a **shared Astro template** at `course-template/`, checked into this
+repo. You do not write a builder, and you do not write pages — you validate the course, plan and
+generate its visuals, run the template, and check the gates. A fix to the template fixes every course.
+
+Hard constraints, all of them load-bearing and all enforced by the template:
 
 - **No authentication, no backend.** Every page is a static file.
 - **No external requests.** No CDN fonts, no analytics, no remote images, no fetch to anywhere. The
@@ -19,23 +23,26 @@ Hard constraints, all of them load-bearing:
 
 Output goes to `<course-dir>/dist/`. Uploading it is the user's job for now; the report tells them how.
 
-## Prerequisite
+## Prerequisites
 
-Run only on a course directory that already contains `course.json` and its markdown content — i.e.
-after `course-builder` has finished and the user has approved. If `course.json` is missing or does not
-parse, stop and say so rather than inventing structure.
+- A course directory containing `course.json` and its markdown, after `course-builder` has finished
+  and the user has approved. If `course.json` is missing or does not parse, stop and say so rather
+  than inventing structure.
+- Node 20+, and `npm install` run once in `course-template/`.
 
 ## Pipeline
 
 ### Stage 1 — Load and validate
 
-Read `course.json`, then confirm every `activities[].path` and project file it references exists on
-disk. Read `SOURCES.md` if present.
+Read `course.json`. The template validates it against the collection schemas at build time and fails
+naming the offending entry, so you do not need to pre-check field shapes — but do confirm the files
+it points at exist: every `activities[].path`, and every `projects[].path` with its `brief.md` and
+`rubric.md`. Read `SOURCES.md` if present.
 
 Report anything missing as a list and stop. A site built over holes hides them.
 
-Derive from the course: the accent color (from `brandColors.primary` if present, else pick one and
-state which), the slug, and the page inventory.
+Note the accent color: `brandColors.primary` if present, otherwise the template's default `#3f7ac4`,
+which you state in the report.
 
 ### Stage 2 — Plan visuals
 
@@ -55,27 +62,36 @@ Follow `references/visuals.md` exactly — it covers the two composition gotchas
 - `infographic` produces a **prompt file, not an image**; it needs an image generator downstream.
 - `tldraw` must be probed with `command -v tldraw` before use, and has a defined fallback.
 
-Both are allowed to fail. A missing image degrades to a styled text panel; it never blocks the build.
+Everything goes into `<course-dir>/assets/`, which is committed with the course. Both tools are
+allowed to fail. A missing image degrades to a styled text panel; it never blocks the build.
 
 ### Stage 4 — Build
 
-**Read `references/site-spec.md` for pages and design, and `references/state.md` for the storage
-contract.**
+```bash
+cd course-template
+npm install                                    # first run only
+npm run build -- --course ../<course-dir>
+```
 
-Copy `assets/site.css`, `assets/site.js`, and `assets/page.template.html` from this skill into the
-build, then render every page. **Do not rewrite the CSS or JS from scratch** — they carry the
-storage-safety, grading, celebration, and accessibility behavior that the gates check for. Customize
-via the documented CSS custom properties and the `COURSE` config block.
+That is the whole build. The template reads `course.json` and the course's markdown through Astro
+content collections, renders every page, copies `<course-dir>/assets/` into the output, and writes
+`<course-dir>/dist/`.
 
-Bake all content into the HTML at build time. The site never fetches its own content.
+Do not hand-write pages, do not copy assets around, and do not write a build script. If the site needs
+to change, change the template — that is the point of it being shared.
 
 ### Stage 5 — Verify
 
-**Read `references/build-gates.md` and run every check.** The important ones are mechanical: zero
-external references, zero absolute internal paths, every link resolves, content present with JS
-disabled, and no crash when `localStorage` throws.
+```bash
+npm run verify -- ../<course-dir>/dist        # gates S1–S12
+npm run test -- ../<course-dir>/dist          # runtime behaviour in jsdom
+```
 
-Fix what fails. Report anything that still fails plainly.
+**Read `references/build-gates.md`** for what each gate means and for the two checks that are manual:
+serving from a subpath, and loading with JavaScript disabled.
+
+Fix what fails. A gate failure is nearly always a course-content problem or a template bug — say
+which, plainly.
 
 ### Stage 6 — Report
 
@@ -83,6 +99,7 @@ Fix what fails. Report anything that still fails plainly.
 Built: dist/ — <N> pages · <N> quizzes · <N> images · <total size>
 Visuals: <N> tldraw diagrams · <N> infographics · <N> skipped (reason)
 Gates: <all passed | what needed fixing | what still fails>
+Accent: <hex> (<from brandColors.primary | template default, stated here>)
 
 Preview locally:
   cd <course-dir>/dist && python3 -m http.server 8000
@@ -93,7 +110,7 @@ so a subpath works too.
 ```
 
 If any visual was skipped, say which and why — and mention that the infographic prompt files are kept
-in `dist/assets/prompts/` so they can be generated later without re-running the build.
+in `<course-dir>/assets/prompts/` so they can be generated later without re-running the build.
 
 ## Notes
 
@@ -104,3 +121,5 @@ in `dist/assets/prompts/` so they can be generated later without re-running the 
 - Flair budget: one accent color, one celebration, subtle transitions. If an effect would distract a
   learner mid-reading, it does not ship.
 - Everything honors `prefers-reduced-motion` and `prefers-color-scheme`.
+- `references/site-spec.md` is the design contract the template is held to. Read it when changing the
+  template, not when building a course.

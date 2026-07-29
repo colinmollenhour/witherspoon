@@ -1,16 +1,15 @@
 # Flashcards — A tablet hides the filesystem; a dev machine hands it to you
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
-**Front:** You are on a Mac. What is the absolute path of your home directory — the folder your own
-work belongs in?
+**Front:** You are on a Mac. What is the absolute path of your home directory — the folder your own work belongs in?
 
 **Back:** `/Users/<you>`. Apple: "`/Users`—This directory contains one or more user home directories."
 
 ---
 
-**Front:** You are on Linux, or in the Ubuntu shell inside WSL. What is the absolute path of your home
-directory?
+**Front:** You are on Linux, or in the Ubuntu shell inside WSL. What is the absolute path of your home directory?
 
 **Back:** `/home/<you>` — for a user named `colin`, `/home/colin`.
 
@@ -22,8 +21,7 @@ directory?
 
 ---
 
-**Front:** You are on WSL and about to create your project folder. `/home/<you>/projects` or
-`/mnt/c/Users/<you>/projects`, and on whose authority?
+**Front:** You are on WSL and about to create your project folder. `/home/<you>/projects` or `/mnt/c/Users/<you>/projects`, and on whose authority?
 
 **Back:** `/home/<you>/projects`. Microsoft: "For the fastest performance speed, store your files in
 the WSL file system if you are working in a Linux command line".
@@ -38,8 +36,7 @@ Terminal. Windows — Windows Terminal: "We recommend using WSL with Windows Ter
 
 ---
 
-**Front:** Your prompt's last character is `$` in one window and `%` in another. What does each tell
-you?
+**Front:** Your prompt's last character is `$` in one window and `%` in another. What does each tell you?
 
 **Back:** `$` — the bash shell, the default on Linux and WSL. `%` — zsh, the default on macOS since
 Catalina.

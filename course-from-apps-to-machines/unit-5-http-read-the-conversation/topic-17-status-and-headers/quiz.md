@@ -1,6 +1,7 @@
 # Quiz — Status codes and headers
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 ## Question 1
 
@@ -16,7 +17,9 @@ machine at the other end?
 
 **Correct option index:** 1
 
-**Explanation:** A `404` is a `4xx`, and a `4xx` says the *client's* request was wrong: "The 404 (Not
+**Explanation:**
+
+A `404` is a `4xx`, and a `4xx` says the *client's* request was wrong: "The 404 (Not
 Found) status code indicates that the origin server did not find a current representation for the
 target resource." For that reply to reach you, the server had to be running, accept your connection,
 read your request, look, and compose an answer — so receiving a 404 proves the server is alive. The
@@ -50,7 +53,9 @@ What does the browser do with the body?
 
 **Correct option index:** 0
 
-**Explanation:** `Content-Type` "indicates the media type of the associated representation" — the
+**Explanation:**
+
+`Content-Type` "indicates the media type of the associated representation" — the
 server is *declaring* that the body is HTML, so the browser renders it. `Content-Length` "indicates
 the associated representation's data length as a decimal non-negative integer number of octets", so
 31 is exact, not an estimate — which rules out the third option, since the browser knows precisely
@@ -69,14 +74,24 @@ You load a page with the Network panel open and note the Status and Size columns
 reload, and that row now reads `304` with a much smaller Size. Explain what your browser asked for,
 what the server replied, and what was saved.
 
-**Sample answer:** On the reload my browser sent a conditional request — "send this only if it has
 changed since the copy I already have." The server checked, found it unchanged, and replied `304 Not
 Modified`: the request "would have resulted in a 200 (OK) response if it were not for the fact that
 the condition evaluated to false." Because a 304 carries no body, only the head crossed the network,
 which is why the Size column collapsed — and the browser drew the page from the copy it already had,
 so it appeared instantly.
 
-**Explanation:** A grader must see three things: that the second request was *conditional*, that the
+**Sample answer:**
+
+On the reload my browser sent a conditional request — "send this only if it has
+changed since the copy I already have." The server checked, found it unchanged, and replied `304 Not
+Modified`: the request "would have resulted in a 200 (OK) response if it were not for the fact that
+the condition evaluated to false." Because a 304 carries no body, only the head crossed the network,
+which is why the Size column collapsed — and the browser drew the page from the copy it already had,
+so it appeared instantly.
+
+**Explanation:**
+
+A grader must see three things: that the second request was *conditional*, that the
 server answered `304` because nothing had changed, and that the saving came from the body not being
 sent — the head still travelled, which is why Size drops to almost nothing rather than to zero. The
 common wrong answer is that the browser skipped the request entirely; it did not, or there would be
@@ -100,7 +115,9 @@ showing the new one without asking you. Which status code did the old address re
 
 **Correct option index:** 1
 
-**Explanation:** `301` is the only code that matches the description: the target resource "has been
+**Explanation:**
+
+`301` is the only code that matches the description: the target resource "has been
 assigned a new permanent URI and any future references to this resource ought to use one of the
 enclosed URIs" — and the new address rides along in the response, which is what lets the browser go
 there on its own. `200` means "the request has succeeded" and nothing moved. `304` means nothing
@@ -120,7 +137,9 @@ browser, because the words after the number are what software acts on.
 
 **Correct answer:** false
 
-**Explanation:** The opposite is true — the words are the part that gets ignored. The reason phrase
+**Explanation:**
+
+The opposite is true — the words are the part that gets ignored. The reason phrase
 is "a brief, purely informational, text description of the status to help a human understand the
 outcome of a request." Software reads the number, so a `200` is a success no matter what text follows
 it, and the browser would render the body normally. This is why the first digit is the thing worth

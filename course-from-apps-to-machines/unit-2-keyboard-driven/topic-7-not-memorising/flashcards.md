@@ -1,6 +1,7 @@
 # Flashcards — You are not supposed to memorise this
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 **Front:** You have typed `cd ~/pro` and you do not want to type the rest of `~/projects/first-site/`.
 
@@ -59,5 +60,3 @@
 **Front:** A tutorial shows `$ ls -la ~/projects/first-site`. What is the leading `$`?
 
 **Back:** The prompt, not part of the command — "The `$` character in tutorials indicates a command prompt. It is not meant to be typed in." Delete it before running (or `%`, on zsh).
-
----

@@ -1,0 +1,25 @@
+---
+import Markdown from './Markdown.astro';
+
+interface Props {
+  id: string;
+  steps: Array<{ title: string; description: string; completionCriteria: string }>;
+}
+
+const { id, steps } = Astro.props;
+---
+
+<ul class="checklist" data-checklist={id}>
+  {
+    steps.map((s, i) => (
+      <li>
+        <input type="checkbox" id={`step-${id}-${i}`} />
+        <label for={`step-${id}-${i}`}>
+          <strong>{s.title}</strong>
+          <Markdown text={s.description} />
+          <span class="criteria">Done when: {s.completionCriteria}</span>
+        </label>
+      </li>
+    ))
+  }
+</ul>

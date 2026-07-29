@@ -80,7 +80,8 @@ resolved in the same topic is not one.
 
 - Every `_contract.md` has content files for every activity it requested.
 - Every unit has exactly one `unit-test.md`.
-- `course.json` parses, and its unit/topic/project entries match the directory tree exactly.
+- `course.json` parses, and its unit/topic/project entries match the directory tree exactly — via
+  `activities[].path` for topics and `projects[].path` for projects.
 - No file contains an unresolved placeholder — `TODO:`, `<...>`, `Lorem`, `[insert`.
 
 ### G11 — No ungrounded numbers
@@ -106,6 +107,27 @@ derivation is shown.
 - No provisional `?` marker survives anywhere in the course.
 - Every claim listed under **Ungrounded** was actually cut, converted to method-teaching, or flagged
   in its topic — not silently shipped.
+
+### G13 — Assessment data is structured
+
+Every quiz, flashcard deck and unit test is **inline in `course.json`**, not only in markdown.
+Markdown views are rendered from the JSON, never parsed back out of it.
+
+- Every topic has a non-empty `flashcards[]` and a non-empty `quiz.questions[]`.
+- Every `MULTIPLE_CHOICE` question anywhere — topic quiz or unit test — has exactly 4 `options` and a
+  `correctOptionIndex` in range. Every `TRUE_FALSE` has a boolean `correctAnswer`. Every
+  `SHORT_ANSWER` has a `sampleAnswer`.
+- Every `projects[].path` is set and contains `brief.md` and `rubric.md`.
+- The rendered views agree with the JSON:
+
+```bash
+node course-template/tools/render-views.mjs --course <course-dir> --check
+```
+
+This gate exists because the alternative was inference. With quizzes living only as prose, the site
+builder recovered answer keys through eight ranked guessing strategies across five markdown dialects,
+two of which disagreed about whether a bare number meant a 0-based index or a 1-based ordinal. The
+model that writes a question knows its answer; record it.
 
 ## Advisory checks
 

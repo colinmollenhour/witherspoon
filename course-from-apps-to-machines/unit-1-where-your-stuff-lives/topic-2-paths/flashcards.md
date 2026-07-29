@@ -1,6 +1,7 @@
 # Flashcards — Paths: every file has an address
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 **Front:** What single thing makes a path absolute?
 
@@ -9,8 +10,7 @@ means the same thing no matter where your terminal is standing.
 
 ---
 
-**Front:** Your terminal is standing in `/home/you/projects`. What does the path
-`first-site/index.html` point at?
+**Front:** Your terminal is standing in `/home/you/projects`. What does the path `first-site/index.html` point at?
 
 **Back:** `/home/you/projects/first-site/index.html` — no leading `/`, so it is measured from where
 you are standing right now.

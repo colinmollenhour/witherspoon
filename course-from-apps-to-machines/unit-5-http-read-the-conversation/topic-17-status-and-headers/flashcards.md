@@ -1,6 +1,7 @@
 # Flashcards — Status codes and headers
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 **Front:** Name the five status-code classes and their ranges.
 

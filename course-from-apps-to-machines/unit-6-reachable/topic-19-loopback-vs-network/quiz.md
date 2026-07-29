@@ -1,6 +1,7 @@
 # Quiz — Loopback versus the network
 
----
+<!-- Rendered from course.json by course-template/tools/render-views.mjs.
+     Edit course.json, then re-render. Edits here are overwritten. -->
 
 ## Question 1
 
@@ -17,7 +18,9 @@ shows no new line at all. What happened?
 
 **Correct option index:** 1
 
-**Explanation:** The empty access log is the giveaway: the laptop was never asked. The phone resolved
+**Explanation:**
+
+The empty access log is the giveaway: the laptop was never asked. The phone resolved
 `localhost` from its own `/etc/hosts` line — `127.0.0.1   localhost localhost.localdomain
 localhost4 localhost4.localdomain4` — and `127.0.0.1` means *this machine* on whichever machine is
 asking. RFC 6890 marks the whole `127.0.0.0/8` block `Forwardable | False`, so the request could not
@@ -44,7 +47,9 @@ What does that line tell you?
 
 **Correct option index:** 0
 
-**Explanation:** `0.0.0.0` is a **bind instruction** — it means "accept connections arriving on any
+**Explanation:**
+
+`0.0.0.0` is a **bind instruction** — it means "accept connections arriving on any
 interface" — and the Python documentation confirms it: "By default, the server binds itself to all
 interfaces." On Linux you can see the same thing from outside with `ss -ltn`, which reports
 `LISTEN 0 5 0.0.0.0:8000`. The second option treats it as an unassigned address; it is not an address
@@ -64,7 +69,9 @@ restart it with a flag that binds it to the network instead of to loopback.
 
 **Correct answer:** false
 
-**Explanation:** The opposite is true — there is nothing to restart, and this is the whole reversal of
+**Explanation:**
+
+The opposite is true — there is nothing to restart, and this is the whole reversal of
 this topic. Your banner already read `Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...`,
 and the documentation says "By default, the server binds itself to all interfaces." Microsoft's
 networking guide states the general rule that makes people expect a change — "you may need to bind
@@ -87,7 +94,9 @@ You are on a MacBook and need the address to type on your phone. Which sequence 
 
 **Correct option index:** 2
 
-**Explanation:** macOS has no `ip` command and no `ss` — both are Linux tools — so the first and
+**Explanation:**
+
+macOS has no `ip` command and no `ss` — both are Linux tools — so the first and
 fourth options fail before they start, and `ss` would only tell you what your own server is listening
 on, not what address your phone should dial. The second option is right in shape but skips the step
 that matters: Wi-Fi is not reliably `en0`, and Apple Silicon Macs have been reported as `en2`. Guess
@@ -109,14 +118,24 @@ that look like
 the request came from the phone rather than from the laptop, say what value it must have, and explain
 why a `404` line would still count as proof.
 
-**Sample answer:** The first field of the log line — the client address. On every earlier line it says
 `127.0.0.1`, meaning the laptop asked itself. The new line's first field is my phone's LAN address
 instead, which is only possible if a request actually crossed the Wi-Fi and reached my laptop's
 network interface. It counts as proof even if the status code is `404`, because the status describes
 whether the file was found, not whether the connection happened — the server could only write the line
 at all because a request arrived and was answered.
 
-**Explanation:** A grader must see three things: that the **first field** is the client's address,
+**Sample answer:**
+
+The first field of the log line — the client address. On every earlier line it says
+`127.0.0.1`, meaning the laptop asked itself. The new line's first field is my phone's LAN address
+instead, which is only possible if a request actually crossed the Wi-Fi and reached my laptop's
+network interface. It counts as proof even if the status code is `404`, because the status describes
+whether the file was found, not whether the connection happened — the server could only write the line
+at all because a request arrived and was answered.
+
+**Explanation:**
+
+A grader must see three things: that the **first field** is the client's address,
 that it holds the phone's address rather than `127.0.0.1`, and that reachability is proved by the
 line's *existence and its first field*, not by the status code. The tempting mistake is to hunt for
 the `200` and treat any error status as failure — but a `404` line means the request arrived, was

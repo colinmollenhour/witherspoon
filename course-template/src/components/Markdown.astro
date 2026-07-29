@@ -1,0 +1,14 @@
+---
+import { renderBlock, renderInline } from '../lib/md';
+
+interface Props {
+  text: string;
+  /** Drop the wrapping <p> — for text placed inside a span, label or table cell. */
+  inline?: boolean;
+}
+
+const { text, inline = false } = Astro.props;
+const html = inline ? await renderInline(text) : await renderBlock(text);
+---
+
+<Fragment set:html={html} />
