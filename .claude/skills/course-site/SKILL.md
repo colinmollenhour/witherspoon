@@ -119,6 +119,7 @@ Visuals: <N> tldraw diagrams · <N> infographics · <N> skipped (reason)
 Gates: <all passed | what needed fixing | what still fails>
 Accent: <hex> (<from brandColors.primary | template default, stated here>)
          Units carry derived hues from it — see site-spec.md.
+Rights: <© year holder | no named holder> · <license label>
 
 Preview locally:
   cd <course-dir>/dist && python3 -m http.server 8000

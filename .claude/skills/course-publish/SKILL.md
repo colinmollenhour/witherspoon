@@ -184,9 +184,13 @@ Verification is part of publishing:
    the site has one (for example a flashcard or quiz control). If the runtime genuinely has no
    browser-control capability, ask the user to perform those exact checks and report this as
    **user-confirmed**, not agent-verified; HTTP-only checks are not equivalent.
-4. For a custom hostname, repeat the checks over HTTPS after certificate issuance. A DNS record alone
+4. Confirm the visible footer contains the copyright holder/year when supplied and the selected
+   license. For a Creative Commons choice, require the canonical URL in both the footer and a
+   `<link rel="license">` in `<head>`. This proves the rights metadata reached the deployed build,
+   not only local `dist/`.
+5. For a custom hostname, repeat the checks over HTTPS after certificate issuance. A DNS record alone
    is not proof.
-5. Compare the provider's remote object/deployment inventory with the local file count when the API
+6. Compare the provider's remote object/deployment inventory with the local file count when the API
    exposes a reliable inventory. At minimum, verify `index.html` and every asset used in the browser
    smoke test.
 
@@ -288,6 +292,7 @@ Published: <absolute dist path> → <provider>/<destination>
 Site: <verified clickable entry URL>
 Custom domain: <verified URL | not requested | exact remaining optional step>
 Upload: <file count> files · <bytes>
+Rights: <verified copyright/license notice>
 Checks: entry HTML · assets/MIME · internal navigation · interaction
 Republish: cd <course-dir> && npm run deploy
 ```

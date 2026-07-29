@@ -197,6 +197,7 @@ If a topic agent fails, re-run that one topic. Never leave a contract without co
 
 - what was built (units, topics, projects, question count)
 - the transformation numbers, and what grounding changed
+- the selected license, copyright year, and named holder (or explicitly no named holder)
 - anything you assumed
 - any gate that needed a fix
 
