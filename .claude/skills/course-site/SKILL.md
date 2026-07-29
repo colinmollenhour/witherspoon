@@ -21,7 +21,8 @@ Hard constraints, all of them load-bearing and all enforced by the template:
 - **Path-independent.** It must work served from a bucket root *or* a subpath. Every URL is relative.
 - **Content works without JavaScript.** JS adds progress, grading, and flair — never the words.
 
-Output goes to `<course-dir>/dist/`. Uploading it is the user's job for now; the report tells them how.
+Output goes to `<course-dir>/dist/`. After the gates pass, invoke `course-publish` to choose a host,
+authenticate, upload, and verify the public site.
 
 ## Prerequisites
 
@@ -104,9 +105,9 @@ Accent: <hex> (<from brandColors.primary | template default, stated here>)
 Preview locally:
   cd <course-dir>/dist && python3 -m http.server 8000
 
-Deploy: upload the contents of dist/ to any static host or bucket.
-Serve index.html at the root of wherever you put it; every internal link is relative,
-so a subpath works too.
+Publish: invoke `course-publish`. It defaults to a direct Tigris upload, asks for the user's
+preferred host and URL, handles authentication, and verifies the live site. No GitHub deployment is
+required.
 ```
 
 If any visual was skipped, say which and why — and mention that the infographic prompt files are kept
