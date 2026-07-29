@@ -14,17 +14,35 @@ const palette = unitAccents(c.data.accent, units.length);
 ---
 
 <Page title="Home" description={c.data.subtitle} depth={0} pagePath="index.html">
-  <section class="hero">
-    <p class="hero__eyebrow">{c.data.categories[0] ?? 'Course'}</p>
-    <h1>{c.data.title}</h1>
-    <p class="lede">
-      <Markdown text={c.data.subtitle} inline />
-    </p>
-    <ul class="chips">
-      <li class="chip"><b>{units.length}</b> <span>units</span></li>
-      <li class="chip"><b>{c.data.totalTopics}</b> <span>topics</span></li>
-      <li class="chip"><b>{totalQuizzes}</b> <span>quizzes and tests</span></li>
-    </ul>
+  <section class={c.data.hero ? 'hero hero--art' : 'hero'}>
+    {
+      /* The artwork is commissioned with a quiet left third, so the copy sits over
+         it rather than beside it. Not lazy and not low priority: this is the
+         largest contentful paint on the page. */
+      c.data.hero && (
+        <img
+          class="hero__art"
+          src={c.data.hero.image}
+          width={c.data.hero.width}
+          height={c.data.hero.height}
+          alt={c.data.hero.alt}
+          fetchpriority="high"
+          decoding="async"
+        />
+      )
+    }
+    <div class="hero__copy">
+      <p class="hero__eyebrow">{c.data.categories[0] ?? 'Course'}</p>
+      <h1>{c.data.title}</h1>
+      <p class="lede">
+        <Markdown text={c.data.subtitle} inline />
+      </p>
+      <ul class="chips">
+        <li class="chip"><b>{units.length}</b> <span>units</span></li>
+        <li class="chip"><b>{c.data.totalTopics}</b> <span>topics</span></li>
+        <li class="chip"><b>{totalQuizzes}</b> <span>quizzes and tests</span></li>
+      </ul>
+    </div>
   </section>
 
   {/* Shown only once progress exists — the most valuable element for a returning learner. */}

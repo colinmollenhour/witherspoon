@@ -67,6 +67,17 @@ const course = defineCollection({
     accent: z.string(),
     accentInk: z.string(),
     categories: z.array(z.string()).default([]),
+    hero: z
+      .object({
+        image: z.string().min(1),
+        width: z.number().int().positive(),
+        height: z.number().int().positive(),
+        // Mandatory, and long enough to actually describe the picture — an image
+        // this prominent with "hero image" as its alt text helps nobody.
+        alt: z.string().min(20),
+      })
+      .nullable()
+      .default(null),
     skills: z.array(z.object({ title: z.string(), description: z.string() })).default([]),
     faqs: z.array(z.object({ question: z.string(), answer: z.string() })).default([]),
     spine: z

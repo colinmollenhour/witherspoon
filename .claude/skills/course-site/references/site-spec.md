@@ -46,7 +46,11 @@ nav. Three thin pages and three clicks is worse.
 ## Home (`index.html`)
 
 1. **Hero** — title, subtitle (the before→after), `about` paragraphs, and the estimated size
-   (units · topics · quizzes).
+   (units · topics · quizzes). When `course.json` declares a `hero`, the artwork fills the block and
+   the copy sits over its left third behind a scrim; the block holds the image's 16:9 ratio so
+   `cover` has nothing to crop, and keeps a light surface in **both** themes, as `.figure` does, since
+   the artwork's colours are baked. Without a `hero` the block falls back to a painted gradient. See
+   `visuals.md` for how to brief and encode one.
 2. **Resume** — a prominent link to `lastVisited`, shown only when progress exists. This is the most
    valuable element on the page for a returning learner.
 3. **Progress ring** — overall completion, plus counts (topics read, quizzes taken, average score).
@@ -188,8 +192,8 @@ Fun, not distracting. The reading is the product.
   something read start to finish opt out with the layout's `wide` prop.
 - **Motion:** 150–200ms on hover, focus, and card entry. No parallax, no scroll-jacking, no autoplay,
   nothing that moves while text is being read.
-- **Dark and light**, `prefers-color-scheme` by default, toggle persisted, and the toggle must win
-  over the system setting in both directions.
+- **Dark and light**, light by default, toggle cycles light → system → dark (persisted), and the
+  toggle must win over the system setting in both directions.
 - **Density:** generous line height, real whitespace, cards not boxes-in-boxes.
 
 ## Accessibility

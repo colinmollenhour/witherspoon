@@ -146,6 +146,8 @@ export interface RawCourse {
   about: string;
   categories?: string[];
   brandColors?: { primary?: string; ink?: string };
+  /** Optional home-page artwork. `image` is relative to the course directory. */
+  hero?: { image: string; width: number; height: number; alt: string };
   skills?: Array<{ title: string; description: string; orderIndex: number }>;
   faqs?: Array<{ question: string; answer: string; orderIndex: number }>;
   spine?: {

@@ -11,6 +11,12 @@
     "HTTP and web servers",
     "Developer tooling"
   ],
+  "hero": {
+    "image": "assets/img/hero.webp",
+    "width": 1600,
+    "height": 900,
+    "alt": "Two students at a laptop, one pointing at the screen, both breaking into a delighted laugh as something finally makes sense."
+  },
   "skills": [
     {
       "title": "Locate any file",

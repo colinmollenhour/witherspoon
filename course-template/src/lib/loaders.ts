@@ -95,6 +95,19 @@ export function courseLoader(): Loader {
         accent: c.brandColors?.primary ?? DEFAULT_ACCENT,
         accentInk: c.brandColors?.ink ?? DEFAULT_ACCENT_INK,
         categories: c.categories ?? [],
+        // Declared, not discovered by convention: the alt text has to be authored,
+        // and a hero that silently disappears because a file was renamed is worse
+        // than a build that stops. Checked here so the failure names the field.
+        hero: c.hero
+          ? (() => {
+              if (!fs.existsSync(courseFile(c.hero.image))) {
+                throw new Error(
+                  `course.json declares hero.image "${c.hero.image}" but that file does not exist`,
+                );
+              }
+              return c.hero;
+            })()
+          : null,
         skills: sorted(c.skills).map((s) => ({ title: s.title, description: s.description })),
         faqs: sorted(c.faqs).map((f) => ({ question: f.question, answer: f.answer })),
         spine: c.spine,

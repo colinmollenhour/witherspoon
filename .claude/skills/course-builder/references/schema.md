@@ -24,6 +24,12 @@ running problem, and `LECTURE` replaces projects as the second activity.
   "structureTemplate": "project-based" | "academic",
   "categories": ["string"],
 
+  "hero": {                                   // optional; home-page artwork
+    "image": "assets/img/hero.webp",          // relative to the course directory
+    "width": 1600, "height": 900,             // 16:9; the site holds that ratio
+    "alt": "string — describes the picture, min 20 chars"
+  },
+
   "skills": [
     { "title": "2-4 words", "description": "one sentence — a performance statement", "orderIndex": 0 }
   ],

@@ -32,6 +32,7 @@ version of this file silently discarded every visual it produced.
 | Need | Tool | Output |
 | --- | --- | --- |
 | Flow, pipeline, hierarchy, comparison, sequence, a dissected string | **a widget** — see `widgets.md` | HTML |
+| Home-page hero artwork | any image generator — see **Hero artwork** below | WebP |
 | Unit hero — the before→after of that unit | `infographic` → image generator | PNG |
 | Structure a widget genuinely cannot carry — a state machine with cycles, a spatial layout | `tldraw-skill` | SVG |
 | Anything else | nothing | — |
@@ -45,6 +46,46 @@ Budget, and hold to it:
 
 List the plan before generating: file name, tool, what it depicts, alt text. Alt text is written by
 you, at plan time — not derived from the image afterwards.
+
+## Hero artwork
+
+Optional, one per course, and the only place a *pictorial* image earns the top of a
+page. Declared in `course.json`:
+
+```json
+"hero": {
+  "image": "assets/img/hero.webp",
+  "width": 1600,
+  "height": 900,
+  "alt": "Two students at a laptop, one pointing at the screen, both breaking into a delighted laugh as something finally makes sense."
+}
+```
+
+The template renders it behind the title, with a scrim, and keeps the whole block on
+a **light surface in both themes** — the same call `.figure` makes, for the same
+reason: the artwork has baked light colours and a dark-mode recolour would wreck it.
+
+Brief it accordingly, and hold these four:
+
+- **16:9, 1600×900.** The hero renders at the reading measure and holds that ratio,
+  so anything else gets cropped. 1600 wide is exactly 2× for a retina display.
+- **A quiet left third.** The title, subtitle and stat chips sit over the left of
+  the image. Composition that puts a face or a focal point there will be covered.
+- **No text of any kind.** The headline is real HTML beside it. Image generators
+  corrupt small lettering, and a garbled word in a hero is the first thing seen.
+- **A light background** in the artwork itself, keyed to `#fbfbfc`.
+
+Encode to **WebP at quality 90** — a painterly 1600×900 lands around 140 KB, against
+~1.7 MB for the PNG a generator returns and ~200 KB for JPEG. It will be the largest
+asset on the site; keep it under the 400 KB advisory.
+
+If the generator produces malformed hands or faces, regenerate rather than shipping
+it. Those are the two things a viewer looks at first, and they are where these models
+fail. Inspect at native resolution, not in a thumbnail — a bad hand is invisible
+scaled down and obvious on the page.
+
+A course with no `hero` in `course.json` falls back to the template's painted
+gradient. That is a perfectly good hero; do not generate artwork just to fill a slot.
 
 ## tldraw — structural diagrams
 

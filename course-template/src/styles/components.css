@@ -33,19 +33,95 @@
 .hero { position: relative; overflow: hidden; border-radius: var(--radius-lg);
   border: 1px solid var(--border); background: var(--surface);
   padding: clamp(1.75rem, 1rem + 3vw, 3.25rem); margin-bottom: 1.5rem; }
-.hero::before {
+/* The painted background is for the artless hero only; with artwork the same two
+   pseudo-elements would fight the illustration. */
+.hero:not(.hero--art)::before {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background:
     radial-gradient(120% 90% at 88% -10%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 62%),
     radial-gradient(90% 80% at -8% 108%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 60%);
 }
-.hero::after {
+.hero:not(.hero--art)::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   background-image: var(--dots); background-size: 22px 22px;
   mask-image: linear-gradient(160deg, #000 0%, transparent 58%);
   opacity: .5;
 }
 .hero > * { position: relative; }
+
+/* ---------- home hero with artwork ---------- */
+/*
+   Course artwork is commissioned with a quiet left third (see widgets/visuals
+   guidance), so the copy sits *over* the image rather than beside it, and a scrim
+   guarantees contrast rather than hoping the illustration stays pale.
+
+   The whole block keeps a light surface in both themes. That is the same call the
+   `.figure` card makes and for the same reason: the artwork has baked light
+   colours, and a dark-mode recolour would wreck it. Inheriting `--text` here would
+   put near-white type on a cream illustration, so the hero declares its own ink.
+*/
+.hero--art {
+  --hero-surface: #fbfbfc;
+  --hero-ink: #16181d;
+  --hero-dim: #4d535f;
+  padding: 0;
+  display: grid;
+  background: var(--hero-surface);
+  color: var(--hero-ink);
+  border-color: #dfe2e8;
+  /* Hold the artwork's own ratio so `cover` has nothing to crop. Without this the
+     block is as tall as the copy — a long title runs to five lines, the box goes
+     half again as tall as 16:9, and `cover` zooms so far in that the laptop and
+     the whole quiet left third are gone. Content still wins if it genuinely needs
+     more room; this only stops the box being *taller* than it has to be. */
+  aspect-ratio: 16 / 9;
+}
+/* The title is doing a different job here than at the top of a reading page: it
+   shares the frame with a picture, so it is sized to fit the frame. */
+.hero--art h1 { font-size: clamp(1.5rem, 1rem + 1.7vw, 2.1rem); }
+.hero--art .lede { font-size: 1.02rem; line-height: 1.5; }
+.hero--art .chips { margin-top: 1rem; }
+.hero--art > * { grid-area: 1 / 1; }
+.hero__art {
+  width: 100%; height: 100%; object-fit: cover;
+  /* Bias right: the people live in the right two-thirds and must survive the crop. */
+  object-position: 64% center;
+}
+.hero--art::before {
+  content: ""; grid-area: 1 / 1; z-index: 1; pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    var(--hero-surface) 0%,
+    var(--hero-surface) 34%,
+    color-mix(in srgb, var(--hero-surface) 72%, transparent) 50%,
+    transparent 76%
+  );
+}
+.hero__copy {
+  z-index: 2; align-self: center;
+  padding: clamp(1.5rem, 1rem + 2.5vw, 2.75rem);
+  max-width: 54%;
+}
+.hero--art .lede { color: var(--hero-dim); }
+/* Inline code in the subtitle would otherwise keep the *theme's* surface — in dark
+   mode a black chip with white text sitting on a light illustration. */
+.hero--art code {
+  background: rgb(22 24 29 / 6%); color: var(--hero-ink); border-color: #d5d9e0;
+}
+.hero--art .chip {
+  background: rgb(255 255 255 / 72%); border-color: #d8dce3; color: var(--hero-ink);
+}
+.hero--art .chip span { color: var(--hero-dim); }
+
+/* Below the reading column there is no quiet third to write on. Stack instead:
+   the art becomes a band focused on the faces, the copy sits under it on solid
+   surface. Overlaying at this width would put the headline across someone's face. */
+@media (max-width: 44rem) {
+  .hero--art { display: block; }
+  .hero--art::before { display: none; }
+  .hero__art { height: auto; aspect-ratio: 16 / 9; object-position: 72% center; }
+  .hero__copy { max-width: none; }
+}
 .hero__eyebrow { text-transform: uppercase; letter-spacing: .13em; font-size: .74rem;
   font-weight: 700; color: var(--accent); margin: 0 0 .75rem; }
 .hero h1 { margin-bottom: .6rem; }

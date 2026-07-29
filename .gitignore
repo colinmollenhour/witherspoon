@@ -10,3 +10,6 @@ course-template/.build/
 course-template/.claude/
 course-template/.mcp.json
 .cc-writes/
+
+# Scratch for generated artefacts (image briefs, model output).
+.tmp/
