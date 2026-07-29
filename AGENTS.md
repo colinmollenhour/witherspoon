@@ -4,8 +4,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-A course-authoring system made of three Claude Code skills plus one shared Astro site builder. It is
-not an app — it is a pipeline that produces course directories and static sites from them.
+**witherspoon** — a course-authoring system made of three agent skills plus one shared Astro site
+builder. It is not an app; it is a pipeline that produces course directories and static sites from
+them. (Named for John Witherspoon, the educator — README.md explains why.)
+
+The skills are harness-neutral by design: where one needs a capability with a Claude Code-specific
+tool name, it states the capability first and gives the name as an example. Keep it that way.
 
 ```
 .claude/skills/course-builder/   generates course material  → course-<slug>/

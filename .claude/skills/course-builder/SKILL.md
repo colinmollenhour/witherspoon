@@ -58,9 +58,11 @@ Do not narrate beyond a single line.
 
 ### Stage 1 — Interview
 
-**One `AskUserQuestion` call. Six questions. Every question carries a `(Recommended)` default so
-"take all the defaults" is one interaction.** Infer defaults from Stage 0 and from anything the user
-already said — do not ask what they have already told you; drop that question and keep the rest.
+**All six questions in one batched multiple-choice turn** — `AskUserQuestion`, or whatever your
+harness calls its equivalent; if it has none, ask them as one numbered list in a single message.
+**Every question carries a `(Recommended)` default so "take all the defaults" is one interaction.**
+Infer defaults from Stage 0 and from anything the user already said — do not ask what they have
+already told you; drop that question and keep the rest.
 
 | Header | Question | Options |
 | --- | --- | --- |
@@ -134,8 +136,9 @@ approval gate — after it, work autonomously through to the report.
 
 **Read `references/grounding.md`.** This is active research, not a recall check.
 
-If the search tools are not already loaded, fetch them first — `ToolSearch("select:WebSearch,WebFetch")`
-— and discover any project-specific search tools the same way.
+You need web search and web fetch for this stage. If your harness loads tools on demand, load them
+first — in Claude Code, `ToolSearch("select:WebSearch,WebFetch")` — and discover any
+project-specific search tools the same way.
 
 Fan out research agents across the angles in `references/grounding.md`: primary source, authoritative
 numbers, current-state check, misconception harvest, and prior-art gap. Each returns findings as
@@ -172,6 +175,9 @@ Then fan out: **one subagent per topic, one per project**, in parallel batches. 
   `references/project-types.md` for projects
 - the `SOURCES.md` rows relevant to its topic
 - its output paths
+
+If your harness cannot run agents in parallel, run the same contracts one at a time — the isolation
+is what matters, the concurrency is only speed.
 
 Agents do not talk to each other and do not read sibling topics. The contract is the interface. Tell
 each agent its final message is a one-line status, not a summary of what it wrote, and that it must

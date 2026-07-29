@@ -9,15 +9,16 @@ That specificity is not recalled. It is fetched.
 
 ## Tools
 
-Load what you need before fanning out:
+This stage needs two capabilities: **web search** and **web fetch**. Have both before fanning out.
+If your harness loads tools on demand, load them first — in Claude Code that is:
 
 ```
 ToolSearch("select:WebSearch,WebFetch")
 ```
 
-Then discover anything project-specific — internal docs, ticket systems, code search, knowledge bases
-— with a keyword `ToolSearch`. Local `Grep`/`Glob`/`Read` count as grounding sources and are often
-the best ones: a repo's actual code beats a blog post about it.
+Then discover anything project-specific — internal docs, ticket systems, code search, knowledge
+bases — the same way. Local file search and reads count as grounding sources and are often the best
+ones: a repo's actual code beats a blog post about it.
 
 For a site that renders client-side and hides the useful data, fetching the raw HTML and extracting
 the embedded JSON payload is fair game and usually faster than fighting the SPA.

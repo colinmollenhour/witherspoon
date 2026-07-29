@@ -51,8 +51,9 @@ Do not ask the user for facts the workspace or provider manifest already establi
 
 ### Stage 1 — One short interview
 
-Use one `AskUserQuestion` call. Omit questions already answered. Every question has a recommended
-choice so accepting defaults is one interaction.
+Use one batched multiple-choice turn — `AskUserQuestion`, or your harness's equivalent; if it has
+none, ask as one numbered list in a single message. Omit questions already answered. Every question
+has a recommended choice so accepting defaults is one interaction.
 
 **Publish method**
 
