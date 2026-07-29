@@ -163,7 +163,7 @@ const favicon =
           {
             rights.url && rights.verb ? (
               <>
-                {rights.verb} <a href={rights.url} rel="license">{rights.label}</a>.
+                {rights.verb}{' '}<a href={rights.url} rel="license">{rights.label}</a>.
               </>
             ) : (
               <>{rights.label}.</>
