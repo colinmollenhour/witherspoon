@@ -1,0 +1,30 @@
+[
+  {
+    "name": "rebuild_commands_present",
+    "code": "tests/test_1_rebuild_commands_present.py",
+    "expectedOutput": "PASS",
+    "weight": 30,
+    "description": "All six fields are filled in, command_count parses as a positive integer of 8 or fewer that matches the transcript, and the transcript contains the four commands a cold-start rebuild requires: a cp taking index.html out before anything is destroyed, an rm, a `mkdir -p` naming a path ending in projects/first-site, and a cp or touch after the mkdir that puts index.html back."
+  },
+  {
+    "name": "captured_output_shape",
+    "code": "tests/test_2_captured_output_shape.py",
+    "expectedOutput": "PASS",
+    "weight": 25,
+    "description": "The three captures are real output from the rebuilt folder: pwd_output is one absolute line ending in /projects/first-site, ls_la_output is a long listing whose lines start with a mode string and which includes `.`, `..` and index.html, and grep_output is in the single-file `number: text` form containing <title> with no path: prefix."
+  },
+  {
+    "name": "deletion_actually_happened",
+    "code": "tests/test_3_deletion_actually_happened.py",
+    "expectedOutput": "PASS",
+    "weight": 25,
+    "description": "ADVERSARIAL. Catches the learner who never deleted the folder and wrote down the commands they would have run. It rejects a transcript with no `rm -r` naming ~/projects/first-site, one that deletes only index.html rather than the directory, one whose rm appears after the mkdir, and one whose bare `mkdir` (no -p) is aimed at a directory that Project 1 had left in place, which would have printed `mkdir: cannot create directory '.../a': File exists` instead of succeeding."
+  },
+  {
+    "name": "transcript_not_padded",
+    "code": "tests/test_4_transcript_not_padded.py",
+    "expectedOutput": "PASS",
+    "weight": 20,
+    "description": "ADVERSARIAL. Catches the learner who pads or trims the transcript rather than reporting what they ran: a command_count that disagrees with the number of command lines in its own commands field, a line that is pasted terminal output rather than a command, `history` or `clear` counted as part of the rebuild, and a project_1_mouse_actions that is a range or an estimate rather than the whole number recorded in Project 1."
+  }
+]

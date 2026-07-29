@@ -1,0 +1,105 @@
+# Network Self-Portrait — submission
+#
+# Fill in every field below. Lines beginning with # are comments and are ignored.
+#
+# TWO KINDS OF FIELD:
+#   name: value          <- single line. One value. No quotes, no backticks, no fences.
+#   --- name ---         <- block. Paste RAW command output on the lines that follow,
+#                           up to the next --- marker --- or the end of the file.
+#
+# DO NOT rename a field. DO NOT delete or edit a --- marker --- line.
+# DO NOT retype, tidy, align, or truncate anything you paste into a block.
+
+
+# ---------------------------------------------------------------------------
+# TODO A — your platform. Exactly one of: macOS  Linux  WSL
+# ---------------------------------------------------------------------------
+platform:
+
+
+# ---------------------------------------------------------------------------
+# TODO B — your machine's LAN IPv4 address, as four dot-separated numbers.
+#   Linux / WSL : ip addr           -> the inet line that is NOT on interface lo
+#   macOS       : networksetup -listallhardwareports   (find the Wi-Fi device)
+#                 ipconfig getifaddr <that device>
+# It will start with 10. or 172. or 192.168.  It must NOT start with 127.
+# ---------------------------------------------------------------------------
+lan_ip:
+
+
+# ---------------------------------------------------------------------------
+# TODO C — the exact command you ran for TODO B. Copy it, do not describe it.
+# ---------------------------------------------------------------------------
+lan_ip_command:
+
+
+# ---------------------------------------------------------------------------
+# TODO D — which RFC 1918 private block lan_ip falls in.
+# Exactly one of:  10.0.0.0/8   172.16.0.0/12   192.168.0.0/16
+# Careful: the 172 block ends at 172.31.255.255.
+# ---------------------------------------------------------------------------
+rfc1918_block:
+
+
+# ---------------------------------------------------------------------------
+# TODO E — your default gateway address.
+#   Linux / WSL : ip route      -> the default route entry
+#   macOS       : netstat -r    -> the default route entry
+# ---------------------------------------------------------------------------
+gateway:
+
+
+# ---------------------------------------------------------------------------
+# TODO F — the number printed by:
+#   curl -s -o /dev/null -w '%{http_code}\n' https://example.com
+# Digits only.
+# ---------------------------------------------------------------------------
+curl_status:
+
+
+# ---------------------------------------------------------------------------
+# TODO G — paste the RAW output of the command you named in lan_ip_command.
+# On Linux / WSL this is several blocks of text and contains the word "inet".
+# On macOS, ipconfig getifaddr prints the address and nothing else — that is fine.
+# ---------------------------------------------------------------------------
+--- lan_ip_command_output ---
+
+
+# ---------------------------------------------------------------------------
+# TODO H — paste the RAW output of your listening-ports command, header included.
+#   Linux / WSL : ss -tlnp
+#   macOS       : lsof -iTCP -sTCP:LISTEN -P -n
+# Blank process columns are normal and expected — do not remove those rows.
+# If there are genuinely no rows at all, make the first line below exactly:
+#   NO LISTENERS FOUND
+# and paste whatever the command did print underneath it.
+# ---------------------------------------------------------------------------
+--- listening_ports ---
+
+
+# ---------------------------------------------------------------------------
+# TODO I — one line proving 127.0.0.1 exists on your machine.
+#   Linux / WSL : the loopback inet line from `ip addr` (it carries 127.0.0.1/8)
+#   macOS       : `cat /etc/hosts`, then the line that begins 127.0.0.1
+# This must be a DIFFERENT address from lan_ip. That is the whole point.
+# ---------------------------------------------------------------------------
+--- loopback_line ---
+
+
+# ---------------------------------------------------------------------------
+# TODO J — your own observation. Run both of these and watch the clock:
+#   curl http://127.0.0.1:9999
+#   curl --max-time 4 http://192.0.2.1/
+# (If port 9999 is in use on your machine, pick another unused high port and
+#  say which one you used.)
+#
+# Write, in your own words:
+#   - which exit code came from which command (7 and 28)
+#   - how long each one took ON YOUR MACHINE
+#   - why one is instant and the other is not
+#
+# Do not write that you saw "Connection refused" unless you ran it with -v.
+# The plain output does not say that.
+# ---------------------------------------------------------------------------
+--- refused_vs_timeout ---
+

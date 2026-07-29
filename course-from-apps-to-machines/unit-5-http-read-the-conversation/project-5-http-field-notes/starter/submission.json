@@ -1,0 +1,21 @@
+{
+  "_format": "HTTP Field Notes submission. Every value is a string. Paste raw capture text; do not clean it up. Delete nothing from this file except the TODO placeholders.",
+
+  "curl_v_public": "TODO A — the complete output of: curl -v https://example.com   (keep every > and < line)",
+
+  "curl_i_redirect": "TODO B — the complete response head of: curl -I <a URL that answers 300-399>",
+
+  "curl_i_redirect_url": "TODO B — the URL you used",
+
+  "curl_i_local": "TODO C — the complete response head of: curl -I http://localhost:8000/index.html",
+
+  "status_line_local": "TODO D — the first line of curl_i_local, on its own",
+
+  "content_type_local": "TODO E — the value of the Content-Type header from curl_i_local. Value only.",
+
+  "annotations": "TODO F — at least six entries in this format, one blank line between entries:\n\n- LINE: `Server: SimpleHTTP/0.6 Python/3.14.6`\n  SOURCE: curl_i_local\n  WHAT IT IS: a response header, part of the head\n  WHAT IT DOES: names the software that answered me, which is how I can tell this response came from my own machine\n",
+
+  "file_url_comparison": "TODO G — what the file:// load has no room for, what http://localhost:8000/index.html has instead, and why. At least 30 words.",
+
+  "phone_result": "TODO H — what happened when you typed http://localhost:8000 into your phone's browser on the same Wi-Fi, and what your server's terminal did. At least 20 words. Report it; do not fix it."
+}

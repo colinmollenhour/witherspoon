@@ -1,0 +1,37 @@
+# Ground Zero — submission
+#
+# Fill in the five values to the RIGHT of each colon. Do not rename the fields,
+# do not reorder them, do not delete any of them.
+#
+# Lines starting with # are ignored. Only the FIRST colon on a line separates the
+# field name from its value, so colons inside a value are fine — file:/// and the
+# 04:25 in a timestamp both survive.
+#
+# Rules that the tests enforce:
+#   - absolute_path must start with "/" and must NOT use ~, a C:\ drive letter,
+#     or backslashes. It must end with /projects/first-site/index.html
+#   - file_url is what the browser's address bar ACTUALLY said. Copy it. It begins
+#     with file:// — an http:// URL from a tutorial is not evidence.
+#   - ls_la_line is ONE line, copied character for character. Keep the runs of
+#     spaces. Do not copy the "total" line or the directory's own row.
+#   - Do not copy a leading $ or % — that is the machine's prompt, not your output.
+
+
+# One of: macOS  |  Linux  |  WSL
+platform:
+
+# The full absolute path of your index.html, starting with /
+# macOS:        /Users/<you>/projects/first-site/index.html
+# Linux, WSL:   /home/<you>/projects/first-site/index.html
+absolute_path:
+
+# The exact text in the browser address bar after you double-clicked index.html
+file_url:
+
+# actions = every distinct click, drag, and typed name it took
+# apps    = how many separate applications you switched between
+mouse_actions: actions= apps=
+
+# The single `ls -la` line for index.html, copied exactly
+# (run: ls -la ~/projects/first-site  — then copy only the index.html row)
+ls_la_line:

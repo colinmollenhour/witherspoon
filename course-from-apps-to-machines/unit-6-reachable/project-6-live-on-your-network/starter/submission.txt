@@ -1,0 +1,68 @@
+;; Project 6 — Live on Your Network — submission
+;;
+;; Fill in each field between its header line and the next header line.
+;; Lines beginning with ;; are template comments. The graders ignore them, so you may
+;; leave them in place or delete them — either way they are not part of your answer.
+;; Do NOT add, rename, remove, or reorder the === field === headers.
+;; Paste your captures. Never retype them.
+
+=== platform ===
+;; Exactly one of:  macOS   Linux   WSL
+;; Put the word on its own line.
+
+
+=== lan_ip ===
+;; The serving machine's LAN IPv4, as a bare dotted quad.
+;;   Linux/WSL:  ip addr        -> the inet line on your Wi-Fi interface, NOT the lo block
+;;   macOS:      networksetup -listallhardwareports
+;;               ipconfig getifaddr en0
+;; It must fall in one of RFC 1918's three private ranges:
+;;      10.0.0.0        -   10.255.255.255  (10/8 prefix)
+;;      172.16.0.0      -   172.31.255.255  (172.16/12 prefix)
+;;      192.168.0.0     -   192.168.255.255 (192.168/16 prefix)
+;; No port, no /24, no interface name.
+
+
+=== phone_url ===
+;; Exactly what you typed into the second device's address bar.
+;;   http://<the lan_ip above>:8000        — :8000 is not optional
+
+
+=== curl_i_output ===
+;; Paste the WHOLE output of this, run on the serving machine, in a second terminal:
+;;   curl -I http://127.0.0.1:8000/index.html
+
+
+=== access_log_lines ===
+;; Paste at least two lines from the terminal the server is running in.
+;;   one caused by your own curl above  -> its first field will be 127.0.0.1
+;;   one caused by the second device    -> its first field is the second device's address
+;; The real shape, from this course's own capture:
+;;   127.0.0.1 - - [29/Jul/2026 04:26:16] "GET /nope HTTP/1.1" 404 -
+;; Paste them. Do not edit them afterwards.
+
+
+=== second_device_ip ===
+;; The address at the START of the second device's log line, as a bare dotted quad.
+;; It must NOT be inside 127.0.0.0/8 and must NOT equal lan_ip.
+;; WSL Path B only: the literal text   WSL-PATH-B
+
+
+=== runbook ===
+;; Fill in runbook-skeleton.md and paste the whole thing here.
+;; Keep the "## Teardown" heading.
+
+
+=== obstacles ===
+;; What went wrong, what it looked like on screen, and how you worked out which cause it was.
+;; If nothing went wrong, say so and list the checks that came back clean.
+;;
+;; Required, one line, from step 8:
+;;   Outside: <what happened when someone on another network opened phone_url, and why>
+;;
+;; WSL Path B only, each on its own line:
+;;   WSL-IP-ADDR: <the address ip addr reported inside WSL>
+;;   WSL-IPCONFIG: <the IPv4 address ipconfig.exe reported in the same shell>
+;;   <the line containing networkingMode=mirrored as you set it>
+;;   <the New-NetFirewallHyperVRule command exactly as you ran it, with -LocalPorts 8000>
+;;   STOPPED AT: <the step it stopped at, and what you saw>
