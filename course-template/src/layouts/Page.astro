@@ -27,6 +27,12 @@ interface Props {
   unitIndex?: number;
   /** Paint the scroll-depth strip under the header. Topic and project pages only. */
   readbar?: boolean;
+  /**
+   * Emit a script that repoints relative URLs at the site root using a `<base>`.
+   * For `404.astro` only — see the reasoning there. Every other page knows its own
+   * depth at build time and must not carry this.
+   */
+  repairBase?: boolean;
 }
 
 const {
@@ -38,6 +44,7 @@ const {
   wide = false,
   unitIndex,
   readbar = false,
+  repairBase = false,
 } = Astro.props;
 
 // The `course` collection always holds exactly one entry — one course per build.
@@ -80,6 +87,22 @@ const favicon =
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {
+      /* Must come before the stylesheet, and must be a `<base>` rather than a pass
+         that rewrites attributes: the deferred scripts at the end of the body are
+         not in the DOM yet when this runs, so there is nothing to rewrite. A base
+         element applies to every relative URL parsed after it. */
+      repairBase && (
+        <script
+          is:inline
+          set:html={
+            '(function(){var d=location.pathname.replace(/[^/]*$/,"").split("/").filter(Boolean).length;' +
+            'if(!d)return;var b=document.createElement("base");' +
+            'b.href=new Array(d+1).join("../");document.head.appendChild(b);})();'
+          }
+        />
+      )
+    }
     <title>{title} — {c.data.title}</title>
     {description && <meta name="description" content={description} />}
     <meta name="theme-color" content={accent} />

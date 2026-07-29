@@ -2,10 +2,27 @@
 import Page from '../layouts/Page.astro';
 ---
 
-{/* Links are relative, so this page only resolves correctly when served from the
-    site root — which is where a host's 404 handler serves it from. */}
-<Page title="Not found" depth={0}>
+{/*
+  A 404 is the one page whose depth is not known when it is written.
+
+  Every asset reference on this site is relative (gate S2), computed from the page's
+  own depth — and this page is built at depth 0. But a static host serves the
+  *contents* of 404.html while the browser keeps the *requested* address, so a miss
+  at `/unit-1/nope` resolves `assets/site.css` to `/unit-1/assets/site.css` and gets
+  nothing. The page then renders completely unstyled, which reads as a broken site
+  rather than a missing page — and that is how this was found: a dev-server URL
+  returned the 404, and the unstyled 404 looked like the real page had lost its CSS.
+
+  `repairBase` sets a `<base>` from the address bar before the stylesheet is parsed.
+  Root-absolute paths would fix it too, and are exactly what S2 forbids because they
+  break a subpath deploy.
+
+  With JavaScript off, a miss below the root is unstyled but complete — the text and
+  the link are both in the HTML. Accepted: a stylesheet cannot resolve against an
+  unknown depth without either a script or an absolute path.
+*/}
+<Page title="Not found" depth={0} repairBase>
   <h1>That page isn't here</h1>
   <p class="lede">The link may be out of date, or the address may have a typo in it.</p>
-  <p><a class="btn" href="index.html">Go to the syllabus →</a></p>
+  <p><a class="btn btn--primary" href="index.html">Go to the syllabus →</a></p>
 </Page>
