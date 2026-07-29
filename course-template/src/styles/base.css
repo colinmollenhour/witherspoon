@@ -154,6 +154,16 @@ th, td { text-align: left; padding: .6rem .75rem; border-bottom: 1px solid var(-
   vertical-align: top; }
 th { font-weight: 600; }
 tbody tr:hover { background: color-mix(in srgb, var(--accent) 4%, transparent); }
+
+/* A table sizes to its widest unbreakable word, and `overflow-wrap: break-word` on
+   the body does not change that — only `anywhere` participates in min-content
+   sizing. Without this a single long URL in a cell widens the whole table past its
+   container and scrolls the *page* sideways, which is what SOURCES.md did: its
+   ledger is markdown, so it gets no `.scroll-x` wrapper to scroll inside.
+   Scoped to links and code, the two things long enough to cause it — prose cells
+   keep breaking on word boundaries. */
+td a, td code, th a, th code { overflow-wrap: anywhere; }
+
 .scroll-x { overflow-x: auto; }
 
 hr { border: 0; height: 1px; background: var(--border); margin: 2.5rem 0; }
