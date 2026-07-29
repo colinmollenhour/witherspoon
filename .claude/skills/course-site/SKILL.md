@@ -58,8 +58,12 @@ Walk every topic and decide, listing the plan before you build anything:
   lesson, an exchange between parties, or a hierarchy. Give the type, the topic, and the one sentence
   it makes land. **At most two per topic.**
 - **Diagrams** — only for structure a widget genuinely cannot carry.
-- **One hero infographic per unit, at most** — the unit's before→after.
-- For each image: which tool, what it depicts, and its alt text.
+- **One unit hero per unit, at most** — atmospheric illustration of that unit's before→after, with
+  the takeaway in the caption (not painted into the pixels).
+- **Optional course hero** — home-page artwork if none exists yet.
+- **Optional in-reading figures** — only when a photograph or spatial layout earns a place in prose.
+- For each image: file name, tool, what it depicts, alt text, caption, and **how it is wired**
+  (`course.json` hero / `units[i].hero` / a `figure` fence or markdown image in `read.md`).
 
 State the budget. A course does not need a picture per topic, filler images cost more credibility
 than they add, and a widget between every paragraph reads as decoration.
@@ -71,15 +75,18 @@ paragraph each one illustrates. Follow the catalogue in `references/widgets.md` 
 type. Every fact inside a widget obeys the same grounding contract as prose — an invented `ls` output
 is fabrication whether it sits in a paragraph or in JSON.
 
-**Images** follow `references/visuals.md` exactly — it covers the two composition gotchas:
+**Images** follow `references/visuals.md` exactly. Three non-obvious rules:
 
-- `infographic` produces a **prompt file, not an image**; it needs an image generator downstream.
-- `tldraw` must be probed with `command -v tldraw` before use, and has a defined fallback.
+1. **Write under `<course-dir>/assets/`**, never under `dist/` (dist is wiped every build).
+2. **Wire them** — course hero and unit heroes via `course.json`; in-reading art via a `figure`
+   fence or `![alt](assets/img/…)` in markdown. A file that is not referenced is invisible.
+3. **No exact text in rasters.** Labels, paths, status codes, and numbers live in widgets, captions,
+   or hand SVG. Unit heroes are metaphors.
 
-Images go into `<course-dir>/assets/`, which is committed with the course. Both tools are allowed to
-fail. A missing image degrades to a styled text panel; it never blocks the build. A malformed widget
-*does* block the build, naming the file and the field — deliberately, because a silently broken
-diagram is worse than a build that stops.
+Image generators (`image_gen` / `imagine`, `nano-banana`, `codex-cli`) and `tldraw` are allowed to
+fail. A missing unit hero simply omits the figure; it never blocks the build. A malformed widget or
+a markdown image pointing at a missing `assets/` file *does* block the build, naming the topic —
+deliberately, because a silently broken diagram is worse than a build that stops.
 
 ### Stage 4 — Build
 
@@ -115,7 +122,8 @@ which, plainly.
 Built: dist/ — <N> pages · <N> quizzes · <N> widgets · <N> images · <total size>
 Widgets: <N> anatomy · <N> flow · <N> compare · <N> terminal · <N> match · <N> order ·
          <N> sequence · <N> tree
-Visuals: <N> tldraw diagrams · <N> infographics · <N> skipped (reason)
+Visuals: course hero <yes|no> · <N> unit heroes · <N> in-reading figures ·
+         <N> tldraw/SVG diagrams · <N> skipped (reason)
 Gates: <all passed | what needed fixing | what still fails>
 Accent: <hex> (<from brandColors.primary | template default, stated here>)
          Units carry derived hues from it — see site-spec.md.
@@ -129,8 +137,8 @@ preferred host and URL, handles authentication, and verifies the live site. No G
 required.
 ```
 
-If any visual was skipped, say which and why — and mention that the infographic prompt files are kept
-in `<course-dir>/assets/prompts/` so they can be generated later without re-running the build.
+If any visual was skipped, say which and why — and mention that any prompt files kept in
+`<course-dir>/assets/prompts/` can be generated later without re-running Stage 2.
 
 ## Notes
 

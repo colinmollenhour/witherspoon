@@ -130,6 +130,17 @@ const units = defineCollection({
     title: z.string(),
     description: z.string(),
     objectiveNames: z.record(z.string(), z.string()),
+    // Resolved at load time from units[].hero or assets/img/unit-N.webp.
+    hero: z
+      .object({
+        image: z.string().min(1),
+        width: z.number().int().positive(),
+        height: z.number().int().positive(),
+        alt: z.string().min(8),
+        caption: z.string().nullable(),
+      })
+      .nullable()
+      .default(null),
     topics: z.array(
       z.object({
         id: z.string(),

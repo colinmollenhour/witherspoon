@@ -2119,7 +2119,14 @@
           },
           "path": "unit-1-where-your-stuff-lives/project-1-ground-zero"
         }
-      ]
+      ],
+      "hero": {
+        "image": "assets/img/unit-1.webp",
+        "width": 1600,
+        "height": 900,
+        "alt": "A tablet full of app icons beside a laptop that opens a nested folder tree ending on one highlighted file.",
+        "caption": "On a phone a file hides inside an app. On a dev machine every file sits at exactly one path you can write down."
+      }
     },
     {
       "title": "Driving the machine from the keyboard",
@@ -3013,7 +3020,14 @@
           },
           "path": "unit-2-keyboard-driven/project-2-cold-start"
         }
-      ]
+      ],
+      "hero": {
+        "image": "assets/img/unit-2.webp",
+        "width": 1600,
+        "height": 900,
+        "alt": "A laptop keyboard with a floating terminal window, folder icons connected by a glowing path into the prompt.",
+        "caption": "The shell is always standing in one directory. Once you know where, eight typed commands rebuild what took dozens of clicks."
+      }
     },
     {
       "title": "Text in, text out",
@@ -3703,7 +3717,14 @@
           },
           "path": "unit-3-text-in-text-out/project-3-generated-page"
         }
-      ]
+      ],
+      "hero": {
+        "image": "assets/img/unit-3.webp",
+        "width": 1600,
+        "height": 900,
+        "alt": "Three program blocks linked by translucent pipes pouring glowing data into a finished document file.",
+        "caption": "Command output stops scrolling past and becomes material you keep — redirection and pipes generate the page instead of typing it."
+      }
     },
     {
       "title": "Machines have addresses",
@@ -4607,7 +4628,14 @@
           },
           "path": "unit-4-machines-have-addresses/project-4-network-self-portrait"
         }
-      ]
+      ],
+      "hero": {
+        "image": "assets/img/unit-4.webp",
+        "width": 1600,
+        "height": 900,
+        "alt": "A laptop at the centre of a small private network, linked to a router and other devices, with a loop of light returning to itself.",
+        "caption": "Files have addresses; so do machines. Your LAN IP, loopback, and open ports are the map this unit draws."
+      }
     },
     {
       "title": "HTTP: reading the conversation, and joining it",
@@ -5512,7 +5540,14 @@
           },
           "path": "unit-5-http-read-the-conversation/project-5-http-field-notes"
         }
-      ]
+      ],
+      "hero": {
+        "image": "assets/img/unit-5.webp",
+        "width": 1600,
+        "height": 900,
+        "alt": "A browser window and a server tower exchanging glowing request and response bubbles along a dotted status timeline.",
+        "caption": "HTTP is plain text. Read the conversation with curl, then start your own server and watch your page answer with a real status code."
+      }
     },
     {
       "title": "Reachable: from your laptop to the whole house",
@@ -6235,7 +6270,14 @@
           },
           "path": "unit-6-reachable/project-6-live-on-your-network"
         }
-      ]
+      ],
+      "hero": {
+        "image": "assets/img/unit-6.webp",
+        "width": 1600,
+        "height": 900,
+        "alt": "A laptop and phone both showing the same web page, linked through a home router by a solid arc, with a dashed loop failing from the phone.",
+        "caption": "localhost only means the machine that is asking. Reach the same page from a second device — and diagnose it when that fails."
+      }
     }
   ]
 }

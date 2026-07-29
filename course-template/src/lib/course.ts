@@ -131,10 +131,21 @@ export interface RawProject {
   environment?: Record<string, unknown>;
 }
 
+export interface RawUnitHero {
+  /** Path relative to the course directory, e.g. `assets/img/unit-1.webp`. */
+  image: string;
+  width?: number;
+  height?: number;
+  alt: string;
+  caption?: string;
+}
+
 export interface RawUnit {
   title: string;
   description: string;
   orderIndex: number;
+  /** Optional unit-overview artwork. Falls back to `assets/img/unit-N.webp`. */
+  hero?: RawUnitHero | null;
   topics: RawTopic[];
   test?: { title: string; description: string; passingScore: number; questions: RawQuestion[] };
   projects?: RawProject[];

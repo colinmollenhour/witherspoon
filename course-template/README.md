@@ -87,9 +87,22 @@ topic, test, project. Sibling `[topic].astro`/`[project].astro` routes would be 
 conflict, and under `build.format: 'file'` an `index.astro` would emit `unit-1.html` rather than
 `unit-1/index.html`.
 
-## Widgets
+## Figures and widgets
 
-A reading can embed an interactive figure as a fenced block:
+A reading can embed a static figure (photograph, unit art, SVG) as a fenced block or a
+markdown image pointing at `assets/…`. The build rewrites the path for page depth, probes
+dimensions, and wraps it in a light `.figure` card:
+
+````markdown
+```figure
+{ "src": "assets/img/unit-1.webp", "alt": "…", "caption": "…" }
+```
+````
+
+Unit overview heroes are declared on `units[i].hero` in `course.json` (or dropped in as
+`assets/img/unit-N.webp`) and render on `unit-N/index.html`.
+
+A reading can also embed an interactive widget as a fenced block:
 
 ````markdown
 ```widget

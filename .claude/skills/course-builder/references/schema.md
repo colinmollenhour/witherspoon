@@ -34,6 +34,9 @@ running problem, and `LECTURE` replaces projects as the second activity.
     "width": 1600, "height": 900,             // 16:9; the site holds that ratio
     "alt": "string — describes the picture, min 20 chars"
   },
+  // Visuals (course hero, unit heroes, in-reading figures) are produced by the
+  // course-site skill after the markdown is approved — not here. course-builder
+  // may leave hero fields null; course-site fills assets/ and these declarations.
 
   "skills": [
     { "title": "2-4 words", "description": "one sentence — a performance statement", "orderIndex": 0 }
@@ -63,6 +66,15 @@ running problem, and `LECTURE` replaces projects as the second activity.
       "title": "string — names the shift in capability",
       "description": "string — ends on the hook into the next unit",
       "orderIndex": 0,
+
+      // Optional. Filled by course-site when unit artwork is generated.
+      // Convention fallback: assets/img/unit-<N>.webp is auto-discovered.
+      "hero": {
+        "image": "assets/img/unit-1.webp",
+        "width": 1600, "height": 900,
+        "alt": "string — describes the picture",
+        "caption": "string — the takeaway; paths and commands belong here, not in the pixels"
+      },
 
       "topics": [
         {

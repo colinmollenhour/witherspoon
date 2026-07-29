@@ -18,6 +18,7 @@ import {
   type RawQuestion,
   type RawUnit,
 } from './course';
+import { compileFigures, resolveUnitHero } from './figures';
 import { compileWidgets } from './widgets';
 
 const DEFAULT_ACCENT = '#3f7ac4';
@@ -134,6 +135,10 @@ export function unitsLoader(): Loader {
 
       for (const [ui, u] of c.units.entries()) {
         const names = objectiveNames(u);
+        // Prefer an explicit units[].hero declaration; fall back to the
+        // assets/img/unit-N.webp convention so a generated visual wires itself
+        // without a second course.json edit.
+        const hero = resolveUnitHero(ui + 1, u.hero ?? null);
         const raw = {
           unitId: unitId(ui),
           slug: unitSlug(ui),
@@ -141,6 +146,15 @@ export function unitsLoader(): Loader {
           title: u.title,
           description: u.description,
           objectiveNames: names,
+          hero: hero
+            ? {
+                image: hero.src,
+                width: hero.width,
+                height: hero.height,
+                alt: hero.alt,
+                caption: hero.caption ?? null,
+              }
+            : null,
           topics: u.topics.map((t, ti) => ({
             id: topicId(ui, ti),
             slug: topicSlug(ti),
@@ -215,15 +229,16 @@ export function topicsLoader(): Loader {
 
           const id = `${unitSlug(ui)}/${topicSlug(ti)}`;
           const data = await parseData({ id, data: raw });
-          // Widget fences are lifted out before the markdown is rendered and their
-          // compiled HTML put back after, so a widget is never at the mercy of the
-          // markdown processor's opinion about the JSON inside it.
-          const w = await compileWidgets(body, readPath);
+          // Figures then widgets: each pass lifts its fences/images to tokens so
+          // the markdown processor never rewrites their internals, then injects
+          // compiled HTML after render. Topic pages sit one directory deep.
+          const f = await compileFigures(body, readPath, 1);
+          const w = await compileWidgets(f.markdown, readPath);
           const rendered = await renderMarkdown(w.markdown);
           store.set({
             id,
             data,
-            rendered: { ...rendered, html: w.inject(rendered.html) },
+            rendered: { ...rendered, html: f.inject(w.inject(rendered.html)) },
             digest: generateDigest(data),
           });
         }
@@ -300,15 +315,14 @@ export function projectsLoader(): Loader {
 
           const id = `${unitSlug(ui)}/${projectSlug(pi)}`;
           const data = await parseData({ id, data: raw });
-          const w = await compileWidgets(
-            rewriteBriefLinks(stripTitle(briefMd)),
-            `${p.path}/brief.md`,
-          );
+          const briefBody = rewriteBriefLinks(stripTitle(briefMd));
+          const f = await compileFigures(briefBody, `${p.path}/brief.md`, 1);
+          const w = await compileWidgets(f.markdown, `${p.path}/brief.md`);
           const rendered = await renderMarkdown(w.markdown);
           store.set({
             id,
             data,
-            rendered: { ...rendered, html: w.inject(rendered.html) },
+            rendered: { ...rendered, html: f.inject(w.inject(rendered.html)) },
             digest: generateDigest(data),
           });
         }

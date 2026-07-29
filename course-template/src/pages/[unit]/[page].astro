@@ -8,6 +8,7 @@ import Rubric from '../../components/Rubric.astro';
 import Markdown from '../../components/Markdown.astro';
 import { courseSequence, neighbours } from '../../lib/nav';
 import { unitNumber } from '../../lib/course';
+import { assetHref } from '../../lib/figures';
 
 /**
  * One dynamic route for every page inside a unit — overview, topic, test, project.
@@ -129,6 +130,31 @@ const longRead = props.kind === 'topic' || props.kind === 'project';
             </p>
           </div>
         </div>
+
+        {
+          /* Unit hero: the before→after of this unit's slice of the spine.
+             Paths are course-relative in course.json; rewrite for depth 1. */
+          props.unit.data.hero && (
+            <figure class="figure figure--hero">
+              <div class="figure__frame">
+                <img
+                  src={assetHref(props.unit.data.hero.image, 1)}
+                  width={props.unit.data.hero.width}
+                  height={props.unit.data.hero.height}
+                  alt={props.unit.data.hero.alt}
+                  loading="eager"
+                  decoding="async"
+                  fetchpriority="high"
+                />
+              </div>
+              {props.unit.data.hero.caption && (
+                <figcaption>
+                  <Markdown text={props.unit.data.hero.caption} inline />
+                </figcaption>
+              )}
+            </figure>
+          )
+        }
 
         <div class="bar" data-unit-bar={props.unit.data.unitId}>
           <span style="width:0%" />

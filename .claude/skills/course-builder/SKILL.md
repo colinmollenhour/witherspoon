@@ -206,10 +206,15 @@ Report honestly. If a gate still fails, say so plainly rather than declaring com
 Then offer the handoff, once, in one line:
 
 > Review the markdown and `course.json`. When you're happy with them, run `course-site` to build a
-> shareable interactive website into `dist/` using the shared template in `course-template/`.
+> shareable interactive website into `dist/` using the shared template in `course-template/` — that
+> step also plans and generates unit heroes, optional course artwork, and any diagrams the readings
+> earn.
 
 Do not run `course-site` yourself. It is a separate skill, invoked after the user has approved the
-material.
+material. **Do not generate site artwork here** either: images live under `assets/`, are wiped out of
+`dist/` on every rebuild, and only become part of the product when `course-site` wires them through
+`course.json` and the template. Leaving hero fields empty is correct; filling them without the site
+pipeline is how visuals get orphaned.
 
 ## Notes
 

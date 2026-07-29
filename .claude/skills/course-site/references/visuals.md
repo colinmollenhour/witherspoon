@@ -8,8 +8,10 @@ Read at Stages 2–3, **after `widgets.md`**.
 > translatable. Generate an image only when the subject is genuinely pictorial — a photograph, a
 > hardware layout, a chart of real numbers — or when it is a unit hero.
 
-Two skills are composed here, and each has a gotcha that will silently produce nothing useful if
-ignored.
+The template **does** render images when they exist: unit overview heroes, and figures authored into
+markdown. Generating a file under `assets/img/` without wiring it is not enough — see
+**How images reach the page** below. Two composition gotchas remain: the `infographic` skill writes a
+prompt file (not pixels), and `tldraw` must be on `PATH` or you fall back.
 
 ## Where output goes
 
@@ -22,7 +24,7 @@ version of this file silently discarded every visual it produced.
 
 ```
 <course-dir>/assets/
-  img/          .svg and .png referenced by pages
+  img/          .webp / .png / .svg referenced by pages
   diagrams/     .tldr sources, kept so a diagram can be edited later
   prompts/      infographic prompt files, kept so an image can be generated later
 ```
@@ -33,24 +35,79 @@ version of this file silently discarded every visual it produced.
 | --- | --- | --- |
 | Flow, pipeline, hierarchy, comparison, sequence, a dissected string | **a widget** — see `widgets.md` | HTML |
 | Home-page hero artwork | any image generator — see **Hero artwork** below | WebP |
-| Unit hero — the before→after of that unit | `infographic` → image generator | PNG |
-| Structure a widget genuinely cannot carry — a state machine with cycles, a spatial layout | `tldraw-skill` | SVG |
+| Unit hero — the before→after of that unit | image generator (prefer atmospheric illustration, not labeled charts) | WebP |
+| Structure a widget genuinely cannot carry — a state machine with cycles, a spatial layout | `tldraw-skill` **or** hand SVG | SVG |
+| In-reading photograph / diagram | same generators; author a figure in `read.md` | WebP/SVG |
 | Anything else | nothing | — |
 
 Budget, and hold to it:
 
-- **At most one infographic per unit.** It illustrates that unit's slice of the spine.
+- **At most one unit hero per unit.** It illustrates that unit's slice of the spine.
 - **Diagrams only where a widget will not do.** Most of what used to justify a diagram is now a
   `flow`, a `sequence`, or a `tree`, all of which theme and reflow and cost nothing to produce.
 - **Never decorative.** If the alt text would be "illustration of the topic", do not generate it.
+- **No exact text, numbers, or labeled charts in generated rasters.** Image models garble them.
+  Put labels in a widget, an SVG, or the caption. Unit heroes should be metaphors, not screenshots
+  of the lesson.
 
-List the plan before generating: file name, tool, what it depicts, alt text. Alt text is written by
-you, at plan time — not derived from the image afterwards.
+List the plan before generating: file name, tool, what it depicts, alt text, caption. Alt text is
+written by you, at plan time — not derived from the image afterwards.
 
-## Hero artwork
+## How images reach the page
 
-Optional, one per course, and the only place a *pictorial* image earns the top of a
-page. Declared in `course.json`:
+Three paths. All of them start from a file under `<course-dir>/assets/` (never under `dist/`).
+
+### 1. Course hero (home page)
+
+Declared on `course.json` as top-level `hero` (see below). The template paints it behind the title.
+
+### 2. Unit hero (unit overview)
+
+Declared on `units[i].hero` **or** dropped in by convention as `assets/img/unit-<N>.webp`
+(also `.png`). The unit overview page (`unit-N/index.html`) renders it under the unit title as a
+`.figure.figure--hero` with caption. Prefer the explicit declaration so alt text and caption are
+authored, not inventable.
+
+```json
+"hero": {
+  "image": "assets/img/unit-1.webp",
+  "width": 1600,
+  "height": 900,
+  "alt": "A tablet of app icons beside a laptop opening a nested folder path to one file.",
+  "caption": "On a phone a file hides inside an app. On a dev machine every file has a path."
+}
+```
+
+### 3. In-reading figures (`read.md` / project `brief.md`)
+
+Authors always write **course-relative** paths (`assets/img/…`). The build rewrites them for page
+depth (`../assets/img/…` on unit pages), probes width/height, and wraps them in a light `.figure`
+card. Two authoring forms:
+
+````markdown
+```figure
+{
+  "src": "assets/img/unit-1.webp",
+  "alt": "A tablet of app icons beside a laptop opening a nested folder path to one file.",
+  "caption": "On a phone a file hides inside an app. On a dev machine every file has a path."
+}
+```
+````
+
+```markdown
+![A tablet of app icons beside a laptop opening a nested folder path to one file.](assets/img/unit-1.webp "On a phone a file hides inside an app.")
+```
+
+Alt text is mandatory and must actually describe the picture (≥ 8 characters). A missing file or a
+path that does not start with `assets/` **fails the build** naming the topic — deliberately.
+
+Implemented by `course-template/src/lib/figures.ts`, called from the topic and project loaders the
+same way widgets are.
+
+## Hero artwork (course home)
+
+Optional, one per course, and the only place a *pictorial* image earns the top of the home page.
+Declared in `course.json` as top-level `hero`:
 
 ```json
 "hero": {
@@ -87,6 +144,20 @@ scaled down and obvious on the page.
 A course with no `hero` in `course.json` falls back to the template's painted
 gradient. That is a perfectly good hero; do not generate artwork just to fill a slot.
 
+## Unit heroes
+
+One per unit, **atmospheric**, matching the unit accent family when practical. Same encoding rules
+as the course hero (16:9, 1600×900, WebP q90, light background, **no text in the image**). The
+caption under the figure carries the takeaway in real HTML — that is where file paths, URLs, and
+commands belong.
+
+Write to `<course-dir>/assets/img/unit-<N>.webp` and declare `units[i].hero` in `course.json`. If
+you only drop the file and skip the declaration, the template still picks it up by convention, but
+alt text becomes a generic stub — so declare it.
+
+Style consistency across the set matters more than any single image: shared light background, shared
+soft-editorial look, subject on the right two-thirds so the left stays airy.
+
 ## tldraw — structural diagrams
 
 Probe once, before any diagram work:
@@ -118,58 +189,48 @@ inside a `.figure` card that keeps a light surface in both themes (the styleshee
 with the caption outside the card in normal body color. This is honest and robust; CSS filter
 inversion is neither.
 
-## infographic — unit heroes
+## Generating unit heroes (and other rasters)
 
-**The gotcha: this skill does not generate an image.** It writes a prompt file and stops. Its own
-words: *"You are not generating the image. You are generating the prompt that another tool/agent will
-use."*
+Prefer a direct image generator. Exact-text infographics are the wrong tool for unit heroes (models
+garble labels); use a **metaphor illustration** and put the takeaway in the caption.
 
-So it is always two calls.
+### Preferred path
 
-### Call 1 — the prompt
+1. Load the `imagine` skill and call `image_gen` (or `image_edit` when iterating) with a coherent
+   style brief: light `#fbfbfc` background, soft editorial illustration, quiet left third, **no
+   text/letters/numbers/logos**, 16:9.
+2. Inspect the result at native resolution (malformed hands/faces → regenerate).
+3. Resize to 1600×900 and encode WebP q90:
 
-Invoke `infographic` with **explicit scope in the arguments**, or it will go looking for a merge
-request, find none, ask a question, and stop. Pass:
+   ```bash
+   # example with Pillow + cwebp
+   python3 -c "from PIL import Image; Image.open('in.jpg').convert('RGB').resize((1600,900)).save('/tmp/u.png')"
+   cwebp -q 90 /tmp/u.png -o <course-dir>/assets/img/unit-N.webp
+   ```
 
-- the scope, stated plainly: *"for the course unit described below — not a git change"*
-- the unit title, its before→after, its objectives, and the relevant `SOURCES.md` figures, inlined
-- `save it to <course-dir>/assets/prompts/unit-<N>.md`
-- **`make it technical`** if the course is technical
+4. Declare `units[i].hero` in `course.json` with alt + caption.
+5. Rebuild: `npm run build -- --course ../<course-dir>`.
 
-That last one matters. The skill's default rules strip file paths, function names, and code
-identifiers — correct for an operations audience, wrong for a programming course where the API name
-*is* the content. The skill supports `make it technical` as a documented override and caps paths at
-five.
+### Alternate: prompt file first
 
-It refuses to fabricate: missing facts come back as `[NEEDS DATA]` markers and it stops. Treat that as
-a grounding failure, not a tooling failure — supply the figures from `SOURCES.md` and re-run, or drop
-the infographic.
+The `infographic` skill writes a **prompt file, not an image**. Use it only when you want a kept
+brief for later generation:
 
-### Call 2 — the image
+- Scope it explicitly: *"for the course unit described below — not a git change"*.
+- Pass unit title, before→after, and `make it technical` when identifiers matter.
+- Save to `<course-dir>/assets/prompts/unit-<N>.md`, then feed that prompt to an image generator
+  (`image_gen`, `nano-banana`, or `codex-cli`).
 
-Feed the prompt file to an image generator, in this order:
-
-1. `nano-banana` — preferred; generates directly.
-2. `codex-cli` — native raster generation; fallback.
-3. Neither available → **skip the image, keep the prompt file.** The build continues.
-
-Write output to `<course-dir>/assets/img/unit-<N>.png`.
-
-### When the image is missing
-
-Render a `.figure--placeholder` panel in its slot: the unit's before→after as styled text, plus a
-small note that a visual can be generated later from the kept prompt. Never leave a broken `<img>`,
-and never silently drop the slot — an empty region reads as a rendering bug.
-
-Because the prompt file lives in `<course-dir>/assets/prompts/`, it survives every rebuild, and the
-image can be generated weeks later without re-running any of Stage 2.
+If no generator is available, **skip the image, keep the prompt file.** The build continues; unit
+pages without a hero simply omit the figure rather than shipping a broken `<img>`.
 
 ## Rules for every image
 
 - **Alt text is mandatory** and describes the content, not the medium. "Vector-add timing falling from
   75 ms to 47 µs across four kernel configurations" — not "chart".
-- **Set `width` and `height`** on every `<img>` so nothing reflows on load.
-- **`loading="lazy"`** on everything below the fold.
+- **Set `width` and `height`** on every `<img>` so nothing reflows on load. The figure compiler
+  probes raster dimensions when they are not declared.
+- **`loading="lazy"`** on everything below the fold (unit heroes and the course hero are eager).
 - **Everything is local.** No remote URLs, ever.
 - **Caption below the figure** giving the takeaway in one sentence. A reader who skips the image
   should still get the point.

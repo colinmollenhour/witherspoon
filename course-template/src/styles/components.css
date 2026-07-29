@@ -230,6 +230,9 @@
   padding-left: .9rem; border-left: 3px solid var(--accent-line); }
 .figure--placeholder .figure__frame { display: block; background: var(--surface-2);
   border-style: dashed; color: var(--text-dim); }
+/* Unit heroes are full-bleed rasters: no frame padding, radius clips the art. */
+.figure--hero > .figure__frame { padding: 0; overflow: hidden; }
+.figure--hero img { width: 100%; height: auto; display: block; border-radius: inherit; }
 
 /* ---------- quiz ---------- */
 .quiz { max-width: 100%; }
