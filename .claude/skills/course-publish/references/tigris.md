@@ -67,9 +67,12 @@ If browser OAuth is unavailable, `tigris configure` can securely save an access-
 user's local Tigris config. Let the command prompt for secrets; never put a secret in a command shown
 in chat, shell history, a course file, or `.course-publish.json`.
 
-Organizations created after May 18, 2026 may need one-time payment-method verification before public
-bucket functionality works. If Tigris reports that requirement, send the user to the Tigris account
-flow, wait for them to complete it, and retry the same operation. Do not collect payment details.
+Organizations created after May 18, 2026—which includes new Tigris users—must add a verified
+payment method before they can create a public bucket. Tell the user before starting authentication:
+“Tigris requires a verified payment method for public buckets. Adding one is a short, straightforward
+Link flow.” The user enters payment details directly in Link, never in chat. If Tigris reports the
+requirement during publishing, send the user to that account flow, wait for completion, and retry the
+same operation. Do not collect payment details.
 
 ## Destination and public access
 

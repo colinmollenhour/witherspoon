@@ -58,7 +58,7 @@ choice so accepting defaults is one interaction.
 
 | Option | Meaning |
 | --- | --- |
-| **Tigris direct upload (Recommended)** | Use an already-connected, capable Tigris MCP server; otherwise use the official Tigris CLI. No repository. Public buckets created for newer organizations may require one-time payment-method verification. |
+| **Tigris direct upload (Recommended)** | Use an already-connected, capable Tigris MCP server; otherwise use the official Tigris CLI. No repository. Tell new Tigris users up front that a public bucket requires adding a verified payment method; the verification is a short Link flow. |
 | Netlify direct deploy | Upload `dist/` with Netlify's CLI/API/drop flow; no Git integration. |
 | Cloudflare Pages direct upload | Upload `dist/` with Wrangler/direct upload; no Git integration. |
 
