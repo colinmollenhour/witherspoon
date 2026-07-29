@@ -23,7 +23,9 @@ const total = rubric.reduce((s, r) => s + r.weight, 0);
         <tbody>
           {rubric.map((r) => (
             <tr>
-              <th scope="row">{r.criterion}</th>
+              <th scope="row">
+                <Markdown text={r.criterion} inline />
+              </th>
               <td>
                 <Markdown text={r.description} inline />
               </td>

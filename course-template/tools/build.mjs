@@ -21,7 +21,6 @@ import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 
 const HERE = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
-const STAGE = path.join(HERE, '.build/public');
 
 function usage(message) {
   console.error(`${message}\n`);
@@ -45,6 +44,16 @@ const port = flag('--port');
 
 const courseDir = path.resolve(argv[at + 1]);
 if (!fs.existsSync(courseDir)) usage(`No such directory: ${courseDir}`);
+
+/**
+ * Dev and production stage to different directories, because `npm run dev` leaves
+ * esbuild **watching**. With one shared directory a production build wipes it,
+ * rebuilds minified, and the still-running watcher immediately writes its own
+ * unminified output and a source map back over the top before Astro copies
+ * publicDir into dist. The result is a `dist/` containing an unminified runtime and
+ * a 90 KB `.map` — silently, and only for whoever happens to have a preview open.
+ */
+const STAGE = path.join(HERE, dev ? '.build/public-dev' : '.build/public');
 
 const courseJson = path.join(courseDir, 'course.json');
 if (!fs.existsSync(courseJson)) {
@@ -135,6 +144,8 @@ const astro = path.join(HERE, 'node_modules/.bin/astro');
 const astroEnv = {
   ...process.env,
   COURSE_DIR: courseDir,
+  // Which staging directory Astro should copy verbatim — see the note above.
+  COURSE_STAGE: STAGE,
   // This template builds an offline-first site; the build should not phone home
   // either, and telemetry writes to a config dir that may not be writable.
   ASTRO_TELEMETRY_DISABLED: '1',

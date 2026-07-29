@@ -341,6 +341,34 @@ for (const [f, html] of pages) {
   }
 }
 
+// ---------------------------------------------------------------- S14
+// Unrendered markdown. course.json carries prose in dozens of fields — objectives,
+// descriptions, goals, rubric criteria, step completion criteria — and almost all
+// of it contains inline code. A field dropped into a template as `{value}` instead
+// of through <Markdown> ships visible backticks, and nothing else notices: the
+// build succeeds, every link resolves, and the page just looks unfinished. This is
+// the check that catches it, because reading every template by eye did not.
+// A tag matcher that skips over quoted attribute values. `<[^>]+>` is wrong here:
+// `<meta content="`>` vs `>>`">` ends the match at the first `>` inside the quotes
+// and leaks the rest of the attribute into the text, which is where the first draft
+// of this gate reported 149 phantom failures on a single unit test page.
+const TAG = /<!--[\s\S]*?-->|<[!/]?[a-zA-Z][^\s>/]*(?:\s+[^\s=>/]+(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*))?)*\s*\/?>/g;
+
+for (const [f, html] of pages) {
+  // Strip everything where these characters are legitimate content before looking.
+  const prose = html
+    .replace(/<(script|style|pre)\b[\s\S]*?<\/\1>/g, ' ')
+    .replace(/<code\b[\s\S]*?<\/code>/g, ' ')
+    .replace(TAG, ' ');
+  const found = new Set();
+  for (const m of prose.matchAll(/`[^`\n]+`/g)) found.add(m[0]);
+  for (const m of prose.matchAll(/\*\*[^*\n]+\*\*/g)) found.add(m[0]);
+  if (found.size) {
+    const sample = [...found].slice(0, 3).map((s) => s.trim()).join(', ');
+    fail('S14', `${relOf(f)} shows ${found.size} run(s) of unrendered markdown: ${sample}`);
+  }
+}
+
 // ---------------------------------------------------------------- advisory
 if (widgetCount) advise(`${widgetCount} interactive widget(s) across the site`);
 const totalBytes = allFiles.reduce((s, f) => s + fs.statSync(f).size, 0);

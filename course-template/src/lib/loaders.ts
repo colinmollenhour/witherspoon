@@ -40,6 +40,18 @@ function activityPath(topic: RawUnit['topics'][number], type: string): string | 
 }
 
 /**
+ * `about` is prose written against the course *directory*, so it links to
+ * `SOURCES.md` — a file that is not published. The ledger is a page, so point at it.
+ *
+ * This only surfaced once `about` started being rendered as markdown rather than
+ * dropped in as plain text: as text the link was invisible, and gate S3 had nothing
+ * to resolve.
+ */
+function rewriteCourseLinks(md: string): string {
+  return md.replace(/\]\(\.?\/?SOURCES\.md[^)]*\)/g, '](sources.html)');
+}
+
+/**
  * Project briefs link to their siblings on disk — `rubric.md`, `tests/`, `starter/`.
  * Those files are not published as pages; their content is rendered into sections
  * of the project page instead, so the links are repointed at those sections.
@@ -78,7 +90,7 @@ export function courseLoader(): Loader {
         title: c.title,
         slug: c.slug,
         subtitle: c.subtitle,
-        about: c.about,
+        about: rewriteCourseLinks(c.about),
         // Stated in the build report when the course does not specify one.
         accent: c.brandColors?.primary ?? DEFAULT_ACCENT,
         accentInk: c.brandColors?.ink ?? DEFAULT_ACCENT_INK,

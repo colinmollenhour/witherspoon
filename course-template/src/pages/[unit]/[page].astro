@@ -125,7 +125,7 @@ const longRead = props.kind === 'topic' || props.kind === 'project';
           <div style="min-width:0">
             <h1 style="margin-bottom:.25rem">{props.unit.data.title}</h1>
             <p class="lede" style="margin:0">
-              {props.unit.data.description}
+              <Markdown text={props.unit.data.description} inline />
             </p>
           </div>
         </div>
@@ -148,7 +148,9 @@ const longRead = props.kind === 'topic' || props.kind === 'project';
         {props.unit.data.test && (
           <section>
             <h2>Unit test</h2>
-            <p>{props.unit.data.test.description}</p>
+            <p>
+              <Markdown text={props.unit.data.test.description} inline />
+            </p>
             <p>
               <a class="btn btn--primary" href="test.html">
                 Take the unit test →
@@ -165,7 +167,9 @@ const longRead = props.kind === 'topic' || props.kind === 'project';
                 <h3 style="margin-top:0">
                   <a href={`${p.slug}.html`}>{p.title}</a>
                 </h3>
-                <p class="muted">{p.goal}</p>
+                <p class="muted">
+                  <Markdown text={p.goal} inline />
+                </p>
               </div>
             ))}
           </section>
@@ -234,7 +238,9 @@ const longRead = props.kind === 'topic' || props.kind === 'project';
     props.kind === 'test' && (
       <>
         <h1>{props.unit.data.test!.title || `Unit ${props.unit.data.index} test`}</h1>
-        <p class="lede">{props.unit.data.test!.description}</p>
+        <p class="lede">
+          <Markdown text={props.unit.data.test!.description} inline />
+        </p>
         <p>
           Passing score: {props.unit.data.test!.passingScore}%. Feedback appears as you go, and only
           your first answer to each question counts.
@@ -291,7 +297,9 @@ const longRead = props.kind === 'topic' || props.kind === 'project';
                   {props.project.data.testCases.map((tc) => (
                     <tr>
                       <th scope="row">{tc.name}</th>
-                      <td>{tc.description}</td>
+                      <td>
+                        <Markdown text={tc.description} inline />
+                      </td>
                       <td>
                         <code>{tc.expectedOutput}</code>
                       </td>

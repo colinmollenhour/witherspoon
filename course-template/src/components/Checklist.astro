@@ -15,9 +15,12 @@ const { id, steps } = Astro.props;
       <li>
         <input type="checkbox" id={`step-${id}-${i}`} />
         <label for={`step-${id}-${i}`}>
-          <strong>{s.title}</strong>
+          {/* Every one of these is author-written prose carrying inline code —
+              `completionCriteria` is a filename or a command in almost every step.
+              Rendered as plain text they ship visible backticks. */}
+          <strong><Markdown text={s.title} inline /></strong>
           <Markdown text={s.description} />
-          <span class="criteria">Done when: {s.completionCriteria}</span>
+          <span class="criteria">Done when: <Markdown text={s.completionCriteria} inline /></span>
         </label>
       </li>
     ))

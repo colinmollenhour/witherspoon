@@ -17,7 +17,9 @@ const palette = unitAccents(c.data.accent, units.length);
   <section class="hero">
     <p class="hero__eyebrow">{c.data.categories[0] ?? 'Course'}</p>
     <h1>{c.data.title}</h1>
-    <p class="lede">{c.data.subtitle}</p>
+    <p class="lede">
+      <Markdown text={c.data.subtitle} inline />
+    </p>
     <ul class="chips">
       <li class="chip"><b>{units.length}</b> <span>units</span></li>
       <li class="chip"><b>{c.data.totalTopics}</b> <span>topics</span></li>
@@ -66,7 +68,7 @@ const palette = unitAccents(c.data.accent, units.length);
   <section>
     <h2>About this course</h2>
     <div class="reading">
-      {aboutParagraphs.map((p) => <p>{p}</p>)}
+      {aboutParagraphs.map((p) => <Markdown text={p} />)}
     </div>
   </section>
 
@@ -75,10 +77,10 @@ const palette = unitAccents(c.data.accent, units.length);
       <section class="callout" style="margin:1.5rem 0">
         <h2 class="callout__title">Where you start, and where you finish</h2>
         <p>
-          <strong>Before:</strong> {c.data.spine.transformation.before}
+          <strong>Before:</strong> <Markdown text={c.data.spine.transformation.before} inline />
         </p>
         <p>
-          <strong>After:</strong> {c.data.spine.transformation.after}
+          <strong>After:</strong> <Markdown text={c.data.spine.transformation.after} inline />
         </p>
       </section>
     )
@@ -92,7 +94,9 @@ const palette = unitAccents(c.data.accent, units.length);
           {c.data.skills.map((s) => (
             <div class="card card--link">
               <h3 style="margin-top:0">{s.title}</h3>
-              <p class="muted">{s.description}</p>
+              <p class="muted">
+                <Markdown text={s.description} inline />
+              </p>
             </div>
           ))}
         </div>
@@ -116,7 +120,9 @@ const palette = unitAccents(c.data.accent, units.length);
                 <h3>
                   <a href={`${u.data.slug}/index.html`}>Unit {u.data.index} — {u.data.title}</a>
                 </h3>
-                <p class="unit-card__desc">{u.data.description}</p>
+                <p class="unit-card__desc">
+                  <Markdown text={u.data.description} inline />
+                </p>
               </div>
             </div>
 

@@ -175,7 +175,10 @@ const anatomy: Builder = async (spec, where) => {
       fail(where, `\`parts[${i}].text\` must be a non-empty string`);
     }
     const text = p.text;
-    const label = p.label ? String(p.label) : '';
+    // `text` stays verbatim — it is the literal string being dissected, and
+    // rendering it would eat the very punctuation the widget exists to label. Every
+    // *authored* field around it is markdown, as widgets.md promises.
+    const label = p.label ? await md(String(p.label)) : '';
     const note = p.note ? await md(String(p.note)) : '';
     // A segment with no explanation is scaffolding — punctuation holding the
     // string together — and must not be focusable or look clickable.
@@ -185,13 +188,13 @@ const anatomy: Builder = async (spec, where) => {
         ? `<span class="wx-seg wx-seg--inert">${esc(text)}</span>`
         : `<button class="wx-seg" type="button" data-seg="${i}">` +
           `<span class="wx-seg__text">${esc(text)}</span>` +
-          (label ? `<span class="wx-seg__label">${esc(label)}</span>` : '') +
+          (label ? `<span class="wx-seg__label">${label}</span>` : '') +
           `</button>`,
     );
     if (!inert) {
       notes.push(
         `<div class="wx-note" data-note="${i}">` +
-          (label ? `<b>${esc(label)}</b>` : '') +
+          (label ? `<b>${label}</b>` : '') +
           `<code>${esc(text)}</code>` +
           (note ? `<div class="wx-note__body">${note}</div>` : '') +
           `</div>`,
@@ -219,7 +222,7 @@ const flow: Builder = async (spec, where) => {
 
   for (const [i, s] of steps.entries()) {
     const label = await md(asString(s.label, where, `steps[${i}].label`));
-    const sub = s.sub ? esc(String(s.sub)) : '';
+    const sub = s.sub ? await md(String(s.sub)) : '';
     const detail = s.detail ? await md(String(s.detail)) : '';
     heads.push(
       `<li class="wx-step" data-step="${i}">` +
@@ -419,13 +422,16 @@ const order: Builder = async (spec, where) => {
 const sequence: Builder = async (spec, where) => {
   const actors = asArray(spec.actors, where, 'actors').map(String);
   const messages = asArray(spec.messages, where, 'messages') as Array<Record<string, unknown>>;
+  // Rendered once and reused: an actor's name appears in the legend and again on
+  // every message it takes part in.
+  const names = await Promise.all(actors.map((a) => md(a)));
 
   // With two actors every row already names both, and a legend above them is pure
   // repetition. It earns its place only once there are three or more.
   const legend =
     actors.length > 2
       ? `<div class="wx-seq__legend">${actors
-          .map((a, i) => `<span class="wx-actor" data-actor="${i}">${esc(a)}</span>`)
+          .map((_a, i) => `<span class="wx-actor" data-actor="${i}">${names[i]}</span>`)
           .join('')}</div>`
       : '';
   const rows: string[] = [];
@@ -442,9 +448,9 @@ const sequence: Builder = async (spec, where) => {
     rows.push(
       `<li class="wx-msg" data-msg="${i}"${to < from ? ' data-back' : ''}>` +
         `<div class="wx-msg__wire">` +
-        `<span class="wx-actor" data-actor="${from}">${esc(actors[from] as string)}</span>` +
+        `<span class="wx-actor" data-actor="${from}">${names[from]}</span>` +
         `<span class="wx-msg__arrow" aria-hidden="true"></span>` +
-        `<span class="wx-actor" data-actor="${to}">${esc(actors[to] as string)}</span>` +
+        `<span class="wx-actor" data-actor="${to}">${names[to]}</span>` +
         `</div>` +
         `<div class="wx-msg__label">${label}${note ? `<small>${note}</small>` : ''}</div>` +
         `</li>`,

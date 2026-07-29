@@ -18,7 +18,9 @@ export default defineConfig({
   // Every internal URL the template emits is relative, so the site works from a
   // bucket root, a subpath, or file://. `base` is deliberately never set.
   outDir: path.join(courseDir, 'dist'),
-  publicDir: path.join(here, '.build/public'),
+  // Set by tools/build.mjs, which stages dev and production separately so a running
+  // preview's esbuild watcher cannot overwrite a production bundle.
+  publicDir: process.env.COURSE_STAGE ?? path.join(here, '.build/public'),
   // Kept inside the template. Left at its default it lands in outDir, shipping
   // content-layer scratch files (collections/*.schema.json, content-*.mjs) as
   // though they were part of the site.
