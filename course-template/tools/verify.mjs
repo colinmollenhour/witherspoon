@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build gates S1–S12 from course-site/references/build-gates.md, plus the advisory
+ * Build gates S1–S13 from course-site/references/build-gates.md, plus the advisory
  * checks. Replaces the inline verify.sh, whose S1 quietly dropped the `fetch(`
  * pattern that the prose version of the gate requires — so the two disagreed about
  * whether the shipped runtime passed.
@@ -280,7 +280,69 @@ for (const [f, html] of pages) {
   }
 }
 
+// ---------------------------------------------------------------- S13
+// Interactive visual aids. Two things can go wrong invisibly: a widget that fails
+// to compile leaves its mount token in the prose, and a widget whose content only
+// appears after JavaScript runs silently breaks the no-JS baseline S4 guarantees
+// for everything else on the page.
+const WIDGET_KINDS = [
+  'anatomy', 'flow', 'compare', 'terminal', 'match', 'order', 'sequence', 'tree',
+];
+/** Widgets whose interactive form hides content, and the fallback each must ship. */
+const FALLBACK_REQUIRED = {
+  match: ['data-fallback'],
+  order: ['data-fallback'],
+  anatomy: ['class="wx-note"'],
+};
+let widgetCount = 0;
+
+for (const [f, html] of pages) {
+  if (html.includes('CSWIDGETMOUNT')) {
+    fail('S13', `${relOf(f)} still contains a widget mount token — a widget did not render`);
+  }
+  const widgets = [...html.matchAll(/<figure class="wx wx--([a-z]+)" data-widget="([a-z]+)"/g)];
+  widgetCount += widgets.length;
+
+  for (const m of widgets) {
+    const kind = m[2];
+    if (!WIDGET_KINDS.includes(kind)) {
+      fail('S13', `${relOf(f)} has an unknown widget kind "${kind}"`);
+      continue;
+    }
+    if (m[1] !== kind) {
+      fail('S13', `${relOf(f)} widget class "wx--${m[1]}" disagrees with data-widget="${kind}"`);
+    }
+  }
+
+  // Scoped per widget, so a fallback belonging to a different widget on the same
+  // page cannot satisfy the check.
+  for (const block of html.matchAll(
+    /<figure class="wx wx--([a-z]+)" data-widget="[a-z]+"[\s\S]*?<\/figure>/g,
+  )) {
+    const kind = block[1];
+    for (const needle of FALLBACK_REQUIRED[kind] ?? []) {
+      if (!block[0].includes(needle)) {
+        fail('S13', `${relOf(f)} ${kind} widget has no no-JS fallback (expected ${needle})`);
+      }
+    }
+    if (kind === 'terminal' && block[0].includes('class="wx-run"')
+        && !block[0].includes('class="wx-line__out"')) {
+      fail('S13', `${relOf(f)} terminal widget has a Run button but no output in the HTML`);
+    }
+    for (const b of block[0].matchAll(/<button\b[^>]*>([\s\S]*?)<\/button>/g)) {
+      const named = b[1].replace(/<[^>]*>/g, '').trim() || /aria-label=/.test(b[0]);
+      if (!named) fail('S8', `${relOf(f)} has a widget button with no accessible name`);
+    }
+  }
+
+  // Visual-aid inflation reads as decoration and costs the real ones their weight.
+  if (widgets.length > 4) {
+    advise(`${relOf(f)} has ${widgets.length} widgets — more than 4 on one page dilutes them`);
+  }
+}
+
 // ---------------------------------------------------------------- advisory
+if (widgetCount) advise(`${widgetCount} interactive widget(s) across the site`);
 const totalBytes = allFiles.reduce((s, f) => s + fs.statSync(f).size, 0);
 const biggest = allFiles
   .map((f) => ({ f, size: fs.statSync(f).size }))

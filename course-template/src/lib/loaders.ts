@@ -18,6 +18,7 @@ import {
   type RawQuestion,
   type RawUnit,
 } from './course';
+import { compileWidgets } from './widgets';
 
 const DEFAULT_ACCENT = '#3f7ac4';
 const DEFAULT_ACCENT_INK = '#ffffff';
@@ -188,10 +189,15 @@ export function topicsLoader(): Loader {
 
           const id = `${unitSlug(ui)}/${topicSlug(ti)}`;
           const data = await parseData({ id, data: raw });
+          // Widget fences are lifted out before the markdown is rendered and their
+          // compiled HTML put back after, so a widget is never at the mercy of the
+          // markdown processor's opinion about the JSON inside it.
+          const w = await compileWidgets(body, readPath);
+          const rendered = await renderMarkdown(w.markdown);
           store.set({
             id,
             data,
-            rendered: await renderMarkdown(body),
+            rendered: { ...rendered, html: w.inject(rendered.html) },
             digest: generateDigest(data),
           });
         }
@@ -268,10 +274,15 @@ export function projectsLoader(): Loader {
 
           const id = `${unitSlug(ui)}/${projectSlug(pi)}`;
           const data = await parseData({ id, data: raw });
+          const w = await compileWidgets(
+            rewriteBriefLinks(stripTitle(briefMd)),
+            `${p.path}/brief.md`,
+          );
+          const rendered = await renderMarkdown(w.markdown);
           store.set({
             id,
             data,
-            rendered: await renderMarkdown(rewriteBriefLinks(stripTitle(briefMd))),
+            rendered: { ...rendered, html: w.inject(rendered.html) },
             digest: generateDigest(data),
           });
         }

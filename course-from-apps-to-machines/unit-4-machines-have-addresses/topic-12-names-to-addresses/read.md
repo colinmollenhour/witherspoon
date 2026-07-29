@@ -117,6 +117,37 @@ consulted first, every time. That one ordering explains both halves of this topi
 - **`/etc/hosts` outranks the entire internet, for one name.** Any name listed there is answered
   from the file and DNS is never consulted for it. That is real power in a seven-line text file.
 
+```widget
+{
+  "type": "flow",
+  "direction": "column",
+  "title": "Where a name goes looking for its number",
+  "steps": [
+    {
+      "label": "You type a name",
+      "sub": "`localhost`, or `example.com`",
+      "detail": "Nothing has moved on the network yet. The network carries only numbers, so this name has to become one before a single packet is sent."
+    },
+    {
+      "label": "`files` — `/etc/hosts` is read",
+      "sub": "first source in `nsswitch.conf`",
+      "detail": "A plain text file on your own disk, consulted **every time**, before anything else. `localhost` is found here, on the line `127.0.0.1   localhost`, and the lookup ends — which is why `localhost` resolves in a tunnel with the Wi-Fi off."
+    },
+    {
+      "label": "`dns` — a DNS server is asked",
+      "sub": "only if the file had no answer",
+      "detail": "This is the step `dig +short example.com` performs on its own. It goes out over the network, comes back with one address per line, and stops. It does not fetch a page or check whether the machine is switched on."
+    },
+    {
+      "label": "An address comes back",
+      "sub": "`127.0.0.1`, or a public IP",
+      "detail": "Now a connection can be attempted. Everything from Topic 11 onwards operates on this number; the name has done its job and is gone — which is exactly why HTTP has to carry it again in a `Host:` header."
+    }
+  ],
+  "caption": "`files` before `dns` is the whole of it: the local file outranks the entire internet, for any name it lists."
+}
+```
+
 ## Where this leaves you
 
 You can turn a hostname into an IP address with `dig +short`, and you know the most familiar

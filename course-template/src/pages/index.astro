@@ -3,31 +3,40 @@ import { getCollection } from 'astro:content';
 import Page from '../layouts/Page.astro';
 import ProgressRing from '../components/ProgressRing.astro';
 import Markdown from '../components/Markdown.astro';
+import { unitAccents } from '../lib/color';
 
 const c = (await getCollection('course'))[0]!;
 const units = (await getCollection('units')).sort((a, b) => a.data.index - b.data.index);
 
 const totalQuizzes = c.data.totalQuizzes;
 const aboutParagraphs = c.data.about.split(/\n{2,}/).filter(Boolean);
+const palette = unitAccents(c.data.accent, units.length);
 ---
 
 <Page title="Home" description={c.data.subtitle} depth={0} pagePath="index.html">
-  <section>
+  <section class="hero">
+    <p class="hero__eyebrow">{c.data.categories[0] ?? 'Course'}</p>
     <h1>{c.data.title}</h1>
     <p class="lede">{c.data.subtitle}</p>
-    <p>
-      {units.length} units · {c.data.totalTopics} topics · {totalQuizzes} quizzes and tests
-    </p>
+    <ul class="chips">
+      <li class="chip"><b>{units.length}</b> <span>units</span></li>
+      <li class="chip"><b>{c.data.totalTopics}</b> <span>topics</span></li>
+      <li class="chip"><b>{totalQuizzes}</b> <span>quizzes and tests</span></li>
+    </ul>
   </section>
 
   {/* Shown only once progress exists — the most valuable element for a returning learner. */}
-  <p class="card" data-resume hidden style="margin:1.5rem 0">
-    <a href="index.html">Resume where you left off →</a>
-  </p>
+  <a class="card card--link resume" data-resume hidden href="index.html" style="margin:1.5rem 0">
+    <span>
+      <strong>Resume where you left off</strong>
+      <small>Pick up at the last page you opened</small>
+    </span>
+    <span class="resume__go" aria-hidden="true">→</span>
+  </a>
 
-  <section class="card" style="margin:1.5rem 0; display:flex; gap:2rem; flex-wrap:wrap; align-items:center">
+  <section class="card dash" style="margin:1.5rem 0">
     <ProgressRing />
-    <div class="grid" style="flex:1; min-width:16rem">
+    <div class="statgrid">
       <div>
         <p class="stat" data-stat="topics">0 / {c.data.totalTopics}</p>
         <p>Topics read</p>
@@ -81,9 +90,9 @@ const aboutParagraphs = c.data.about.split(/\n{2,}/).filter(Boolean);
         <h2>What you'll be able to do</h2>
         <div class="grid">
           {c.data.skills.map((s) => (
-            <div class="card">
+            <div class="card card--link">
               <h3 style="margin-top:0">{s.title}</h3>
-              <p>{s.description}</p>
+              <p class="muted">{s.description}</p>
             </div>
           ))}
         </div>
@@ -96,30 +105,48 @@ const aboutParagraphs = c.data.about.split(/\n{2,}/).filter(Boolean);
     <div class="stack">
       {
         units.map((u) => (
-          <div class="card">
-            <h3 style="margin-top:0">
-              <a href={`${u.data.slug}/index.html`}>
-                Unit {u.data.index} — {u.data.title}
-              </a>
-            </h3>
-            <p>{u.data.description}</p>
-            <div class="bar" data-unit-bar={u.data.unitId}>
-              <span style="width:0%"></span>
-            </div>
-            {u.data.topics.map((t) => (
-              <div class="topic-row" data-topic-state={t.id}>
-                <span class="dot" />
-                <a href={`${u.data.slug}/${t.slug}.html`}>{t.title}</a>
-                <span class="score" />
+          // Scoping --accent here is what gives each unit card its own colour;
+          // the numeral, the edge and the progress bar inside all inherit it.
+          <div class="card card--link unit-card" style={`--accent: ${palette[u.data.index - 1]}`}>
+            <div class="unit-card__head">
+              <span class="unit-card__n" aria-hidden="true">
+                {u.data.index}
+              </span>
+              <div style="min-width:0">
+                <h3>
+                  <a href={`${u.data.slug}/index.html`}>Unit {u.data.index} — {u.data.title}</a>
+                </h3>
+                <p class="unit-card__desc">{u.data.description}</p>
               </div>
-            ))}
-            <p style="margin:.6rem 0 0">
-              {u.data.test && <a href={`${u.data.slug}/test.html`}>Unit test</a>}
+            </div>
+
+            <div class="unit-card__meta">
+              <div class="bar" data-unit-bar={u.data.unitId} style="flex:1">
+                <span style="width:0%" />
+              </div>
+              <span>{u.data.topics.length} topics</span>
+            </div>
+
+            <div style="margin-top:.5rem">
+              {u.data.topics.map((t) => (
+                <div class="topic-row" data-topic-state={t.id}>
+                  <span class="dot" />
+                  <a href={`${u.data.slug}/${t.slug}.html`}>{t.title}</a>
+                  <span class="score" />
+                </div>
+              ))}
+            </div>
+
+            <p class="unit-card__links">
+              {u.data.test && (
+                <a class="tag" href={`${u.data.slug}/test.html`}>
+                  Unit test
+                </a>
+              )}
               {u.data.projects.map((p) => (
-                <>
-                  {' · '}
-                  <a href={`${u.data.slug}/${p.slug}.html`}>{p.title}</a>
-                </>
+                <a class="tag" href={`${u.data.slug}/${p.slug}.html`}>
+                  {p.title}
+                </a>
               ))}
             </p>
           </div>

@@ -1,0 +1,264 @@
+/* Interactive visual aids. Markup is compiled at build time by lib/widgets.ts;
+   runtime/widgets.ts adds `data-enhanced` and the interaction on top.
+
+   Rule for everything here: the un-enhanced state must be complete and readable.
+   Anything that would leave a widget blank without JavaScript belongs behind
+   `[data-enhanced]`, never the other way round. */
+
+.wx {
+  margin: 1.9rem 0; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--surface); box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.wx__head { display: flex; gap: .7rem; align-items: baseline; flex-wrap: wrap;
+  padding: .7rem 1.1rem; border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--accent-wash), var(--surface)); }
+.wx__kind { flex: none; font-size: .66rem; font-weight: 700; letter-spacing: .11em;
+  text-transform: uppercase; color: var(--accent-ink); background: var(--accent);
+  padding: .2rem .55rem; border-radius: var(--radius-pill); }
+.wx__title { font-weight: 640; letter-spacing: -.01em; }
+.wx__body { padding: 1.1rem; }
+.wx__body > :first-child { margin-top: 0; }
+.wx__body > :last-child { margin-bottom: 0; }
+.wx__lead { margin: 0 0 .9rem; color: var(--text-dim); font-size: .95rem; }
+.wx__cap { margin: 0; padding: .75rem 1.1rem; border-top: 1px dashed var(--border);
+  background: var(--surface-2); color: var(--text-dim); font-size: .9rem; }
+.wx__cap > p { margin: 0; }
+
+/* Shown only when the runtime has taken over; the static markup is the fallback. */
+.wx-fallback { margin-top: .25rem; }
+[data-enhanced] .wx-fallback { display: none; }
+
+/* ---------------------------------------------------------------- anatomy */
+.wx-string { display: flex; flex-wrap: wrap; align-items: stretch; gap: 3px;
+  font-family: var(--mono); }
+.wx-seg { font: inherit; cursor: pointer; border: 1px solid var(--border);
+  background: var(--surface-2); color: var(--text); border-radius: var(--radius-sm);
+  padding: .45rem .55rem .35rem; display: flex; flex-direction: column; gap: .15rem;
+  align-items: center; transition: all var(--speed) var(--ease); }
+.wx-seg:hover { border-color: var(--accent); background: var(--accent-wash); }
+.wx-seg__text { font-size: 1.02rem; white-space: pre; }
+.wx-seg__label { font: 600 .6rem var(--font); letter-spacing: .06em; text-transform: uppercase;
+  color: var(--text-faint); white-space: nowrap; }
+.wx-seg--inert { display: flex; align-items: center; padding: .45rem .15rem;
+  color: var(--text-faint); font-size: 1.02rem; white-space: pre; }
+.wx-seg[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); }
+.wx-seg[aria-pressed="true"] .wx-seg__text { color: var(--accent-ink); }
+.wx-seg[aria-pressed="true"] .wx-seg__label { color: var(--accent-ink); opacity: .8; }
+
+.wx-notes { margin-top: 1rem; }
+.wx-note { padding: .6rem .8rem; border-radius: var(--radius-sm); background: var(--surface-2);
+  margin-top: .4rem; border-left: 3px solid var(--accent-line); }
+.wx-note b { margin-right: .5rem; }
+.wx-note__body { margin-top: .3rem; font-size: .95rem; }
+.wx-note__body > :first-child { margin-top: 0; }
+.wx-note__body > :last-child { margin-bottom: 0; }
+/* Enhanced: one note at a time, in a slot that does not jump as it changes. */
+[data-enhanced] .wx-notes { min-height: 5.5rem; }
+[data-enhanced] .wx-note { display: none; margin-top: 0; }
+[data-enhanced] .wx-note[data-active] { display: block; animation: slide-in 200ms var(--ease); }
+
+/* ---------------------------------------------------------------- flow */
+.wx-flow__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.4rem; }
+.wx-flow--row .wx-flow__steps { grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); }
+.wx-flow--column .wx-flow__steps { grid-template-columns: 1fr; gap: 1.6rem; }
+.wx-step { position: relative; display: flex; }
+.wx-step > .wx-step__head { flex: 1; }
+/* The connector, drawn on the gap rather than as a character so a screen reader
+   is given a plain ordered list and nothing else. */
+.wx-step:not(:last-child)::after {
+  content: ""; position: absolute; background: var(--border-strong);
+}
+.wx-step:not(:last-child)::before {
+  content: ""; position: absolute; border: 5px solid transparent;
+}
+.wx-flow--row .wx-step:not(:last-child)::after {
+  right: -1.1rem; top: 1.5rem; width: .95rem; height: 2px;
+}
+.wx-flow--row .wx-step:not(:last-child)::before {
+  right: -1.1rem; top: 1.05rem; border-left-color: var(--border-strong);
+}
+.wx-flow--column .wx-step:not(:last-child)::after {
+  left: 1.4rem; bottom: -1.25rem; width: 2px; height: 1rem;
+}
+.wx-flow--column .wx-step:not(:last-child)::before {
+  left: 1rem; bottom: -1.3rem; border-top-color: var(--border-strong);
+}
+
+.wx-flow__details { margin-top: 1.4rem; }
+.wx-step__head { width: 100%; text-align: left; font: inherit; cursor: pointer;
+  display: flex; gap: .6rem; align-items: flex-start; padding: .7rem .8rem;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface-2); color: var(--text);
+  transition: all var(--speed) var(--ease); }
+.wx-step__head:hover:not([disabled]) { border-color: var(--accent); background: var(--accent-wash); }
+.wx-step__head[disabled] { cursor: default; opacity: 1; }
+.wx-step__n { flex: none; width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  display: grid; place-items: center; font-size: .78rem; font-weight: 700;
+  background: var(--accent); color: var(--accent-ink); }
+.wx-step__label { font-weight: 550; line-height: 1.35; }
+.wx-step__label small { display: block; font-weight: 400; color: var(--text-dim);
+  font-size: .82rem; }
+.wx-step__detail { display: flex; gap: .6rem; align-items: flex-start;
+  padding: .75rem .9rem; font-size: .94rem; border-radius: var(--radius-sm);
+  background: var(--surface-2); border: 1px solid var(--border); }
+.wx-step__detail + .wx-step__detail { margin-top: .5rem; }
+.wx-step__detail-n { flex: none; width: 1.5rem; height: 1.5rem; border-radius: 50%;
+  display: grid; place-items: center; font-size: .78rem; font-weight: 700;
+  background: var(--accent); color: var(--accent-ink); }
+.wx-step__detail > div > :first-child { margin-top: 0; }
+.wx-step__detail > div > :last-child { margin-bottom: 0; }
+/* Enhanced: one open at a time, and the number chip is redundant once the step
+   above is highlighted. */
+[data-enhanced] .wx-step__detail { display: none; }
+[data-enhanced] .wx-step__detail[data-open] { display: flex;
+  animation: slide-in 200ms var(--ease); }
+[data-enhanced] .wx-step[data-open] .wx-step__head { border-color: var(--accent);
+  background: var(--accent-wash); box-shadow: var(--ring); }
+
+/* ---------------------------------------------------------------- compare */
+.wx-compare { font-size: .95rem; }
+.wx-compare thead td { border-bottom: 0; }
+.wx-compare th[data-tone="ok"] { color: var(--ok); }
+.wx-compare th[data-tone="bad"] { color: var(--bad); }
+.wx-compare td[data-tone="ok"] { background: color-mix(in srgb, var(--ok) 7%, transparent); }
+.wx-compare td[data-tone="bad"] { background: color-mix(in srgb, var(--bad) 7%, transparent); }
+.wx-compare tbody th { font-weight: 600; color: var(--text-dim); width: 30%; }
+.wx-compare td > :first-child { margin-top: 0; }
+.wx-compare td > :last-child { margin-bottom: 0; }
+
+/* Below the reading column a three-way comparison of sentences is unreadable as a
+   table, so each row becomes a small stack labelled by its column. */
+@media (max-width: 34rem) {
+  .wx-compare, .wx-compare tbody, .wx-compare tr, .wx-compare th, .wx-compare td { display: block; }
+  .wx-compare thead { display: none; }
+  .wx-compare tr { margin-bottom: 1rem; border: 1px solid var(--border);
+    border-radius: var(--radius-sm); overflow: hidden; }
+  .wx-compare tbody th { width: auto; background: var(--surface-2); }
+  .wx-compare td::before { content: attr(data-col); display: block; font-weight: 600;
+    font-size: .75rem; text-transform: uppercase; letter-spacing: .07em;
+    color: var(--text-faint); margin-bottom: .15rem; }
+}
+
+/* ---------------------------------------------------------------- terminal */
+/* A shell is dark in both themes. Flipping this to a light card in light mode
+   stops it reading as a terminal at all, which is the only thing it has to do. */
+.wx-term { background: var(--term-bg); color: var(--term-ink); border-radius: var(--radius-sm);
+  padding: .9rem 1rem; font-family: var(--mono); font-size: .87rem; line-height: 1.55;
+  overflow-x: auto; }
+.wx-line + .wx-line { margin-top: .9rem; padding-top: .9rem;
+  border-top: 1px solid rgb(255 255 255 / 8%); }
+.wx-line__cmd { display: flex; gap: .5rem; align-items: baseline; flex-wrap: wrap; }
+.wx-line__cmd code { background: none; border: 0; padding: 0; color: var(--term-ink);
+  font-size: inherit; font-weight: 600; }
+.wx-prompt { color: var(--term-dim); white-space: nowrap; }
+.wx-prompt__host { color: var(--term-accent); }
+.wx-prompt__cwd { margin-left: .4rem; }
+.wx-prompt__sigil { margin-left: .4rem; color: var(--term-ink); }
+.wx-run { font: 600 .72rem var(--font); letter-spacing: .05em; text-transform: uppercase;
+  margin-left: auto; cursor: pointer; padding: .2rem .6rem; border-radius: var(--radius-pill);
+  border: 1px solid var(--term-accent); background: none; color: var(--term-accent);
+  transition: all var(--speed) var(--ease); }
+.wx-run:hover { background: var(--term-accent); color: var(--term-bg); }
+.wx-line__out { margin: .45rem 0 0; padding: 0; background: none; border: 0; box-shadow: none;
+  white-space: pre-wrap; }
+.wx-line__out code { background: none; border: 0; padding: 0; color: var(--term-dim);
+  font-size: inherit; }
+.wx-line__note { margin-top: .5rem; font-family: var(--font); font-size: .88rem;
+  color: var(--term-dim); border-left: 2px solid var(--term-accent); padding-left: .7rem; }
+.wx-line__note > :first-child { margin-top: 0; }
+.wx-line__note > :last-child { margin-bottom: 0; }
+[data-enhanced] .wx-line[data-hidden] .wx-line__out,
+[data-enhanced] .wx-line[data-hidden] .wx-line__note { display: none; }
+
+/* ---------------------------------------------------------------- tiles (match, order) */
+.wx-tile { font: inherit; text-align: left; cursor: pointer; padding: .5rem .7rem;
+  border: 1px solid var(--border); border-radius: var(--radius-sm);
+  background: var(--surface-2); color: var(--text); font-size: .92rem;
+  transition: all var(--speed) var(--ease); }
+.wx-tile:hover:not([disabled]) { border-color: var(--accent); background: var(--accent-wash); }
+.wx-tile p { margin: 0; }
+.wx-tile[data-picked] { border-color: var(--accent); background: var(--accent);
+  color: var(--accent-ink); }
+.wx-tile[data-picked] code { background: rgb(255 255 255 / 18%); border-color: transparent;
+  color: inherit; }
+.wx-tile[data-done] { border-color: var(--ok); background: var(--ok-bg); color: var(--text);
+  cursor: default; opacity: .75; }
+.wx-tile[data-wrong] { animation: shake 320ms var(--ease); border-color: var(--bad);
+  background: var(--bad-bg); }
+@keyframes shake {
+  0%, 100% { transform: translateX(0) } 20% { transform: translateX(-5px) }
+  40% { transform: translateX(5px) } 60% { transform: translateX(-3px) } 80% { transform: translateX(3px) }
+}
+
+.wx-match { display: grid; grid-template-columns: 1fr 1fr; gap: .6rem; }
+.wx-match__col { display: grid; gap: .45rem; align-content: start; }
+.wx-match__status { margin: .9rem 0 0; font-size: .92rem; color: var(--text-dim); }
+.wx-match__status[data-done] { color: var(--ok); font-weight: 600; }
+
+.wx-order__pool { display: flex; flex-wrap: wrap; gap: .45rem; min-height: 2.6rem; }
+.wx-order__slots { list-style: none; counter-reset: slot; margin: 1rem 0 0; padding: 0;
+  display: grid; gap: .45rem; }
+.wx-order__slots li { counter-increment: slot; display: flex; gap: .6rem; align-items: center; }
+.wx-order__slots li::before { content: counter(slot); flex: none; width: 1.5rem; height: 1.5rem;
+  border-radius: 50%; display: grid; place-items: center; font-size: .78rem; font-weight: 700;
+  background: var(--surface-3); color: var(--text-dim); }
+.wx-order__slots .wx-tile { flex: 1; }
+.wx-order__slots li[data-ok]::before { background: var(--ok); color: #fff; }
+.wx-order__slots li[data-bad]::before { background: var(--bad); color: #fff; }
+.wx-order__bar { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap;
+  margin-top: 1rem; }
+.wx-order__status { font-size: .92rem; color: var(--text-dim); }
+
+/* ---------------------------------------------------------------- sequence */
+.wx-seq__legend { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }
+.wx-actor { font-size: .8rem; font-weight: 600; padding: .22rem .6rem;
+  border-radius: var(--radius-pill); background: var(--surface-3); color: var(--text-dim);
+  white-space: nowrap; }
+.wx-seq__legend .wx-actor { background: var(--accent-wash); color: var(--accent);
+  border: 1px solid var(--accent-line); }
+.wx-seq__msgs { list-style: none; margin: 0; padding: 0; display: grid; gap: .9rem;
+  counter-reset: msg; }
+.wx-msg { counter-increment: msg; padding-left: 2rem; position: relative; }
+.wx-msg::before { content: counter(msg); position: absolute; left: 0; top: .1rem;
+  width: 1.4rem; height: 1.4rem; border-radius: 50%; display: grid; place-items: center;
+  font-size: .72rem; font-weight: 700; background: var(--accent); color: var(--accent-ink); }
+.wx-msg__wire { display: flex; align-items: center; gap: .4rem; flex-wrap: wrap; }
+.wx-msg__arrow { flex: 1; min-width: 2rem; height: 2px; background: var(--border-strong);
+  position: relative; }
+.wx-msg__arrow::after { content: ""; position: absolute; right: 0; top: -3px;
+  border: 4px solid transparent; border-left-color: var(--border-strong); }
+/* Sender is always on the left, so the arrowhead always points right. A reply is
+   marked by tinting the wire instead — flipping the head to point back at the
+   sender contradicted the row it was drawn on. */
+.wx-msg[data-back] .wx-msg__arrow { background: var(--accent-line); }
+.wx-msg[data-back] .wx-msg__arrow::after { border-left-color: var(--accent-line); }
+.wx-msg[data-back]::before { background: var(--surface-3); color: var(--text-dim); }
+.wx-msg__label { margin-top: .3rem; font-size: .94rem; }
+.wx-msg__label small { display: block; color: var(--text-dim); font-size: .85rem;
+  margin-top: .15rem; }
+.wx-seq__bar { display: flex; gap: .5rem; align-items: center; margin-top: 1.1rem; }
+[data-enhanced] .wx-msg[data-dim] { opacity: .3; }
+[data-enhanced] .wx-msg { transition: opacity var(--speed) var(--ease); }
+
+/* ---------------------------------------------------------------- tree */
+.wx-tree, .wx-tree ul { list-style: none; margin: 0; padding: 0; }
+.wx-tree ul { margin-left: .65rem; padding-left: .85rem; border-left: 1px solid var(--border); }
+.wx-node { padding: .18rem 0; }
+.wx-node summary { cursor: pointer; padding: .18rem 0; border-radius: var(--radius-sm); }
+.wx-node summary:hover { background: var(--surface-2); }
+.wx-node summary::marker { color: var(--text-faint); }
+.wx-node__name { font-size: .9rem; }
+.wx-node__name[data-tone="ok"] { color: var(--ok); border-color: var(--ok); }
+.wx-node__name[data-tone="bad"] { color: var(--bad); border-color: var(--bad); }
+.wx-node__name[data-tone="accent"] { color: var(--accent); border-color: var(--accent-line); }
+.wx-node__note { margin-left: .6rem; color: var(--text-dim); font-size: .87rem; }
+
+/* ---------------------------------------------------------------- print */
+@media print {
+  .wx { break-inside: avoid; box-shadow: none; }
+  .wx-run, .wx-order__bar, .wx-seq__bar { display: none !important; }
+  /* Whatever the runtime hid, print it — a paper copy has no interaction. */
+  [data-enhanced] .wx-note, [data-enhanced] .wx-step__detail,
+  [data-enhanced] .wx-line[data-hidden] .wx-line__out { display: block !important; }
+  [data-enhanced] .wx-msg[data-dim] { opacity: 1 !important; }
+}

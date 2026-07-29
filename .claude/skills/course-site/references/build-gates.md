@@ -126,6 +126,27 @@ mkdir -p /tmp/sub/course && cp -r dist/* /tmp/sub/course/ && cd /tmp/sub && pyth
 Open `/course/unit-1/topic-1.html`. Styles, scripts, images, and navigation all work. This catches
 root-absolute paths that a grep can miss inside JS.
 
+### S13 — Widget integrity
+
+Interactive visual aids fail in two ways a reader cannot see, and this gate covers both.
+
+**A widget that did not render.** Compilation replaces each ```` ```widget ```` fence with a mount
+token and puts the compiled HTML back afterwards. If the injection misses, the token ships as visible
+gibberish in the middle of the prose. Any `CSWIDGETMOUNT` left in the output fails.
+
+**A widget whose content only exists after JavaScript.** This is S4 for widgets, checked per type:
+`match` and `order` must carry their static fallback, `anatomy` must carry every note, and a
+`terminal` with a Run button must carry the output that button reveals. Every button inside a widget
+needs an accessible name.
+
+The kind in `data-widget` must be one the template knows and must agree with the `wx--` class.
+
+A malformed widget never reaches this gate — the **build** fails first, naming the file and the
+field, because a course that ships a broken diagram silently is worse than one that stops.
+
+Advisory: more than four widgets on a page. Past that they read as decoration and the good ones lose
+their weight.
+
 ## Advisory
 
 Report, do not block.
@@ -144,7 +165,7 @@ Report, do not block.
 
 ```bash
 cd course-template
-npm run verify -- ../<course-dir>/dist   # S1–S12 and the advisory checks
+npm run verify -- ../<course-dir>/dist   # S1–S13 and the advisory checks
 npm run test   -- ../<course-dir>/dist   # runtime behaviour in jsdom
 ```
 

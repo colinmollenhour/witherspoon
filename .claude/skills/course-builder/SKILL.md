@@ -158,7 +158,8 @@ Agents do not talk to each other and do not read sibling topics. The contract is
 each agent its final message is a one-line status, not a summary of what it wrote, and that it must
 not introduce a number absent from its grounded facts.
 
-A topic agent writes `read.md` as prose and returns its **quiz and flashcards as structured data**,
+A topic agent writes `read.md` as prose — including any ```` ```widget ```` blocks its reading earns,
+per `references/activity-specs.md` — and returns its **quiz and flashcards as structured data**,
 which you merge into that topic's `quiz.questions[]` and `flashcards[]` in `course.json`. Set
 `projects[].path` for every project. Then render the reviewable markdown views:
 

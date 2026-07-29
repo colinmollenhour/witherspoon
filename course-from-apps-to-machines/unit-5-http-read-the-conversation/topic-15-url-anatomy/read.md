@@ -17,10 +17,25 @@ tells you what your page is missing.
 
 Here is the address you will type into a phone in Unit 6, taken apart:
 
-```
-http://192.168.1.42:8000/about/index.html?v=2#top
-└┬─┘   └────┬─────┘ └┬─┘└───────┬───────┘└┬─┘└─┬┘
-scheme    host     port       path      query fragment
+```widget
+{
+  "type": "anatomy",
+  "title": "The address you will type into a phone in Unit 6",
+  "subject": "Click a slot to see what it is for.",
+  "parts": [
+    { "text": "http", "label": "scheme", "note": "How to go and get it. `http` means *talk to a machine over the network using HTTP*; `file` means *open something on this disk*. The scheme decides how every character after it is interpreted." },
+    { "text": "://" },
+    { "text": "192.168.1.42", "label": "host", "note": "Which machine. Usually a domain name, but an IP address is entirely legal here — which is what makes the rest of this course possible without owning a domain." },
+    { "text": ":" },
+    { "text": "8000", "label": "port", "note": "Which gate on that machine. Omitted only when the scheme's default applies — 80 for `http`, 443 for `https`. Port 8000 is nobody's default, so here it is **mandatory**." },
+    { "text": "/about/index.html", "label": "path", "note": "Which thing on that machine. It looks like a folder path from Unit 1, and once it literally was one. Now it is mostly an abstraction the server interprets however it likes." },
+    { "text": "?" },
+    { "text": "v=2", "label": "query", "note": "Extra input carried along as `name=value` pairs. Your browser ships it unread; what it *means* is up to the machine at the other end." },
+    { "text": "#" },
+    { "text": "top", "label": "fragment", "note": "**Never sent to the server.** Your browser cuts the URL here, asks for everything to the left, waits for the whole page, and only then jumps to the piece named `top`. Two URLs differing only after the `#` are the same URL to the far machine." }
+  ],
+  "caption": "Six slots, always in that order. Every URL you have ever seen is some subset of them."
+}
 ```
 
 Every URL you have ever seen is some subset of those six slots, always in that order.

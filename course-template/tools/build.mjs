@@ -3,7 +3,7 @@
  * Build (or serve) a course site from this shared template.
  *
  *   npm run build -- --course ../course-from-apps-to-machines
- *   npm run dev   -- --course ../course-from-apps-to-machines
+ *   npm run dev   -- --course ../course-from-apps-to-machines [--host <ip>] [--port <n>]
  *
  * Three things happen before Astro runs:
  *   1. the TypeScript runtime is bundled to a single classic script
@@ -26,7 +26,7 @@ const STAGE = path.join(HERE, '.build/public');
 function usage(message) {
   console.error(`${message}\n`);
   console.error('Usage: npm run build -- --course <path-to-course-dir>');
-  console.error('       npm run dev   -- --course <path-to-course-dir>');
+  console.error('       npm run dev   -- --course <path-to-course-dir> [--host <ip>] [--port <n>]');
   process.exit(2);
 }
 
@@ -34,6 +34,14 @@ const argv = process.argv.slice(2);
 const dev = argv.includes('--dev');
 const at = argv.indexOf('--course');
 if (at === -1 || !argv[at + 1]) usage('Missing --course.');
+
+/** Optional passthrough to `astro dev`, so the preview can be reached from another machine. */
+const flag = (name) => {
+  const i = argv.indexOf(name);
+  return i === -1 ? null : argv[i + 1] ?? null;
+};
+const host = flag('--host');
+const port = flag('--port');
 
 const courseDir = path.resolve(argv[at + 1]);
 if (!fs.existsSync(courseDir)) usage(`No such directory: ${courseDir}`);
@@ -55,24 +63,40 @@ try {
 fs.rmSync(STAGE, { recursive: true, force: true });
 fs.mkdirSync(path.join(STAGE, 'assets'), { recursive: true });
 
-await esbuild.build({
+const jsOptions = {
   entryPoints: [path.join(HERE, 'src/runtime/index.ts')],
   outfile: path.join(STAGE, 'assets/site.js'),
   bundle: true,
   format: 'iife',
   target: 'es2019',
   minify: !dev,
-  sourcemap: false,
+  sourcemap: dev,
   legalComments: 'none',
-});
+};
 
-await esbuild.build({
+const cssOptions = {
   entryPoints: [path.join(HERE, 'src/styles/index.css')],
   outfile: path.join(STAGE, 'assets/site.css'),
   bundle: true,
   minify: !dev,
   loader: { '.woff2': 'file' },
-});
+};
+
+if (dev) {
+  // The runtime and the design system are deliberately outside Astro's pipeline
+  // (see the header comment), which also puts them outside its hot reload. Without
+  // this, editing a stylesheet during `npm run dev` would appear to do nothing.
+  // esbuild rewrites the file in publicDir; Vite notices and reloads the page.
+  const [jsCtx, cssCtx] = await Promise.all([
+    esbuild.context(jsOptions),
+    esbuild.context(cssOptions),
+  ]);
+  await Promise.all([jsCtx.watch(), cssCtx.watch()]);
+  console.log('Watching src/runtime/ and src/styles/ for changes.');
+} else {
+  await esbuild.build(jsOptions);
+  await esbuild.build(cssOptions);
+}
 
 // Visuals live in the course's own tree so a rebuild cannot destroy them.
 const courseAssets = path.join(courseDir, 'assets');
@@ -116,7 +140,11 @@ const astroEnv = {
   ASTRO_TELEMETRY_DISABLED: '1',
 };
 
-const child = spawn(astro, [dev ? 'dev' : 'build'], {
+const astroArgs = [dev ? 'dev' : 'build'];
+if (dev && host) astroArgs.push('--host', host);
+if (dev && port) astroArgs.push('--port', port);
+
+const child = spawn(astro, astroArgs, {
   cwd: HERE,
   stdio: 'inherit',
   env: astroEnv,

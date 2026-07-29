@@ -83,6 +83,28 @@ Take the `index.html` row and walk it left to right.
 | Modified | `Jul 29 04:25` | When the contents last changed |
 | Name | `index.html` | The label — including the hint |
 
+```widget
+{
+  "type": "anatomy",
+  "title": "One `ls -la` row, field by field",
+  "subject": "The `index.html` row from the capture above. Click any field.",
+  "parts": [
+    { "text": "-", "label": "type", "note": "A regular file. `d` here would mean a directory — which is exactly what the `projects` row has." },
+    { "text": "rw-", "label": "owner", "note": "The owner may **r**ead and **w**rite it, but not e**x**ecute it. The three slots are always in the order `r`, `w`, `x`; a `-` means that permission is absent." },
+    { "text": "r--", "label": "group", "note": "Members of the owning group may read it only." },
+    { "text": "r--", "label": "others", "note": "Everyone else may read it only. Owner, group, others — always that order, always three slots each." },
+    { "text": ".", "label": "selinux", "note": "**Not part of the permissions.** An SELinux security-context marker, printed on Fedora and RHEL. Plain Ubuntu and Debian print ten characters with no dot." },
+    { "text": "  1", "label": "links", "note": "How many names point at this same data." },
+    { "text": " colin", "label": "owner", "note": "The user account that owns the file." },
+    { "text": " ubuntu", "label": "group", "note": "The group that owns it — the group whose triple is the middle one." },
+    { "text": " 12", "label": "size", "note": "Twelve **bytes** — twelve characters of text. Not kilobytes, and not a count of anything else." },
+    { "text": " Jul 29 04:25", "label": "modified", "note": "When the contents last changed. Renaming the file does not move this date, because renaming does not touch the bytes." },
+    { "text": " index.html", "label": "name", "note": "The label, including the `.html` hint. The hint is part of the name — nothing checked that the twelve bytes inside are HTML." }
+  ],
+  "caption": "Ten permission characters, then four facts, then the name. The same shape on every Unix-like machine."
+}
+```
+
 The nine characters after the type character are three **triples**, always in this order: owner,
 group, others. Inside each triple the slots are always `r`, `w`, `x` — `r` read, `w` write, `x`
 execute (run it as a program; on a directory, `x` means you may enter it). A `-` in a slot means that

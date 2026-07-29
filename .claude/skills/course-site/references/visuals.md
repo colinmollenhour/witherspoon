@@ -1,7 +1,15 @@
 # Visuals
 
-Read at Stages 2–3. Two skills are composed here, and each has a gotcha that will silently produce
-nothing useful if ignored.
+Read at Stages 2–3, **after `widgets.md`**.
+
+> **Check `widgets.md` first.** Most of what a reading needs is a widget, not a picture: strings with
+> named parts, hand-offs between stages, comparisons, predicted output, sequences, hierarchies. A
+> widget costs a block of JSON, themes itself, reflows on a phone, and stays searchable and
+> translatable. Generate an image only when the subject is genuinely pictorial — a photograph, a
+> hardware layout, a chart of real numbers — or when it is a unit hero.
+
+Two skills are composed here, and each has a gotcha that will silently produce nothing useful if
+ignored.
 
 ## Where output goes
 
@@ -23,15 +31,16 @@ version of this file silently discarded every visual it produced.
 
 | Need | Tool | Output |
 | --- | --- | --- |
+| Flow, pipeline, hierarchy, comparison, sequence, a dissected string | **a widget** — see `widgets.md` | HTML |
 | Unit hero — the before→after of that unit | `infographic` → image generator | PNG |
-| Structure: flow, pipeline, hierarchy, state machine, relationships | `tldraw-skill` | SVG |
+| Structure a widget genuinely cannot carry — a state machine with cycles, a spatial layout | `tldraw-skill` | SVG |
 | Anything else | nothing | — |
 
 Budget, and hold to it:
 
 - **At most one infographic per unit.** It illustrates that unit's slice of the spine.
-- **Diagrams only where structure exists.** A topic teaching one API call does not need a diagram. A
-  topic teaching how three things hand off to each other does.
+- **Diagrams only where a widget will not do.** Most of what used to justify a diagram is now a
+  `flow`, a `sequence`, or a `tree`, all of which theme and reflow and cost nothing to produce.
 - **Never decorative.** If the alt text would be "illustration of the topic", do not generate it.
 
 List the plan before generating: file name, tool, what it depicts, alt text. Alt text is written by

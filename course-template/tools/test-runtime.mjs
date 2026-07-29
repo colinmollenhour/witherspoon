@@ -30,18 +30,35 @@ function findTopicPage() {
   throw new Error('no topic page found in ' + dist);
 }
 
+/** Walk dist for the first page whose HTML matches — used to find a page that
+ *  actually carries the feature under test rather than assuming topic-1 does. */
+function findPageWith(re) {
+  const walk = (dir) => {
+    const out = [];
+    for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+      const abs = path.join(dir, e.name);
+      if (e.isDirectory()) out.push(...walk(abs));
+      else if (e.name.endsWith('.html')) out.push(abs);
+    }
+    return out;
+  };
+  return walk(dist).sort().find((f) => re.test(fs.readFileSync(f, 'utf8'))) ?? null;
+}
+
 const pageFile = findTopicPage();
 const runtime = fs.readFileSync(path.join(dist, 'assets/site.js'), 'utf8');
 const searchIdx = fs.readFileSync(path.join(dist, 'assets/search-index.js'), 'utf8');
 
 /** Load the page with a given localStorage implementation and run the runtime. */
-function load({ storage, seed }) {
+function load({ storage, seed, file }) {
   const virtualConsole = new VirtualConsole();
   const errors = [];
   virtualConsole.on('jsdomError', (e) => errors.push(String(e.message)));
   virtualConsole.on('error', (e) => errors.push(String(e)));
 
-  const html = fs.readFileSync(pageFile, 'utf8').replace(/<script[^>]*src="[^"]*"[^>]*><\/script>/g, '');
+  const html = fs
+    .readFileSync(file ?? pageFile, 'utf8')
+    .replace(/<script[^>]*src="[^"]*"[^>]*><\/script>/g, '');
   const dom = new JSDOM(html, {
     runScripts: 'outside-only',
     pretendToBeVisual: true,
@@ -63,6 +80,30 @@ function load({ storage, seed }) {
     thrown = err;
   }
   return { dom, errors, thrown };
+}
+
+/**
+ * Wait for the runtime's debounced write to land.
+ *
+ * `Store.save()` batches at 250 ms, and a fixed sleep just longer than that raced
+ * on a loaded machine — the reload tests failed roughly one run in two, always
+ * because the blob had not been written yet. Poll for the condition instead.
+ */
+async function settle(store, predicate = () => true, ms = 3000) {
+  const key = () => [...store._map.keys()].find((k) => k.startsWith('course:'));
+  const started = Date.now();
+  while (Date.now() - started < ms) {
+    const k = key();
+    if (k) {
+      try {
+        if (predicate(JSON.parse(store.getItem(k)))) return true;
+      } catch {
+        /* mid-write; try again */
+      }
+    }
+    await new Promise((r) => setTimeout(r, 25));
+  }
+  return false;
 }
 
 function memoryStorage(overrides = {}) {
@@ -152,7 +193,7 @@ function answerAll(dom, doc) {
   );
 
   // Writes are debounced at 250 ms and the whole blob is written at once.
-  await new Promise((r) => setTimeout(r, 400));
+  await settle(store, (b) => Object.values(b.topics ?? {})[0]?.quiz?.score !== undefined);
   const courseKey = [...store._map.keys()].find((k) => k.startsWith('course:'));
   check('progress persisted under a namespaced key', !!courseKey, courseKey ?? 'no course: key');
   const blob = courseKey ? JSON.parse(store.getItem(courseKey)) : {};
@@ -248,7 +289,8 @@ function answerAll(dom, doc) {
 
   const first = load({ storage: store });
   const spec = answerAll(first.dom, first.dom.window.document);
-  await new Promise((r) => setTimeout(r, 400));
+  const saved = await settle(store, (b) => Object.values(b.topics ?? {})[0]?.quiz?.score !== undefined);
+  check('reload: the first visit persisted before reloading', saved);
 
   const again = load({ storage: store });
   const doc = again.dom.window.document;
@@ -277,7 +319,7 @@ function answerAll(dom, doc) {
   // Reset clears this quiz and nothing else.
   store.setItem('course:other:v1', 'untouched');
   reset.dispatchEvent(new again.dom.window.Event('click', { bubbles: true }));
-  await new Promise((r) => setTimeout(r, 400));
+  await settle(store, (b) => !Object.values(b.topics ?? {})[0]?.quiz);
   const key = [...store._map.keys()].find((k) => k.startsWith('course:') && k !== 'course:other:v1');
   const blob = key ? JSON.parse(store.getItem(key)) : {};
   const rec = Object.values(blob.topics ?? {})[0]?.quiz;
@@ -295,7 +337,8 @@ function answerAll(dom, doc) {
   const idx = spec.questions[0].correctOptionIndex ?? 0;
   q0.querySelectorAll('input[type=radio]')[idx].checked = true;
   q0.querySelector('[data-check]').dispatchEvent(new first.dom.window.Event('click', { bubbles: true }));
-  await new Promise((r) => setTimeout(r, 400));
+  const saved = await settle(store, (b) => Array.isArray(Object.values(b.topics ?? {})[0]?.quiz?.answers));
+  check('partial reload: the single answer persisted', saved);
 
   const again = load({ storage: store });
   const doc = again.dom.window.document;
@@ -306,6 +349,76 @@ function answerAll(dom, doc) {
   check('partial reload: meter shows 1 answered',
     /\b1 \/ /.test(doc.querySelector('[data-quiz-count]')?.textContent ?? ''),
     doc.querySelector('[data-quiz-count]')?.textContent ?? '');
+}
+
+// ------------------------------------------------- 8. widgets enhance, never gate
+// The invariant that makes visual aids safe to ship: with the runtime off, every
+// widget's content is already on the page. These check the other half — that the
+// runtime does take over, and that taking over never destroys content.
+// Each kind is looked up on its own page: testing only the first page carrying any
+// widget silently skipped every kind that did not happen to appear on it.
+for (const kind of ['anatomy', 'flow', 'terminal', 'match', 'order', 'sequence']) {
+  const widgetPage = findPageWith(new RegExp(`data-widget="${kind}"`));
+  if (!widgetPage) {
+    // Advisory, not a failure: a course is not obliged to use every widget.
+    console.log(`  --   widgets: no ${kind} widget in this course, skipped`);
+  } else {
+    const store = memoryStorage();
+    const { dom, errors, thrown } = load({ storage: store, file: widgetPage });
+    const doc = dom.window.document;
+    const rel = path.relative(dist, widgetPage);
+    check(`widgets: ${kind} on ${rel} loads without error`, !thrown && errors.length === 0,
+      thrown?.message ?? errors[0] ?? '');
+
+    const scripted = [...doc.querySelectorAll(`[data-widget="${kind}"]`)];
+    check(`widgets: every ${kind} widget was enhanced`,
+      scripted.length > 0 && scripted.every((w) => w.hasAttribute('data-enhanced')),
+      `${scripted.length} found`);
+
+    // Nothing may be removed from the DOM. Hiding is a CSS concern and prints back.
+    for (const w of scripted) {
+      if (kind === 'anatomy') {
+        check('widgets: anatomy keeps every note in the DOM',
+          w.querySelectorAll('.wx-note').length === w.querySelectorAll('.wx-seg[data-seg]').length);
+        check('widgets: anatomy opens on a segment rather than an empty panel',
+          !!w.querySelector('.wx-note[data-active]'));
+      }
+      if (kind === 'terminal') {
+        check('widgets: terminal keeps its output in the DOM',
+          w.querySelectorAll('.wx-line__out').length > 0);
+        const line = w.querySelector('.wx-line[data-hidden]');
+        check('widgets: terminal hides output behind Run', !!line);
+        line?.querySelector('.wx-run')
+          ?.dispatchEvent(new dom.window.Event('click', { bubbles: true }));
+        check('widgets: Run reveals that line', !line?.hasAttribute('data-hidden'));
+      }
+      if (kind === 'match') {
+        const tiles = [...w.querySelectorAll('.wx-tile[data-pair]')];
+        check('widgets: match board is shown', !w.querySelector('[data-match]')?.hidden);
+        const a = tiles.find((t) => t.getAttribute('data-side') === 'a');
+        const b = tiles.find(
+          (t) => t.getAttribute('data-side') === 'b'
+            && t.getAttribute('data-pair') === a?.getAttribute('data-pair'),
+        );
+        const click = (el) => el?.dispatchEvent(new dom.window.Event('click', { bubbles: true }));
+        click(a); click(b);
+        check('widgets: a correct pair locks', a?.hasAttribute('data-done') && b?.hasAttribute('data-done'));
+        check('widgets: match writes nothing to storage',
+          ![...store._map.keys()].some((k) => /match/i.test(store.getItem(k) ?? '')));
+      }
+      if (kind === 'order') {
+        const pool = w.querySelector('[data-pool]');
+        check('widgets: order tiles are dealt into the pool',
+          (pool?.children.length ?? 0) === w.querySelectorAll('.wx-tile[data-order]').length);
+        check('widgets: order does not open already solved',
+          [...(pool?.children ?? [])].some((t, i) => t.getAttribute('data-order') !== String(i)));
+      }
+      if (kind === 'sequence') {
+        check('widgets: sequence offers a step control',
+          !w.querySelector('[data-seq-bar]')?.hidden);
+      }
+    }
+  }
 }
 
 // ---------------------------------------------------------------- report

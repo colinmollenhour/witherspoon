@@ -7,6 +7,7 @@ import Checklist from '../../components/Checklist.astro';
 import Rubric from '../../components/Rubric.astro';
 import Markdown from '../../components/Markdown.astro';
 import { courseSequence, neighbours } from '../../lib/nav';
+import { unitNumber } from '../../lib/course';
 
 /**
  * One dynamic route for every page inside a unit — overview, topic, test, project.
@@ -65,6 +66,8 @@ let title = '';
 let description = '';
 let crumb = '';
 let pagePath = '';
+/** 1-based; drives the unit's colour in the layout. */
+let unitIndex = 1;
 
 if (props.kind === 'unit') {
   const d = props.unit.data;
@@ -72,39 +75,60 @@ if (props.kind === 'unit') {
   description = d.description;
   crumb = `Unit ${d.index}`;
   pagePath = `${d.slug}/index.html`;
+  unitIndex = d.index;
 } else if (props.kind === 'topic') {
   const d = props.topic.data;
   title = d.title;
   description = d.description;
   crumb = `${d.unitTitle} / ${d.title}`;
   pagePath = `${d.unitSlug}/${d.slug}.html`;
+  unitIndex = unitNumber(d.unitSlug);
 } else if (props.kind === 'test') {
   const d = props.unit.data;
   title = d.test!.title || `Unit ${d.index} test`;
   description = d.test!.description;
   crumb = `${d.title} / Unit test`;
   pagePath = `${d.slug}/test.html`;
+  unitIndex = d.index;
 } else {
   const d = props.project.data;
   title = d.title;
   description = d.goal;
   crumb = `${d.unitTitle} / ${d.title}`;
   pagePath = `${d.unitSlug}/${d.slug}.html`;
+  unitIndex = unitNumber(d.unitSlug);
 }
 
 const { prev, next } = neighbours(seq, pagePath);
 const Reading = props.kind === 'topic' ? (await render(props.topic)).Content : null;
 const Brief = props.kind === 'project' ? (await render(props.project)).Content : null;
+const longRead = props.kind === 'topic' || props.kind === 'project';
 ---
 
-<Page title={title} description={description} depth={1} crumb={crumb} pagePath={pagePath}>
+<Page
+  title={title}
+  description={description}
+  depth={1}
+  crumb={crumb}
+  pagePath={pagePath}
+  unitIndex={unitIndex}
+  readbar={longRead}
+>
   {
     props.kind === 'unit' && (
       <>
-        <h1>
-          Unit {props.unit.data.index} — {props.unit.data.title}
-        </h1>
-        <p class="lede">{props.unit.data.description}</p>
+        <div class="unit-head">
+          <span class="unit-head__n" aria-hidden="true">
+            <small>Unit</small>
+            {props.unit.data.index}
+          </span>
+          <div style="min-width:0">
+            <h1 style="margin-bottom:.25rem">{props.unit.data.title}</h1>
+            <p class="lede" style="margin:0">
+              {props.unit.data.description}
+            </p>
+          </div>
+        </div>
 
         <div class="bar" data-unit-bar={props.unit.data.unitId}>
           <span style="width:0%" />
@@ -126,7 +150,7 @@ const Brief = props.kind === 'project' ? (await render(props.project)).Content :
             <h2>Unit test</h2>
             <p>{props.unit.data.test.description}</p>
             <p>
-              <a class="btn" href="test.html">
+              <a class="btn btn--primary" href="test.html">
                 Take the unit test →
               </a>
             </p>
@@ -137,11 +161,11 @@ const Brief = props.kind === 'project' ? (await render(props.project)).Content :
           <section>
             <h2>Project</h2>
             {props.unit.data.projects.map((p) => (
-              <div class="card" style="margin:.5rem 0">
+              <div class="card card--link" style="margin:.5rem 0">
                 <h3 style="margin-top:0">
                   <a href={`${p.slug}.html`}>{p.title}</a>
                 </h3>
-                <p>{p.goal}</p>
+                <p class="muted">{p.goal}</p>
               </div>
             ))}
           </section>
@@ -160,7 +184,11 @@ const Brief = props.kind === 'project' ? (await render(props.project)).Content :
         </nav>
 
         <h1>{props.topic.data.title}</h1>
-        <p class="lede">{props.topic.data.description}</p>
+        {/* Topic descriptions carry inline code — `~`, `..` — so they are markdown,
+            not plain text. Rendered, or the backticks ship as literal characters. */}
+        <p class="lede">
+          <Markdown text={props.topic.data.description} inline />
+        </p>
 
         {props.topic.data.objectives.length > 0 && (
           <div class="callout">
@@ -317,9 +345,8 @@ const Brief = props.kind === 'project' ? (await render(props.project)).Content :
   }
 
   <Fragment slot="footer">
-    <p>
-      {prev && <a href={`../${prev.href}`}>← {prev.title}</a>}
-      {prev && next && ' · '}
+    <p class="pager">
+      {prev ? <a href={`../${prev.href}`}>← {prev.title}</a> : <span />}
       {next && <a href={`../${next.href}`}>{next.title} →</a>}
     </p>
   </Fragment>

@@ -61,9 +61,13 @@ nav. Three thin pages and three clicks is worse.
 
 - Breadcrumb, title, and the topic's three objectives in a bordered callout at the top. Learners
   should see what they are about to be able to do.
-- Sticky section nav: Reading · Flashcards · Quiz.
-- **Reading** — the markdown rendered to HTML at build time. Max width 72ch. Code blocks get a copy
-  button (JS enhancement; the code is selectable without it). Figures per `visuals.md`.
+- Sticky section nav: Reading · Flashcards · Quiz, plus a scroll-depth strip along the bottom edge of
+  the header, measured against the **reading** rather than the document — a bar that only fills once
+  the learner has also scrolled past the quiz and the footer reads as permanently incomplete.
+- **Reading** — the markdown rendered to HTML at build time. It fills the content column rather than
+  setting its own width; see **Design** below. Headings carry an accent tick so a long page can be
+  scanned by colour. Code blocks get a copy button and a language chip (both JS enhancements; the
+  code is selectable without them). Figures per `visuals.md`, widgets per `widgets.md`.
 - **Mark as read** button at the end of the reading section, which also advances progress.
 - **Flashcards** — a deck with flip animation, prev/next, keyboard support (`←` `→` `space`), a
   shuffle, and a counter. Cards are in the HTML; JS only handles flipping and ordering.
@@ -139,14 +143,49 @@ Build-time index of unit/topic titles, headings, and the first ~200 characters o
 - Substring and token match is plenty. No fuzzy-matching library.
 - No results → say so, and offer the syllabus link.
 
+## Interactive widgets
+
+A reading may embed visual aids as ```` ```widget ```` fences carrying JSON. Eight types —
+`anatomy`, `flow`, `compare`, `terminal`, `match`, `order`, `sequence`, `tree` — documented for
+authors in `widgets.md`. The contract the template is held to:
+
+- **Compiled at build time** by `src/lib/widgets.ts`, never rendered in the browser. The page ships
+  finished HTML; no spec, no JSON, and no renderer crosses to the client.
+- **Complete before JavaScript runs.** `src/runtime/widgets.ts` sets `data-enhanced` and adds
+  behaviour on top of markup that already reads correctly. Every widget has a defined un-enhanced
+  form — notes listed, output printed, answer visible — and the runtime **hides**, never removes.
+  Gate S13 checks it and the print stylesheet un-hides all of it.
+- **Nothing is scored or stored.** A drill is practice. Turning a low-stakes retry into another
+  recorded failure is the fastest way to stop a learner touching it.
+- **Interaction is keyboard-first.** Click-to-place rather than drag-and-drop, arrow keys along an
+  anatomy, native `<details>` for a tree. Nothing that needs a pointer.
+- **A malformed widget fails the build**, naming the file and the field. Silent degradation is
+  correct for a missing *image* and wrong for a broken *diagram*: one is a gap, the other is a lie.
+- Widgets are authored where they belong in the prose, which is why they live in markdown and not in
+  `course.json`. Placement is the point.
+
 ## Design
 
 Fun, not distracting. The reading is the product.
 
-- **One accent color.** From `brandColors.primary` when present, else pick and state it. Used for
-  progress, focus rings, active states, and the celebration. Nothing else.
+- **One accent color, and a family derived from it.** From `brandColors.primary` when present, else
+  pick and state it. Used for progress, focus rings, active states, and the celebration.
+- **Each unit carries its own hue.** `src/lib/color.ts` fans the accent across a 210° arc **in
+  OKLCH**, so every unit colour sits at the same perceptual lightness and inherits the contrast the
+  accent was chosen for. The result is emitted as plain hex, so nothing depends on `oklch()` support
+  and print gets real colours. Rotating in HSL instead would make the yellow unit unreadable and the
+  blue unit muddy at the same nominal lightness — that is the reason for the whole module.
+  `--accent` is re-declared per unit on the page root, so every accent-derived surface picks the unit
+  up without any component knowing which unit it is in.
+- **Syntax highlighting is dual-theme Shiki**, computed at build time. Both palettes are emitted
+  inline (`color` for light, `--shiki-dark` for dark) and swapped in CSS. A single baked palette is
+  why highlighting was previously off; one palette cannot serve two themes.
 - **Surfaces:** page background, raised card, and a light figure card that stays light in both themes.
-- **Type:** system font stack. `clamp()` for headings. Body 1.05rem/1.65. Reading column 72ch.
+- **Type:** system font stack. `clamp()` for headings. Body 1.05rem/1.65.
+- **One content measure.** `main` is capped at `--read-width` (90ch) and *no component sets its own
+  `max-width`* — competing caps are what left the page edge ragged, with headings spanning 74rem
+  while prose sat at 72ch and the lede at 60ch. Pages that are a table or an index rather than
+  something read start to finish opt out with the layout's `wide` prop.
 - **Motion:** 150–200ms on hover, focus, and card entry. No parallax, no scroll-jacking, no autoplay,
   nothing that moves while text is being read.
 - **Dark and light**, `prefers-color-scheme` by default, toggle persisted, and the toggle must win

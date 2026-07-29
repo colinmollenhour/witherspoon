@@ -37,9 +37,20 @@ export default defineConfig({
   devToolbar: { enabled: false },
 
   markdown: {
-    // No syntax highlighter. Shiki bakes per-token inline colours chosen for one
-    // theme, which reads badly in the other; the design system styles `pre code`
-    // itself and stays legible in both. This also matches the previous build.
-    syntaxHighlight: false,
+    /**
+     * Shiki in **dual-theme** mode. A single baked palette was the reason
+     * highlighting was previously off: per-token colours chosen for one theme are
+     * unreadable in the other, and this site ships both.
+     *
+     * Dual mode emits the light colour in `color` and the dark one in a
+     * `--shiki-dark` custom property on the same span, and base.css swaps between
+     * them. Everything is inline and computed at build time, so there is still no
+     * highlighter shipped to the browser and no request made (gate S1).
+     */
+    syntaxHighlight: { type: 'shiki', excludeLangs: ['mermaid', 'widget'] },
+    shikiConfig: {
+      themes: { light: 'github-light', dark: 'github-dark-dimmed' },
+      wrap: false,
+    },
   },
 });

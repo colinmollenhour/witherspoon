@@ -51,6 +51,23 @@ Straight from the registry rows:
 All three sit in the System band, and all three are convention with real standards weight behind
 them.
 
+```widget
+{
+  "type": "match",
+  "title": "Numbers you will meet for the rest of your life",
+  "prompt": "Pair each number with what the registry actually says about it. Nothing is scored and you can retry as often as you like.",
+  "pairs": [
+    { "term": "`80`", "match": "`World Wide Web HTTP` — the default gate the browser fills in for `http://`" },
+    { "term": "`443`", "match": "`http protocol over TLS/SSL` — the default for `https://`, which is why you never type it" },
+    { "term": "`22`", "match": "`The Secure Shell (SSH) Protocol`" },
+    { "term": "`8000`", "match": "`irdmi` — no RFC, no mention of the web; a habit, not a standard" },
+    { "term": "`0`", "match": "`Reserved` — which is why the usable range starts at 1" },
+    { "term": "`49152`–`65535`", "match": "Never assigned to anyone. Short-lived numbers, handed out and thrown away" }
+  ],
+  "caption": "The registry is a phone book, not a lock — traffic on a registered port need not be the registered service."
+}
+```
+
 ## Port 8000 has nothing to do with the web
 
 You are about to spend an entire unit typing `8000`, so learn the honest version now. Look it up in

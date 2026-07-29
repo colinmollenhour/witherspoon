@@ -129,6 +129,26 @@ builder recovered answer keys through eight ranked guessing strategies across fi
 two of which disagreed about whether a bare number meant a 0-based index or a 1-based ordinal. The
 model that writes a question knows its answer; record it.
 
+### G14 — Widget blocks parse and are grounded
+
+Every ```` ```widget ```` block in a `read.md` must be valid JSON with a known `type` and the fields
+that type requires. The site build enforces this and fails naming the file, but catching it here
+saves a whole build cycle:
+
+```bash
+node course-template/tools/check-widgets.mjs --course <course-dir>
+```
+
+It also flags any topic carrying more than two widgets.
+
+The content rule matters more than the syntax one: **a widget is content, and G11 applies inside it.**
+Command output, addresses, sizes and timings inside a `terminal` or an `anatomy` must come from the
+grounded facts, exactly as in prose. Fabrication is easier to miss in JSON than in a paragraph, so
+check the widgets in any topic whose reading you are already spot-checking for G11.
+
+Also confirm the budget: no topic carries more than two widgets, and none is decorative — if you
+cannot say which sentence a widget answers, cut it.
+
 ## Advisory checks
 
 Report these; do not block on them.

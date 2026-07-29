@@ -146,6 +146,21 @@ Step 4 separates the last two causes, and the tell is **how long the failure tak
 Instant means *nothing listening*. A hang means *something is swallowing the packets*. Running that
 check before changing anything is the difference between debugging and retrying.
 
+```widget
+{
+  "type": "order",
+  "title": "Work the ladder, not a hunch",
+  "prompt": "Three different causes produce the same blank browser. Put the four checks in the order that eliminates a whole class each time.",
+  "items": [
+    "Is the server still running at all? — `ss -tlnp`",
+    "Is it serving the right directory? — `curl -I http://localhost:8000/index.html`",
+    "Is the phone using the laptop's LAN IP, not `localhost`?",
+    "Refusal or timeout? — time how long `curl` takes to fail"
+  ],
+  "caption": "Cheapest and most local first. Every step you can answer on the laptop comes before any step that needs the phone."
+}
+```
+
 You can now name each failure by its own text, find the process that owns a port, and work a fixed
 order instead of a hunch. One case stays out of scope: if your Linux runs inside Windows through WSL,
 every step above can pass while the phone still gets nothing. That is the next topic.

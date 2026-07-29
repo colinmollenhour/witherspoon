@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import { rel } from '../lib/rel';
+import { unitAccents } from '../lib/color';
 
 interface Props {
   title: string;
@@ -17,6 +18,15 @@ interface Props {
    * single left and right edge.
    */
   wide?: boolean;
+  /**
+   * 1-based unit number. Re-declares `--accent` for the whole document as that
+   * unit's colour from the OKLCH family, so every accent-derived surface on a unit
+   * page — headings, progress, focus rings, quiz states — carries the unit's
+   * identity without a single component knowing which unit it is in.
+   */
+  unitIndex?: number;
+  /** Paint the scroll-depth strip under the header. Topic and project pages only. */
+  readbar?: boolean;
 }
 
 const {
@@ -26,6 +36,8 @@ const {
   crumb = '',
   pagePath = '',
   wide = false,
+  unitIndex,
+  readbar = false,
 } = Astro.props;
 
 // The `course` collection always holds exactly one entry — one course per build.
@@ -34,6 +46,9 @@ const c = (await getCollection('course'))[0]!;
 const units = (await getCollection('units')).sort((a, b) => a.data.index - b.data.index);
 
 const r = rel(depth);
+
+const palette = unitAccents(c.data.accent, units.length);
+const accent = (unitIndex && palette[unitIndex - 1]) || c.data.accent;
 
 // Everything the runtime needs, embedded. The site never fetches its own content.
 const config = {
@@ -50,19 +65,24 @@ const config = {
   })),
 };
 
+/** First letter of the course, on an accent tile — a mark without an asset. */
+const initial = (c.data.title.match(/[A-Za-z0-9]/)?.[0] ?? 'C').toUpperCase();
+
 const favicon =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E" +
-  "%3Crect width='32' height='32' rx='7' fill='%233f7ac4'/%3E" +
-  "%3Cpath d='M8 21V11h4.5a4.5 4.5 0 0 1 0 9H8z' fill='none' stroke='white' stroke-width='2.4'/%3E" +
+  `%3Crect width='32' height='32' rx='7' fill='${encodeURIComponent(c.data.accent)}'/%3E` +
+  `%3Ctext x='16' y='22' font-family='system-ui,sans-serif' font-size='18' font-weight='700' ` +
+  `text-anchor='middle' fill='${encodeURIComponent(c.data.accentInk)}'%3E${initial}%3C/text%3E` +
   '%3C/svg%3E';
 ---
 
-<html lang="en" class="no-js" style={`--accent: ${c.data.accent}; --accent-ink: ${c.data.accentInk};`}>
+<html lang="en" class="no-js" style={`--accent: ${accent}; --accent-ink: ${c.data.accentInk};`}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title} — {c.data.title}</title>
     {description && <meta name="description" content={description} />}
+    <meta name="theme-color" content={accent} />
     <link rel="icon" href={favicon} />
     <link rel="stylesheet" href={`${r}assets/site.css`} />
     <script type="application/json" id="course-config" set:html={JSON.stringify(config)} />
@@ -72,7 +92,10 @@ const favicon =
 
     <header class="site-header">
       <div class="wrap">
-        <a class="brand" href={`${r}index.html`}>{c.data.title}</a>
+        <a class="brand" href={`${r}index.html`}>
+          <span class="brand__mark" aria-hidden="true">{initial}</span>
+          <span class="brand__text">{c.data.title}</span>
+        </a>
         {crumb && <span class="crumb">{crumb}</span>}
         <div class="search" data-search data-home={`${r}index.html`}>
           <label class="skip" for="site-search">Search this course</label>
@@ -81,6 +104,7 @@ const favicon =
         </div>
         <button class="btn btn--quiet" type="button" data-theme-toggle aria-label="Change theme">◒</button>
       </div>
+      {readbar && <div class="readbar" data-readbar aria-hidden="true"></div>}
     </header>
 
     <main id="main" class={wide ? 'wrap wrap--wide' : 'wrap'}>

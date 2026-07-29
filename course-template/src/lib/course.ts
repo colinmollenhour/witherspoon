@@ -34,6 +34,10 @@ export const unitSlug = (ui: number): string => `unit-${ui + 1}`;
 export const topicSlug = (ti: number): string => `topic-${ti + 1}`;
 export const projectSlug = (pi: number): string => `project-${pi + 1}`;
 
+/** The inverse of `unitSlug`, for pages that hold a slug but need the number to
+ *  index the per-unit accent palette. */
+export const unitNumber = (slug: string): number => Number(slug.replace(/^unit-/, '')) || 1;
+
 const OBJECTIVE_RE = /\(objectives?\s+([\d,\s]+(?:and\s*\d+)?)\)/gi;
 
 /**

@@ -6,8 +6,9 @@ One Astro project that builds a self-contained static site from **any** approved
 npm install                                        # first run only
 npm run build -- --course ../course-<slug>         # → ../course-<slug>/dist
 npm run dev   -- --course ../course-<slug>         # live preview
-npm run verify -- ../course-<slug>/dist            # gates S1–S12
+npm run verify -- ../course-<slug>/dist            # gates S1–S13
 npm run test   -- ../course-<slug>/dist            # runtime behaviour in jsdom
+npm run check-widgets -- --course ../course-<slug> # widget JSON, without a build
 npm run typecheck
 ```
 
@@ -22,7 +23,7 @@ flashcards, quizzes, unit tests, projects. Markdown supplies prose only:
 | Source | Becomes |
 | --- | --- |
 | `course.json` | every page's structure, and all quiz/flashcard/test data |
-| `<topic>/read.md` | the reading on a topic page |
+| `<topic>/read.md` | the reading on a topic page, including its ```` ```widget ```` blocks |
 | `<project>/brief.md` | the brief on a project page |
 | `<project>/starter/`, `<project>/tests/` | starter files and grader sources |
 | `SOURCES.md` | the sources page (falls back to a table from `course.json`) |
@@ -58,15 +59,18 @@ output to HTML plus `assets/` so content-layer scratch files never ship. Gate S2
 src/
   content.config.ts     collections + zod schemas
   lib/                  course.ts (read/derive) · loaders.ts · rel.ts · search.ts · nav.ts · md.ts
+                        widgets.ts (compile ```widget fences) · color.ts (per-unit OKLCH hues)
   layouts/Page.astro    shell, config block, relative asset links
   components/           Quiz · Flashcards · ProgressRing · Checklist · Rubric · Markdown
-  runtime/              store · quiz · deck · progress · certificate · search · confetti · …
-  styles/               tokens · base · components · print
+  runtime/              store · quiz · deck · progress · certificate · search · confetti ·
+                        widgets · readbar · …
+  styles/               tokens · base · components · widgets · print
   pages/                index · certificate · sources · 404 · [unit]/[page] · assets/search-index.js
 tools/
   build.mjs             the --course wrapper
-  verify.mjs            gates S1–S12
+  verify.mjs            gates S1–S13
   test-runtime.mjs      jsdom behaviour tests
+  check-widgets.mjs     widget JSON validation without a build
   render-views.mjs      renders quiz.md / flashcards.md / unit-test.md from course.json
 ```
 
@@ -75,12 +79,35 @@ topic, test, project. Sibling `[topic].astro`/`[project].astro` routes would be 
 conflict, and under `build.format: 'file'` an `index.astro` would emit `unit-1.html` rather than
 `unit-1/index.html`.
 
+## Widgets
+
+A reading can embed an interactive figure as a fenced block:
+
+````markdown
+```widget
+{ "type": "anatomy", "title": "…", "parts": [ … ] }
+```
+````
+
+`src/lib/widgets.ts` lifts each fence out before the markdown is rendered, compiles it to HTML, and
+puts it back afterwards — so the JSON is never at the mercy of the markdown processor's opinion about
+it, and no spec or renderer ever reaches the browser. `src/runtime/widgets.ts` then sets
+`data-enhanced` and adds interaction on top of markup that is already complete: the un-enhanced form
+of every widget is readable, and the runtime hides rather than removes, which is also what makes the
+print stylesheet able to bring it all back.
+
+Eight types — `anatomy`, `flow`, `compare`, `terminal`, `match`, `order`, `sequence`, `tree`. The
+authoring catalogue is `.claude/skills/course-site/references/widgets.md`. A malformed widget fails
+the build naming the file and the field; that is deliberate, because a silently broken diagram is
+worse than a build that stops.
+
 ## Contracts
 
 - `.claude/skills/course-site/references/site-spec.md` — the design contract this template implements
 - `.claude/skills/course-site/references/state.md` — the localStorage contract `src/runtime/store.ts`
   implements
 - `.claude/skills/course-site/references/build-gates.md` — what each gate means
+- `.claude/skills/course-site/references/widgets.md` — the widget catalogue, for authors
 - `.claude/skills/course-builder/references/schema.md` — the `course.json` shape
 
 Ids are positional (`u1t1`, `u1p1`) and topics are numbered per unit in the URL while the source tree

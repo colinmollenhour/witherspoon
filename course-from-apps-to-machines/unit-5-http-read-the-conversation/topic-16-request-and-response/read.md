@@ -61,11 +61,20 @@ three space-separated slots:
 <method> <request-target> <protocol>
 ```
 
-| Slot | Value here | What it says |
-| --- | --- | --- |
-| method | `GET` | What to do. `GET` fetches the resource. |
-| request-target | `/` | Which resource. This is the *path* part of the URL you took apart in Topic 15. |
-| protocol | `HTTP/1.1` | Which version of this grammar both sides agree to speak. |
+```widget
+{
+  "type": "anatomy",
+  "title": "The request line, slot by slot",
+  "parts": [
+    { "text": "GET", "label": "method", "note": "What to do. `GET` fetches the resource. `HEAD` asks only for the description of it — that is the difference `curl -I` is built on." },
+    { "text": " " },
+    { "text": "/", "label": "request-target", "note": "Which resource. This is the *path* slot of the URL you took apart in Topic 15, and nothing else from that URL comes along on this line." },
+    { "text": " " },
+    { "text": "HTTP/1.1", "label": "protocol", "note": "Which version of this grammar both sides agree to speak. The response will restate its own version in the same position on its first line." }
+  ],
+  "caption": "Three space-separated slots. The response's first line has three too, in a different order."
+}
+```
 
 Lines 2 and 3 are headers. A header is a `Name: value` pair, one per line. `Accept-Language: fr` is a
 preference: this client would like French if French exists.
@@ -135,6 +144,23 @@ carrying the name you typed. Then find the first `<` line: that is the status li
 the middle. The `<` lines after it are the response headers, and after those, the body — the HTML.
 
 Four parts, twice, in the order the anatomy promised.
+
+```widget
+{
+  "type": "sequence",
+  "title": "One exchange, in the order curl prints it",
+  "actors": ["curl (client)", "example.com (server)"],
+  "messages": [
+    { "from": 0, "to": 1, "label": "`GET / HTTP/1.1`", "note": "The request line. curl marks it with `>` because it sent it." },
+    { "from": 0, "to": 1, "label": "`Host: example.com`", "note": "The compulsory header. Without it the server must answer 400." },
+    { "from": 0, "to": 1, "label": "*(empty line)*", "note": "Part 3 of the anatomy, not formatting. It says the head has ended." },
+    { "from": 1, "to": 0, "label": "`HTTP/2 200`", "note": "The status line, marked `<`. Protocol, code, and a reason phrase that this server does not bother to send." },
+    { "from": 1, "to": 0, "label": "`content-type: text/html`", "note": "A response header, describing the body that is about to arrive." },
+    { "from": 1, "to": 0, "label": "*(empty line, then the HTML)*", "note": "The body. `curl -I` stops before this by asking `HEAD` instead of `GET`." }
+  ],
+  "caption": "Head then body, once in each direction. Nothing else crosses the wire."
+}
+```
 
 ## Headers without a body: `curl -I`
 

@@ -38,6 +38,39 @@ Universal rules:
 - Tables for comparisons of three or more things.
 - A code listing longer than ~30 lines must be excerpted with the unchanged parts elided.
 
+**Interactive visual aids.** The site builder renders ```` ```widget ```` fences in a reading into
+interactive figures. Write them here, inline, at the paragraph each one illustrates — placement is
+the reason they live in the markdown and not in `course.json`.
+
+````markdown
+```widget
+{ "type": "anatomy", "title": "…", "parts": [ { "text": "/", "label": "root", "note": "…" } ] }
+```
+````
+
+**Budget: at most two per topic**, and only where one of these shapes is actually present:
+
+| The reading contains | Use |
+| --- | --- |
+| A literal string with named parts — a path, a URL, a command, a log line, an `ls` row | `anatomy` |
+| Stages handing off to each other | `flow` |
+| Two or three things with the same questions asked of each | `compare` |
+| Commands whose output is worth predicting before revealing | `terminal` |
+| Vocabulary or numbers worth drilling | `match` |
+| An order that is itself the lesson | `order` |
+| Messages between two or more parties | `sequence` |
+| A nested structure | `tree` |
+
+An `anatomy` on the topic's central string is the single highest-value one in a technical course —
+reach for it first. If none of the shapes fit, write none; a widget that is merely *about* the topic
+is decoration, and the site's gates warn on inflation.
+
+**Everything inside a widget obeys the Grounded facts block**, exactly like prose. An invented `ls`
+output or a plausible-looking IP inside a `terminal` widget is the same fabrication as inventing it
+in a paragraph, and it is harder to catch in review. A malformed widget fails the site build with
+your file named, so get the shape right — the full catalogue and every field is in the `course-site`
+skill's `references/widgets.md`.
+
 **The failure-moment callout** (only in the topic the spine designates) — a blockquote that names the
 surprise before the learner blames themselves:
 

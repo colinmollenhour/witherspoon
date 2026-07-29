@@ -1,28 +1,66 @@
-/* The only intended customization surface. `--accent` and `--accent-ink` are
-   overridden per course by Page.astro from course.json's brandColors. */
+/* The only intended customization surface.
+
+   `--accent` / `--accent-ink` are set per course by Page.astro from course.json's
+   brandColors. `--accent` is additionally re-declared per unit, scoped to that
+   unit's card or page, from the OKLCH family in lib/color.ts — so everything below
+   that reads `--accent` picks up the unit's identity colour for free.
+
+   Anything derived from the accent is expressed with `color-mix()` against it
+   rather than hard-coded, which is what lets one variable re-tint a whole page. */
 :root {
   --accent: #3f7ac4;
   --accent-ink: #ffffff;
+  --accent-wash: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  --accent-line: color-mix(in srgb, var(--accent) 30%, var(--border));
 
   --bg: #fbfbfc;
+  --bg-deep: #f4f5f8;
   --surface: #ffffff;
   --surface-2: #f2f3f5;
+  --surface-3: #e8eaef;
   --figure-bg: #ffffff;          /* stays light in both themes — see visuals.md */
   --text: #16181d;
   --text-dim: #5c626e;
+  --text-faint: #868d9b;
   --border: #dfe2e8;
+  --border-strong: #c8cdd7;
   --ok: #1f7a4d;
   --bad: #b3261e;
+  --warn: #8a5a00;
   --ok-bg: #e8f5ee;
   --bad-bg: #fdecea;
+  --warn-bg: #fdf3e0;
 
-  --radius: 12px;
-  --radius-sm: 8px;
+  /* Terminal surfaces stay dark in both themes — a shell is dark, and flipping it
+     to a light card in light mode stops it reading as a terminal at all. */
+  --term-bg: #14171e;
+  --term-ink: #dfe4ee;
+  --term-dim: #838c9d;
+  --term-accent: #7fd1a0;
+
+  --radius: 14px;
+  --radius-sm: 9px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  /* Three levels, used deliberately: rest, raised, floating. */
+  --shadow-sm: 0 1px 2px rgb(16 24 40 / 6%);
   --shadow: 0 1px 2px rgb(16 24 40 / 6%), 0 4px 12px rgb(16 24 40 / 5%);
+  --shadow-lg: 0 2px 4px rgb(16 24 40 / 6%), 0 12px 32px rgb(16 24 40 / 10%);
+  --ring: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent);
+
   --speed: 170ms;
+  --speed-slow: 380ms;
+  --ease: cubic-bezier(.22, .68, .36, 1);
+  --ease-pop: cubic-bezier(.2, 1.4, .4, 1);
+
   --read-width: 72ch;
   --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  /* A hairline dot field, drawn in CSS so it costs no request and re-tints with
+     the accent. Used behind the home hero and the certificate. */
+  --dots: radial-gradient(color-mix(in srgb, var(--accent) 22%, transparent) 1px, transparent 1px);
 }
 
 /* The toggle must win over the system setting in both directions, so the dark
@@ -30,15 +68,23 @@
    unconditionally for an explicit `data-theme="dark"`. */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #0f1115; --surface: #171a20; --surface-2: #1e222a;
-    --text: #e7e9ee; --text-dim: #a0a7b4; --border: #2c313b;
-    --ok: #6ee7a8; --bad: #ff9d94; --ok-bg: #14301f; --bad-bg: #331916;
+    --bg: #0e1014; --bg-deep: #090b0e; --surface: #171a21; --surface-2: #1e222a; --surface-3: #262b35;
+    --text: #e7e9ee; --text-dim: #a0a7b4; --text-faint: #79808d;
+    --border: #2c313b; --border-strong: #3d4450;
+    --ok: #6ee7a8; --bad: #ff9d94; --warn: #f0c674;
+    --ok-bg: #12301f; --bad-bg: #331916; --warn-bg: #302512;
+    --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
     --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 14px rgb(0 0 0 / 30%);
+    --shadow-lg: 0 2px 6px rgb(0 0 0 / 45%), 0 16px 40px rgb(0 0 0 / 40%);
   }
 }
 :root[data-theme="dark"] {
-  --bg: #0f1115; --surface: #171a20; --surface-2: #1e222a;
-  --text: #e7e9ee; --text-dim: #a0a7b4; --border: #2c313b;
-  --ok: #6ee7a8; --bad: #ff9d94; --ok-bg: #14301f; --bad-bg: #331916;
+  --bg: #0e1014; --bg-deep: #090b0e; --surface: #171a21; --surface-2: #1e222a; --surface-3: #262b35;
+  --text: #e7e9ee; --text-dim: #a0a7b4; --text-faint: #79808d;
+  --border: #2c313b; --border-strong: #3d4450;
+  --ok: #6ee7a8; --bad: #ff9d94; --warn: #f0c674;
+  --ok-bg: #12301f; --bad-bg: #331916; --warn-bg: #302512;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 40%);
   --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 4px 14px rgb(0 0 0 / 30%);
+  --shadow-lg: 0 2px 6px rgb(0 0 0 / 45%), 0 16px 40px rgb(0 0 0 / 40%);
 }

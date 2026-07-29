@@ -40,6 +40,27 @@ Read one of them left to right and it is a set of directions from the top of the
 WSL *is* Linux — the Windows `C:` drive is a separate thing mounted at `/mnt/c`, and your project is
 not going there.
 
+```widget
+{
+  "type": "anatomy",
+  "title": "Your project's address, one piece at a time",
+  "subject": "Click any piece of the path to see what it does.",
+  "parts": [
+    { "text": "/", "label": "root", "note": "The one directory that contains every other directory on the machine. Because the path *starts* here, it is **absolute** — it means the same thing typed from anywhere." },
+    { "text": "home", "label": "all users", "note": "Where Linux and WSL keep every user account's directory. macOS calls this `Users` instead. Nothing of yours lives directly here — only the folders belonging to each account." },
+    { "text": "/" },
+    { "text": "you", "label": "your account", "note": "Your personal directory, and what `~` expands to. `HOME` holds this value, which is why `~` can differ per person and per platform while meaning the same thing." },
+    { "text": "/" },
+    { "text": "projects", "label": "yours", "note": "An ordinary directory you made. Nothing about the system requires it — the machine does not know or care that this is where you keep work." },
+    { "text": "/" },
+    { "text": "first-site", "label": "yours", "note": "The directory holding this one project. Everything the site is made of will live inside here." },
+    { "text": "/" },
+    { "text": "index.html", "label": "the file", "note": "The last piece, and the only one that is not a directory. The `.html` on the end is part of the name — not a separate property of the file." }
+  ],
+  "caption": "Six pieces separated by slashes. Read left to right, they are directions from the top of the machine."
+}
+```
+
 ## `~` is an abbreviation, not a place
 
 `~` (a tilde) is shorthand for your home directory. It exists because that path is long, differs per
@@ -77,6 +98,23 @@ These two only make sense once you say where you are standing. Say your terminal
 
 That last row is the one to sit with. Adding a single `/` to the front did not tidy the path up; it
 pointed it at a completely different place.
+
+```widget
+{
+  "type": "terminal",
+  "title": "Predict each answer before you reveal it",
+  "host": "you@laptop",
+  "cwd": "~/projects/first-site",
+  "lines": [
+    { "cmd": "pwd", "out": "/home/you/projects/first-site", "note": "`pwd` prints where the shell is standing right now. Every relative path below is measured from this line." },
+    { "cmd": "cd ..", "cwd": "~/projects" },
+    { "cmd": "pwd", "out": "/home/you/projects", "note": "`..` moved up one level, and the prompt moved with it. The shell is standing somewhere else now, so the same relative path typed twice would mean two different files." },
+    { "cmd": "cd ../..", "cwd": "/home" },
+    { "cmd": "pwd", "out": "/home", "note": "Two levels up from `/home/you/projects`. Keep going and you run out of levels at `/` — the root has no parent, and `cd ..` there does nothing." }
+  ],
+  "caption": "The same relative path means a different file depending on the answer to `pwd`."
+}
+```
 
 ## One slash, permanent consequences
 

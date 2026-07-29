@@ -20,6 +20,31 @@ ls -la ~/projects | grep site | wc -l
 
 Two pipes, three programs, one number.
 
+```widget
+{
+  "type": "flow",
+  "title": "What flows between the three programs",
+  "steps": [
+    {
+      "label": "`ls -la ~/projects`",
+      "sub": "prints a listing",
+      "detail": "Prints one line per entry — permissions first, name last. Nothing here knows a pipe exists; it writes to **stdout** exactly as it would if you ran it alone. That is what the first `|` picks up: lines of text, not a table and not a file."
+    },
+    {
+      "label": "`grep site`",
+      "sub": "keeps matching lines",
+      "detail": "Note there is no filename after `grep`. Handed text on **stdin**, it searches what arrives and prints only the lines containing `site`. Because that text came from no file at all, the `path:` and `line:` prefixes you saw in Unit 2 both disappear."
+    },
+    {
+      "label": "`wc -l`",
+      "sub": "counts them",
+      "detail": "Counts lines. Given a filename it prints the count *and* the name — `wc -l /etc/hosts` prints `7 /etc/hosts`. Given text on stdin there is no name to print, so you get the number alone."
+    }
+  ],
+  "caption": "Three programs running at once, text flowing between them. Nothing is written to disk."
+}
+```
+
 ## What each stage receives
 
 **Stage 1 — `ls -la ~/projects`** prints one line per entry. Here is a real `ls -la` capture taken one

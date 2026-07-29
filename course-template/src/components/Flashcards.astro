@@ -19,6 +19,7 @@ const { cards } = Astro.props;
             <div>
               <Markdown text={card.front} />
             </div>
+            <span class="fc__hint" aria-hidden="true">Click or press space to flip</span>
           </div>
           <div class="fc__face fc__face--back">
             <div>

@@ -83,6 +83,21 @@ That is the whole of Project 1's folder structure, rebuilt from an empty home di
 also travel: paste those two lines into a message and the person at the other end gets exactly your
 folder. Fourteen mouse actions cannot be pasted anywhere.
 
+```widget
+{
+  "type": "terminal",
+  "title": "Two commands, from an empty home directory",
+  "host": "you@laptop",
+  "cwd": "~",
+  "lines": [
+    { "cmd": "mkdir -p ~/projects/first-site", "out": "", "note": "Silence is success. `-p` makes every missing directory on the way, so this works whether or not `~/projects` already existed — and does not complain if it did." },
+    { "cmd": "touch ~/projects/first-site/index.html", "out": "", "note": "Also silent. `touch` creates the file if it is missing, and leaves the contents alone if it is not." },
+    { "cmd": "ls -la ~/projects/first-site", "out": "total 0\ndrwxr-xr-x. 2 you you  60 Jul 29 04:25 .\ndrwxr-xr-x. 3 you you  80 Jul 29 04:25 ..\n-rw-r--r--. 1 you you   0 Jul 29 04:25 index.html", "note": "Size `0`. The file exists and holds nothing — which is exactly what Project 1 built with fourteen mouse actions." }
+  ],
+  "caption": "Two lines that can be pasted into a message. The fourteen mouse actions cannot."
+}
+```
+
 ## `cp` copies, and needs `-r` for directories
 
 ```

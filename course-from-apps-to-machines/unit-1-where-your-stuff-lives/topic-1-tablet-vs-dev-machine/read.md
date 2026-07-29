@@ -34,6 +34,41 @@ Three things, and each one matters later in this course:
    the top of the machine downward with `/` between each step — like
    `/home/colin/projects/first-site/index.html`. Search *finds* a file; a path *names* it.
 
+```widget
+{
+  "type": "compare",
+  "title": "The same three questions, asked of each machine",
+  "columns": [
+    { "label": "Tablet or phone", "tone": "bad" },
+    { "label": "Desktop or laptop", "tone": "ok" }
+  ],
+  "rows": [
+    {
+      "aspect": "Who owns a file",
+      "cells": [
+        "Whichever app made it. Another app gets a copy, if it gets anything",
+        "Nobody. Two programs can hold the same file open at once"
+      ]
+    },
+    {
+      "aspect": "Where a program comes from",
+      "cells": [
+        "A store, which decides what exists",
+        "Anywhere — including a web server nobody packaged or shipped to you"
+      ]
+    },
+    {
+      "aspect": "How you find something",
+      "cells": [
+        "You search, and hope the name you remember is the name it has",
+        "You name it: one written address, spelled from the top of the machine down"
+      ]
+    }
+  ],
+  "caption": "The third row is the one this whole unit is about. Search *finds* a file; a path *names* it."
+}
+```
+
 ## Where your own work belongs
 
 Each of these systems gives every person one folder that is theirs: the **home directory**. Your work
@@ -74,6 +109,56 @@ and gives the contrast as two paths:
 
 > "Use the Linux file system root directory: `/home/<user name>/Project` — Not the Windows file
 > system root directory: `/mnt/c/Users/<user name>/Project$`"
+
+```widget
+{
+  "type": "tree",
+  "title": "One machine, two filesystems, seen from a WSL terminal",
+  "root": {
+    "name": "/",
+    "note": "the Linux root — everything WSL sees hangs off here",
+    "children": [
+      {
+        "name": "home/",
+        "note": "the Linux side",
+        "children": [
+          {
+            "name": "<you>/",
+            "note": "what `~` expands to",
+            "children": [
+              { "name": "Project/", "tone": "ok", "note": "put your work here — fastest, and the one Microsoft recommends" }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "mnt/",
+        "note": "where Windows drives are attached",
+        "children": [
+          {
+            "name": "c/",
+            "note": "the Windows `C:` drive, seen from Linux",
+            "children": [
+              {
+                "name": "Users/",
+                "children": [
+                  {
+                    "name": "<user name>/",
+                    "children": [
+                      { "name": "Project/", "tone": "bad", "note": "the same folder from the Windows side — working here crosses the seam on every file access" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "caption": "Two real places, one terminal. `/mnt/c` is Windows seen from Linux; `/home/<you>` is Linux itself."
+}
+```
 
 Decide this now. It is the one setup choice that nags you for the rest of the course.
 

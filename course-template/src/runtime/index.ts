@@ -8,11 +8,13 @@ import { initCopy } from './copy';
 import { initChecklist } from './checklist';
 import { initDeck } from './deck';
 import { initQuiz } from './quiz';
+import { initReadbar } from './readbar';
 import { initReading, trackVisit } from './reading';
 import { initReset } from './reset';
 import { initSearch } from './search';
 import { initSubnav } from './subnav';
 import { initTheme } from './theme';
+import { initWidgets } from './widgets';
 import { render } from './progress';
 import { Store } from './store';
 
@@ -36,6 +38,8 @@ function boot(): void {
   initSearch();
   initCopy();
   initSubnav();
+  initReadbar();
+  initWidgets();
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
