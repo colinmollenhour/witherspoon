@@ -49,7 +49,9 @@
 .hero__eyebrow { text-transform: uppercase; letter-spacing: .13em; font-size: .74rem;
   font-weight: 700; color: var(--accent); margin: 0 0 .75rem; }
 .hero h1 { margin-bottom: .6rem; }
-.hero .lede { max-width: 60ch; }
+/* No cap on the hero's lede. A per-component measure here is the same mistake the
+   single-content-width rule exists to prevent: inside a 90ch hero a 60ch lede sits
+   visibly narrower than the h1 directly above it. It follows the measure. */
 
 /* Course size, stated as chips rather than a sentence — three numbers a learner
    actually scans for. */
