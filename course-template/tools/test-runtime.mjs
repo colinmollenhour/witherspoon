@@ -50,6 +50,8 @@ function load({ storage, seed }) {
   });
 
   Object.defineProperty(dom.window, 'localStorage', { value: storage, configurable: true });
+  // Not implemented in jsdom; the site only ever uses it to nudge the view.
+  dom.window.Element.prototype.scrollIntoView = function scrollIntoView() {};
   if (seed) storage.setItem(seed.key, seed.value);
 
   let thrown = null;
@@ -77,6 +79,26 @@ function memoryStorage(overrides = {}) {
     _map: map,
     ...overrides,
   };
+}
+
+
+/** Answer every question on a loaded page, correctly. */
+function answerAll(dom, doc) {
+  const spec = JSON.parse(doc.getElementById('quiz-data').textContent);
+  const click = (el) => el?.dispatchEvent(new dom.window.Event('click', { bubbles: true }));
+  [...doc.querySelectorAll('.q')].forEach((qEl, i) => {
+    const q = spec.questions[i];
+    if (q.type === 'SHORT_ANSWER') {
+      click(qEl.querySelector('[data-check]'));
+      click(qEl.querySelector('[data-self="got"]'));
+      return;
+    }
+    const idx = q.type === 'TRUE_FALSE' ? (q.correctAnswer ? 1 : 0) : (q.correctOptionIndex ?? 0);
+    const inputs = qEl.querySelectorAll('input[type=radio]');
+    if (inputs[idx]) inputs[idx].checked = true;
+    click(qEl.querySelector('[data-check]'));
+  });
+  return spec;
 }
 
 // ---------------------------------------------------------------- 1. happy path
@@ -215,6 +237,75 @@ function memoryStorage(overrides = {}) {
     'reset leaves another course’s progress alone',
     store.getItem('course:another-course:v1') === 'keep me too',
   );
+}
+
+
+// ------------------------------------------------- 6. progress survives a reload
+// The reported bug: a completed quiz came back blank, because only the score was
+// stored and nothing replayed it into the page.
+{
+  const store = memoryStorage();
+
+  const first = load({ storage: store });
+  const spec = answerAll(first.dom, first.dom.window.document);
+  await new Promise((r) => setTimeout(r, 400));
+
+  const again = load({ storage: store });
+  const doc = again.dom.window.document;
+  check('reload: no uncaught error', !again.thrown && again.errors.length === 0,
+    again.thrown?.message ?? again.errors[0] ?? '');
+
+  const qEls = [...doc.querySelectorAll('.q')];
+  check('reload: every question comes back locked',
+    qEls.every((q, i) => spec.questions[i].type === 'SHORT_ANSWER' || q.hasAttribute('data-locked')));
+  check('reload: chosen options are still selected',
+    qEls.every((q, i) => spec.questions[i].type === 'SHORT_ANSWER'
+      || [...q.querySelectorAll('input[type=radio]')].some((x) => x.checked)));
+  check('reload: explanations stay revealed',
+    qEls.every((q) => q.querySelector('.explain') && !q.querySelector('.explain').hidden));
+  check('reload: Check is disabled so the score cannot be redone',
+    qEls.every((q) => q.querySelector('[data-check]').disabled));
+
+  const result = doc.querySelector('.quiz__result');
+  check('reload: the score is shown again', !result.hidden && /100%/.test(result.textContent ?? ''),
+    (result.textContent ?? '').slice(0, 40));
+  check('reload: no confetti on a revisit', !doc.getElementById('confetti'));
+
+  const reset = doc.querySelector('[data-quiz-reset]');
+  check('reload: a reset control is offered', !!reset && !reset.hidden);
+
+  // Reset clears this quiz and nothing else.
+  store.setItem('course:other:v1', 'untouched');
+  reset.dispatchEvent(new again.dom.window.Event('click', { bubbles: true }));
+  await new Promise((r) => setTimeout(r, 400));
+  const key = [...store._map.keys()].find((k) => k.startsWith('course:') && k !== 'course:other:v1');
+  const blob = key ? JSON.parse(store.getItem(key)) : {};
+  const rec = Object.values(blob.topics ?? {})[0]?.quiz;
+  check('reset: the quiz record is gone', !rec, JSON.stringify(rec ?? null));
+  check('reset: other courses untouched', store.getItem('course:other:v1') === 'untouched');
+}
+
+// ------------------------------------------------- 7. partial progress survives
+{
+  const store = memoryStorage();
+  const first = load({ storage: store });
+  const doc1 = first.dom.window.document;
+  const spec = JSON.parse(doc1.getElementById('quiz-data').textContent);
+  const q0 = doc1.querySelectorAll('.q')[0];
+  const idx = spec.questions[0].correctOptionIndex ?? 0;
+  q0.querySelectorAll('input[type=radio]')[idx].checked = true;
+  q0.querySelector('[data-check]').dispatchEvent(new first.dom.window.Event('click', { bubbles: true }));
+  await new Promise((r) => setTimeout(r, 400));
+
+  const again = load({ storage: store });
+  const doc = again.dom.window.document;
+  const qEls = [...doc.querySelectorAll('.q')];
+  check('partial reload: the answered question is restored', qEls[0].hasAttribute('data-locked'));
+  check('partial reload: the rest stay answerable', !qEls[1].hasAttribute('data-locked'));
+  check('partial reload: no result panel yet', doc.querySelector('.quiz__result').hidden);
+  check('partial reload: meter shows 1 answered',
+    /\b1 \/ /.test(doc.querySelector('[data-quiz-count]')?.textContent ?? ''),
+    doc.querySelector('[data-quiz-count]')?.textContent ?? '');
 }
 
 // ---------------------------------------------------------------- report

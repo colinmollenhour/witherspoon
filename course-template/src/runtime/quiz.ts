@@ -1,9 +1,9 @@
 import { progressChanged } from './bus';
 import { CFG, json } from './config';
-import { announce } from './derived';
+import { announce, isComplete } from './derived';
 import { celebrate } from './confetti';
 import { Store } from './store';
-import type { QuizData, QuizQuestion, QuizRecord } from './types';
+import type { Answer, QuizData, QuizQuestion, QuizRecord } from './types';
 
 interface Slot {
   done: boolean;
@@ -33,10 +33,56 @@ export function initQuiz(): void {
   let stored: QuizRecord | undefined =
     data.kind === 'test' ? Store.get().tests[data.id] : Store.get().topics[data.id]?.quiz;
 
+  // What was answered, one entry per question. Saved on every answer rather than
+  // only at the end, so closing the tab half way through loses nothing.
+  const answers: Answer[] = qs.map((_, i) => stored?.answers?.[i] ?? null);
+
+  // A record written before `answers` existed: the score survived but the choices
+  // did not, so the quiz can be shown as finished without saying what was picked.
+  const legacyComplete = isComplete(stored) && !Array.isArray(stored.answers);
+
   const remaining = (): number => state.filter((s) => !s.done).length;
+
+  /** The stored record for this quiz, created on first write. */
+  function recordFor(): QuizRecord {
+    const st = Store.get();
+    if (data.kind === 'test') {
+      st.tests[data.id] = st.tests[data.id] ?? {};
+      return st.tests[data.id] as QuizRecord;
+    }
+    st.topics[data.id] = st.topics[data.id] ?? {};
+    const topic = st.topics[data.id]!;
+    topic.quiz = topic.quiz ?? {};
+    return topic.quiz;
+  }
+
+  function clearRecord(): void {
+    const st = Store.get();
+    if (data.kind === 'test') delete st.tests[data.id];
+    else {
+      const topic = st.topics[data.id];
+      if (topic) delete topic.quiz;
+    }
+    Store.save();
+    progressChanged();
+  }
+
+  const meter = root.querySelector<HTMLElement>('[data-quiz-meter]');
+  if (meter) meter.hidden = false;
+
+  /** How far through the quiz, painted on the sticky meter above the questions. */
+  function paintMeter(): void {
+    if (!meter) return;
+    const done = state.filter((s) => s.done).length;
+    const span = meter.querySelector<HTMLElement>('.bar > span');
+    if (span) span.style.width = Math.round((done / (state.length || 1)) * 100) + '%';
+    const count = meter.querySelector<HTMLElement>('[data-quiz-count]');
+    if (count) count.textContent = done + ' / ' + state.length;
+  }
 
   function mark(qEl: HTMLElement, q: QuizQuestion, idx: number, right: boolean): void {
     qEl.setAttribute('data-locked', '1');
+    qEl.setAttribute('data-state', right ? 'ok' : 'bad');
     const correctIdx =
       q.type === 'TRUE_FALSE' ? (q.correctAnswer === true ? 1 : 0) : q.correctOptionIndex;
     qEl.querySelectorAll<HTMLElement>('.opt').forEach((o, oi) => {
@@ -65,15 +111,14 @@ export function initQuiz(): void {
         for (const o of s.objectives) if (missed.indexOf(o) < 0) missed.push(o);
       }
     }
-    const rec: QuizRecord = { score, total, at: Date.now(), missed };
-    const st = Store.get();
-    if (data.kind === 'test') {
-      st.tests[data.id] = rec;
-    } else {
-      st.topics[data.id] = st.topics[data.id] ?? {};
-      const topic = st.topics[data.id];
-      if (topic) topic.quiz = rec;
-    }
+    // Merged into the existing record, not assigned over it: the answers written
+    // as the learner went are what lets a reload show the finished quiz.
+    const rec = recordFor();
+    rec.score = score;
+    rec.total = total;
+    rec.at = Date.now();
+    rec.missed = missed;
+    rec.answers = answers.slice();
     Store.save();
     progressChanged();
 
@@ -85,8 +130,16 @@ export function initQuiz(): void {
     stored = rec;
   }
 
-  function resolve(i: number, right: boolean, q: QuizQuestion): void {
+  function resolve(i: number, right: boolean, q: QuizQuestion, answer: Answer): void {
     state[i] = { done: true, correct: right, objectives: q.objectives ?? [] };
+    answers[i] = answer;
+    paintMeter();
+
+    // Persist immediately. `finish()` will write the score too once the last
+    // question lands, but a quiz abandoned half way still comes back answered.
+    recordFor().answers = answers.slice();
+    Store.save();
+
     announce((right ? 'Correct. ' : 'Incorrect. ') + remaining() + ' remaining.');
     if (state.every((s) => s.done)) finish();
   }
@@ -97,21 +150,38 @@ export function initQuiz(): void {
     total: number,
     missed: number[],
     passed: boolean,
+    /** Only when the learner just finished. Replaying a stored result must not
+     *  yank the page down to the quiz the moment a topic page opens. */
+    scroll = true,
   ): void {
     const box = root.querySelector<HTMLElement>('.quiz__result');
     if (!box) return;
     box.hidden = false;
     box.innerHTML = '';
 
+    const panel = document.createElement('div');
+    panel.className = 'result ' + (passed ? 'result--pass' : 'result--fail');
+
     const h = document.createElement('p');
     h.className = 'quiz__score badge-pop';
-    h.textContent = score + ' / ' + total + '  (' + pct + '%)';
+    h.textContent = pct + '%';
+    const sub = document.createElement('p');
+    sub.className = 'muted';
+    sub.style.margin = '.2rem 0 0';
+    sub.textContent = score + ' of ' + total + ' correct';
+    const scoreCol = document.createElement('div');
+    scoreCol.appendChild(h);
+    scoreCol.appendChild(sub);
+    panel.appendChild(scoreCol);
+
+    const body = document.createElement('div');
+    body.className = 'result__body';
     const msg = document.createElement('p');
+    msg.style.margin = '0';
     msg.textContent = passed
       ? 'Passed — nice work.'
       : "Below the pass mark — here's what to review.";
-    box.appendChild(h);
-    box.appendChild(msg);
+    body.appendChild(msg);
 
     // The payoff of the (objective N) citation contract: which objective was
     // missed, not just a number.
@@ -124,25 +194,22 @@ export function initQuiz(): void {
         li.textContent = name ? 'Objective ' + o + ' — ' + name : 'Objective ' + o;
         ul.appendChild(li);
       }
-      box.appendChild(ul);
+      body.appendChild(ul);
     }
+    panel.appendChild(body);
+    box.appendChild(panel);
 
     const again = document.createElement('button');
     again.className = 'btn';
     again.type = 'button';
+    again.style.marginTop = '1rem';
     again.textContent = 'Retake';
     again.addEventListener('click', () => {
-      const st = Store.get();
-      if (data.kind === 'test') delete st.tests[data.id];
-      else {
-        const topic = st.topics[data.id];
-        if (topic) delete topic.quiz;
-      }
-      Store.save();
+      clearRecord();
       location.reload();
     });
     box.appendChild(again);
-    box.scrollIntoView({ block: 'nearest' });
+    if (scroll) box.scrollIntoView({ block: 'nearest' });
   }
 
   root.querySelectorAll<HTMLElement>('.q').forEach((qEl, i) => {
@@ -180,7 +247,7 @@ export function initQuiz(): void {
             : idx === q.correctOptionIndex;
         mark(qEl, q, idx, right);
         reveal(qEl, explain, right);
-        resolve(i, right, q);
+        resolve(i, right, q, idx);
         check.disabled = true;
       });
     }
@@ -195,9 +262,80 @@ export function initQuiz(): void {
             x.disabled = true;
           });
           b.classList.add('btn--primary');
-          resolve(i, right, q);
+          resolve(i, right, q, right);
         });
       });
     }
+
+    // ---- restore what was already answered -------------------------------
+    // Everything above only wires the fresh state. This replays the stored
+    // answer for this question so a reload comes back exactly as it was left.
+    const saved = answers[i];
+    const answered = saved !== null && saved !== undefined;
+
+    if (answered || legacyComplete) {
+      if (q.type === 'SHORT_ANSWER') {
+        const got = saved === true;
+        reveal(qEl, explain, null);
+        if (self && answered) {
+          self.hidden = false;
+          self.querySelectorAll('button').forEach((x) => {
+            x.disabled = true;
+          });
+          self
+            .querySelector<HTMLElement>(`[data-self="${got ? 'got' : 'missed'}"]`)
+            ?.classList.add('btn--primary');
+        }
+        if (answered) state[i] = { done: true, correct: got, objectives: q.objectives ?? [] };
+      } else {
+        // -1 for a legacy record: the correct option is still marked, but nothing
+        // is flagged as the learner's wrong pick, because that was never stored.
+        const idx = typeof saved === 'number' ? saved : -1;
+        const right =
+          q.type === 'TRUE_FALSE'
+            ? (idx === 1) === (q.correctAnswer === true)
+            : idx === q.correctOptionIndex;
+        const input = qEl.querySelectorAll<HTMLInputElement>('input[type=radio]')[idx];
+        if (input) input.checked = true;
+        mark(qEl, q, idx, right);
+        reveal(qEl, explain, answered ? right : null);
+        if (answered) state[i] = { done: true, correct: right, objectives: q.objectives ?? [] };
+      }
+      if (check) check.disabled = true;
+    }
   });
+
+  // ---- replay the result panel ---------------------------------------------
+  paintMeter();
+  if (state.length && state.every((s) => s.done)) {
+    const score = state.filter((s) => s.correct).length;
+    const missed: number[] = [];
+    for (const s of state) {
+      if (!s.correct) for (const o of s.objectives) if (missed.indexOf(o) < 0) missed.push(o);
+    }
+    const pct = Math.round((score / state.length) * 100);
+    // showResult, not finish(): the score is already stored, and re-running
+    // finish() would restamp `at` and could re-fire the celebration.
+    showResult(pct, score, state.length, missed, pct >= (CFG.passingScore || 70), false);
+  } else if (legacyComplete && isComplete(stored)) {
+    showResult(
+      Math.round((stored.score / stored.total) * 100),
+      stored.score,
+      stored.total,
+      stored.missed ?? [],
+      Math.round((stored.score / stored.total) * 100) >= (CFG.passingScore || 70),
+      false,
+    );
+  }
+
+  // ---- reset, always available once there is anything to reset -------------
+  const reset = root.querySelector<HTMLButtonElement>('[data-quiz-reset]');
+  if (reset) {
+    const hasProgress = legacyComplete || answers.some((a) => a !== null && a !== undefined);
+    reset.hidden = !hasProgress;
+    reset.addEventListener('click', () => {
+      clearRecord();
+      location.reload();
+    });
+  }
 }

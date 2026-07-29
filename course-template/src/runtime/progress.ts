@@ -1,5 +1,5 @@
 import { CFG } from './config';
-import { avg, quizScores, testScores, topicsDone } from './derived';
+import { avg, isComplete, quizScores, testScores, topicsDone } from './derived';
 import { Store } from './store';
 
 /** Paints every progress affordance on the current page from the stored state.
@@ -37,10 +37,13 @@ export function render(): void {
     const rec = st.topics[id];
     const dot = el.querySelector<HTMLElement>('.dot');
     const score = el.querySelector<HTMLElement>('.score');
+    // A half-answered quiz is progress, not a result: the dot only turns
+    // 'quizzed' and the score only appears once the quiz is actually finished.
+    const done = isComplete(rec?.quiz);
     if (dot) {
-      dot.className = 'dot' + (rec?.quiz ? ' dot--quizzed' : rec?.read ? ' dot--read' : '');
+      dot.className = 'dot' + (done ? ' dot--quizzed' : rec?.read ? ' dot--read' : '');
     }
-    if (score) score.textContent = rec?.quiz ? rec.quiz.score + '/' + rec.quiz.total : '';
+    if (score) score.textContent = done ? rec!.quiz!.score + '/' + rec!.quiz!.total : '';
   });
 
   document.querySelectorAll<HTMLElement>('[data-unit-bar]').forEach((el) => {

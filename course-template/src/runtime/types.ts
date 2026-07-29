@@ -1,10 +1,24 @@
 /** Shapes shared between the build-time templates and the browser runtime.
  *  The storage blob is the contract documented in course-site/references/state.md. */
 
+/**
+ * One entry per question: the chosen option index for MULTIPLE_CHOICE and
+ * TRUE_FALSE, the self-mark for SHORT_ANSWER, `null` if not answered yet.
+ */
+export type Answer = number | boolean | null;
+
 export interface QuizRecord {
-  score: number;
-  total: number;
-  at: number;
+  /**
+   * Written as the learner goes, so a half-finished quiz survives a reload and a
+   * finished one comes back showing what was actually chosen. Without this only
+   * the final score was stored, so a refresh re-rendered the quiz blank and the
+   * work looked lost.
+   */
+  answers?: Answer[];
+  /** The four below are set only once every question has been answered. */
+  score?: number;
+  total?: number;
+  at?: number;
   missed?: number[];
 }
 

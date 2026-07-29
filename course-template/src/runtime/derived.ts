@@ -1,7 +1,21 @@
 import { Store } from './store';
+import type { QuizRecord } from './types';
 
 /** Derived values are computed on read, never stored — storing them creates two
  *  sources of truth that drift. */
+
+/**
+ * A record exists as soon as the first question is answered, but only counts as
+ * a result once the whole quiz is done. Everything that reports a score — the
+ * home stats, the unit dots, the certificate — filters on this.
+ */
+export function isComplete(
+  rec: QuizRecord | undefined,
+): rec is QuizRecord & { score: number; total: number; at: number } {
+  return (
+    !!rec && typeof rec.score === 'number' && typeof rec.total === 'number' && rec.total > 0
+  );
+}
 
 export function topicsDone(): number {
   const t = Store.get().topics;
@@ -22,7 +36,7 @@ export function testScores(): number[] {
   const out: number[] = [];
   for (const k in t) {
     const rec = t[k];
-    if (rec?.total) out.push(rec.score / rec.total);
+    if (isComplete(rec)) out.push(rec.score / rec.total);
   }
   return out;
 }
@@ -32,7 +46,7 @@ export function quizScores(): number[] {
   const out: number[] = [];
   for (const k in t) {
     const q = t[k]?.quiz;
-    if (q?.total) out.push(q.score / q.total);
+    if (isComplete(q)) out.push(q.score / q.total);
   }
   return out;
 }

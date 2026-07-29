@@ -49,6 +49,18 @@ const answerText = (q: Question): string => {
 <div class="quiz" data-quiz>
   <script type="application/json" id="quiz-data" set:html={JSON.stringify(quizData)} />
 
+  {/* Hidden until the runtime takes over: with JS off nothing advances it, and a
+      permanently empty progress bar reads as a broken page. */}
+  <div class="quiz__meter" data-quiz-meter hidden>
+    <div class="bar" style="flex:1"><span style="width:0%"></span></div>
+    <span data-quiz-count>0 / {questions.length}</span>
+    {/* Shown by the runtime only once there is something to clear, so it never
+        invites a learner to reset a quiz they have not started. */}
+    <button class="btn btn--quiet quiz__reset" type="button" data-quiz-reset hidden>
+      Reset
+    </button>
+  </div>
+
   {
     questions.map((q, i) => (
       <div class="q">
@@ -80,7 +92,7 @@ const answerText = (q: Question): string => {
         </fieldset>
 
         <button class="btn btn--primary" type="button" data-check>
-          Check
+          Check answer
         </button>
 
         {/* Gate S4: with JavaScript off the answer and explanation are still here. */}

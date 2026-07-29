@@ -1,5 +1,5 @@
 import { CFG } from './config';
-import { avg, testScores } from './derived';
+import { avg, isComplete, testScores } from './derived';
 import { Store } from './store';
 
 /**
@@ -21,7 +21,7 @@ export function initCertificate(): void {
     if (nameEl) nameEl.textContent = s.name || 'Enter your name above';
 
     const units = CFG.units ?? [];
-    const taken = units.filter((u) => s.tests[u.id]);
+    const taken = units.filter((u) => isComplete(s.tests[u.id]));
 
     const body = root!.querySelector<HTMLElement>('[data-cert-rows]');
     if (body) {
@@ -32,9 +32,11 @@ export function initCertificate(): void {
         const td1 = document.createElement('td');
         td1.textContent = u.title || u.id;
         const td2 = document.createElement('td');
-        td2.textContent = rec
+        td2.textContent = isComplete(rec)
           ? rec.score + '/' + rec.total + ' (' + Math.round((rec.score / rec.total) * 100) + '%)'
-          : 'not attempted';
+          : rec?.answers?.some((a) => a !== null && a !== undefined)
+            ? 'in progress'
+            : 'not attempted';
         tr.appendChild(td1);
         tr.appendChild(td2);
         body.appendChild(tr);
@@ -50,7 +52,7 @@ export function initCertificate(): void {
       let last = 0;
       for (const u of units) {
         const rec = s.tests[u.id];
-        if (rec && rec.at > last) last = rec.at;
+        if (isComplete(rec) && rec.at > last) last = rec.at;
       }
       dateEl.textContent = last ? new Date(last).toLocaleDateString() : '—';
     }

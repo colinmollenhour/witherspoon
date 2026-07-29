@@ -18,10 +18,12 @@ One key per course: `course:<slug>:v1`. One JSON blob:
   "lastVisited": "unit-1/topic-2.html",
   "topics": {
     "u1t1": { "read": true, "readAt": 1753600000000,
-              "quiz": { "score": 4, "total": 5, "at": 1753600000000, "missed": [2] } }
+              "quiz": { "answers": [2, true, 0, null, null],
+                        "score": 4, "total": 5, "at": 1753600000000, "missed": [2] } }
   },
   "tests": {
-    "u1": { "score": 8, "total": 10, "at": 1753600000000, "missed": [3, 7] }
+    "u1": { "answers": [1, 3, 0, 2, true, 1, 0, 3, 2, 1],
+            "score": 8, "total": 10, "at": 1753600000000, "missed": [3, 7] }
   },
   "projects": { "u1p1": { "steps": [true, false, false] } }
 }
@@ -32,6 +34,15 @@ Rules:
 - **Namespaced by slug**, so two courses on the same host never collide.
 - **`v` is the schema version.** A blob with a different `v` is migrated if a migration exists, and
   otherwise discarded with a one-time notice — never read as if it matched.
+- **`answers[]` is one entry per question** — the chosen option index for `MULTIPLE_CHOICE` and
+  `TRUE_FALSE`, the self-mark for `SHORT_ANSWER`, `null` for not yet answered. It is written on
+  **every** answer, not at the end, so a quiz abandoned half way comes back answered and a finished
+  one comes back showing what was actually chosen. Storing only the final score meant a refresh
+  re-rendered the quiz blank and the learner's work looked lost.
+- **A record exists from the first answer; a *result* needs `score` and `total`.** Those, plus `at`
+  and `missed[]`, are written only once every question is done. Anything reporting a score — the
+  home stats, the unit dots, the certificate — must filter on completeness, or a half-finished unit
+  test counts as taken.
 - **`missed[]` holds objective numbers**, parsed from the `(objective N)` citations. That is what
   drives the per-objective breakdown and the review list.
 - **Timestamps are recorded at the event**, so the certificate date does not move on reload.
