@@ -93,8 +93,12 @@ Unit 2 onward you type your project's address by hand, repeatedly. Pick a place 
 
 ## If you are on Windows: you have two filesystems, and it matters
 
-WSL (Windows Subsystem for Linux) runs a real Ubuntu inside Windows, so you get two worlds. Microsoft
-shows the seam directly — your Windows `C:\Users\<user name>\Project` folder
+WSL (Windows Subsystem for Linux) does **not** come pre-installed. If you have not set it up yet,
+install Ubuntu from the Microsoft Store first — the install steps are in the next section — then come
+back here.
+
+WSL runs a real Ubuntu inside Windows, so you get two worlds. Microsoft shows the seam directly —
+your Windows `C:\Users\<user name>\Project` folder
 
 > "will look like this when mounted in a WSL command line: `/mnt/c/Users/<user name>/Project$`."
 
@@ -168,11 +172,15 @@ Decide this now. It is the one setup choice that nags you for the rest of the co
   requires the command line developer tools. Would you like to install the tools now?"* Say yes, or
   run `xcode-select --install`, which "opens a user interface dialog to request automatic installation
   of the command line developer tools."
-- **Windows needs WSL itself.** One command: `wsl --install`. Microsoft's requirement: "You must be
-  running Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11". You get Ubuntu
-  by default.
-- **Linux and WSL are already set.** Ubuntu's WSL package manifest lists `python3`, `curl`, and
-  `nano` as present.
+- **Windows needs WSL, and it is not pre-installed.** You do not need a terminal command for this.
+  Open the **Microsoft Store**, search for **Ubuntu**, and install it — or open this direct link:
+  [Ubuntu on the Microsoft Store](https://apps.microsoft.com/detail/9pdxgncfsczv). That Store app
+  installs a complete Ubuntu terminal environment under Windows Subsystem for Linux. When the
+  install finishes, open **Ubuntu** once from the Start menu so setup can finish and ask you for a
+  Linux username and password. Microsoft's requirement: "You must be running Windows 10 version
+  2004 and higher (Build 19041 and higher) or Windows 11".
+- **Linux and WSL are already set** once Ubuntu is installed. Ubuntu's WSL package manifest lists
+  `python3`, `curl`, and `nano` as present.
 
 ## Open a terminal and find your name in it
 

@@ -148,11 +148,12 @@ happens to render — you never learn HTML as a language. What you learn is ever
 absorbs *around* the code in their first couple of years and never explicitly teaches anyone.
 
 **What hardware and software do I need?**
-A Mac, a Linux machine, or Windows 10 build 19041+ / Windows 11 with WSL installed via `wsl --install`.
-A phone or second computer on the same Wi-Fi for the capstone. If you're on macOS, note that macOS
-ships no Python runtime at all — typing `python3` pops a dialog asking to install the command line
-developer tools, so you'll run `xcode-select --install` before Unit 5. The course tells you this in
-Unit 1 rather than letting you discover it at the capstone.
+A Mac, a Linux machine, or Windows 10 build 19041+ / Windows 11 with Ubuntu installed from the
+Microsoft Store (WSL — it does not come pre-installed; Unit 1 links the Store page). A phone or
+second computer on the same Wi-Fi for the capstone. If you're on macOS, note that macOS ships no
+Python runtime at all — typing `python3` pops a dialog asking to install the command line developer
+tools, so you'll run `xcode-select --install` before Unit 5. The course tells you this in Unit 1
+rather than letting you discover it at the capstone.
 
 **Is the Windows path as good as the Mac and Linux paths?**
 Honestly, no — and the course says so where it matters. WSL 2 runs in a virtual machine with its own

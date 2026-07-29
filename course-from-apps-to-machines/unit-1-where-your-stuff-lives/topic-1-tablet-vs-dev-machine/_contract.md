@@ -20,8 +20,9 @@ setup decision that will bite them for the rest of the course. Close by having t
 and read their own username in the prompt, naming the correct terminal app per platform [src 31, 32,
 33] — note Ptyxis, not GNOME Terminal, is now the Linux default [src 32]. State the platform
 prerequisites plainly here so nobody discovers them in Unit 5: macOS learners will need
-`xcode-select --install` because macOS ships no Python [src 127, 128, 129]; WSL learners need
-`wsl --install` [src 152].
+`xcode-select --install` because macOS ships no Python [src 127, 128, 129]; Windows learners need
+WSL, which is not pre-installed — direct non-terminal users to install **Ubuntu from the Microsoft
+Store** (https://apps.microsoft.com/detail/9pdxgncfsczv) rather than `wsl --install` [src 152, 183].
 
 Do NOT teach any command other than opening a terminal and reading the prompt. `pwd`, `ls`, and `cd`
 belong to Unit 2 and teaching them here wrecks that unit's opening.
@@ -37,7 +38,7 @@ belong to Unit 2 and teaching them here wrecks that unit's opening.
 - WSL: "We recommend using WSL with Windows Terminal" [src 33]
 - Prompt shapes: Linux bash ends `$`; macOS zsh ends `%` [src 28, 30]
 - macOS ships no Python; `python3` opens a dialog: "The \"python3\" command requires the command line developer tools. Would you like to install the tools now?" Fix: `xcode-select --install` [src 127, 128, 129]
-- WSL install: `wsl --install`, needs "Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11" [src 152]
+- WSL is not pre-installed. Preferred path for this course: install Ubuntu from the Microsoft Store — "Install a complete Ubuntu terminal environment in minutes with Windows Subsystem for Linux (WSL)." [src 183]. Version requirement: "Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11" [src 152]
 - The documented gap: "Unable to use browser (only uses phone applications)"; "The technical understanding of computers, programs, and how they work just isn't there in many young adults" [src 173]
 - Teach from: ACRLog 2024 digital-literacy post [src 173]; Microsoft WSL filesystems page [src 4]
 

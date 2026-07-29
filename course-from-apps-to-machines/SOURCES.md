@@ -218,7 +218,7 @@ A5 prior-art gap.
 | 149 | Windows Firewall blocks inbound by default | "The default behavior of Windows Firewall is to: - block all incoming traffic, unless solicited or matching a *rule* - allow all outgoing traffic, unless matching a *rule*" | https://learn.microsoft.com/en-us/windows/security/operating-system-security/network-security/windows-firewall/ | A3d |
 | 150 | Public vs private profile matters | "The *public network* profile is designed with higher security in mind for public networks... **It's the default profile for unidentified networks.**" Check with `Get-NetConnectionProfile`. | same as 149 | A3d |
 | 151 | macOS firewall alert wording | "When your Mac detects an attempt to connect to an app you haven't added to the list and given access to, an alert message appears asking if you want to allow or deny the connection over the network or internet." | https://support.apple.com/guide/mac-help/block-connections-to-your-mac-with-a-firewall-mh34041/mac | A3b |
-| 152 | WSL install command and prerequisites | "You must be running Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11 to use the commands below." / `wsl --install` / "By default, the installed Linux distribution will be Ubuntu." | https://learn.microsoft.com/en-us/windows/wsl/install | A1, A3d |
+| 152 | WSL install prerequisites (Windows version) | "You must be running Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11 to use the commands below." / `wsl --install` / "By default, the installed Linux distribution will be Ubuntu." | https://learn.microsoft.com/en-us/windows/wsl/install | A1, A3d |
 | 153 | WSL 2 is the default version | "New Linux installations, installed using the `wsl --install` command, will be set to WSL 2 by default." | same as 152 | A1, A3d |
 
 ### Misconceptions (distractor stock)
@@ -259,6 +259,7 @@ A5 prior-art gap.
 | 180 | Codecademy teaches the CLI as vocabulary inside a browser sandbox | 4 lessons (Navigating / Viewing & Changing the File System, Redirection, Environment); no networking, ports, HTTP, or servers; exercises run in an in-browser terminal. | https://www.codecademy.com/learn/learn-the-command-line | A5 |
 | 181 | Google IT Cert sequences networking before filesystem and never joins them | Course 2 covers IP, subnetting, ports/sockets, DNS bottom-up from the physical layer; the filesystem appears only in Course 3. | https://www.coursera.org/learn/computer-networking | A5 |
 | 182 | The Odin Project teaches web mechanics passively | "How Does the Web Work?" is reading plus embedded videos with no hands-on component. | https://www.theodinproject.com/lessons/foundations-how-does-the-web-work | A5 |
+| 183 | Ubuntu from the Microsoft Store (preferred install path for non-terminal learners) | "Install a complete Ubuntu terminal environment in minutes with Windows Subsystem for Linux (WSL)." Store product id `9PDXGNCFSCZV`. MS also lists the Store as a way to choose distros: "This can include choosing distributions from the Microsoft Store". | https://apps.microsoft.com/detail/9pdxgncfsczv · https://learn.microsoft.com/en-us/windows/wsl/install | A1, A3d |
 
 ---
 
