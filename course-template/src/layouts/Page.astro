@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { rel } from '../lib/rel';
 import { unitAccents } from '../lib/color';
+import { licenseInfo } from '../lib/license';
 
 interface Props {
   title: string;
@@ -56,6 +57,7 @@ const r = rel(depth);
 
 const palette = unitAccents(c.data.accent, units.length);
 const accent = (unitIndex && palette[unitIndex - 1]) || c.data.accent;
+const rights = licenseInfo(c.data.license);
 
 // Everything the runtime needs, embedded. The site never fetches its own content.
 const config = {
@@ -83,7 +85,12 @@ const favicon =
   '%3C/svg%3E';
 ---
 
-<html lang="en" class="no-js" style={`--accent: ${accent}; --accent-ink: ${c.data.accentInk};`}>
+<html
+  lang="en"
+  class="no-js"
+  data-theme="light"
+  style={`--accent: ${accent}; --accent-ink: ${c.data.accentInk};`}
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -108,6 +115,7 @@ const favicon =
     <meta name="theme-color" content={accent} />
     <link rel="icon" href={favicon} />
     <link rel="stylesheet" href={`${r}assets/site.css`} />
+    {rights.url && <link rel="license" href={rights.url} />}
     <script type="application/json" id="course-config" set:html={JSON.stringify(config)} />
   </head>
   <body data-page-path={pagePath}>
@@ -125,7 +133,14 @@ const favicon =
           <input id="site-search" type="search" placeholder="Search  /" autocomplete="off" />
           <div class="search__results" role="listbox" aria-label="Search results" hidden></div>
         </div>
-        <button class="btn btn--quiet" type="button" data-theme-toggle aria-label="Change theme">◒</button>
+        <button
+          class="btn btn--quiet"
+          type="button"
+          data-theme-toggle
+          aria-label="Theme: light. Click to change."
+        >
+          ○
+        </button>
       </div>
       {readbar && <div class="readbar" data-readbar aria-hidden="true"></div>}
     </header>
@@ -142,6 +157,18 @@ const favicon =
           <a href={`${r}certificate.html`}>Completion record</a> ·
           <a href={`${r}sources.html`}>Sources</a> ·
           <button class="btn btn--quiet" type="button" data-reset>Reset progress</button>
+        </p>
+        <p class="site-license" data-license-id={c.data.license.id}>
+          {rights.copyright && <span>{rights.copyright} </span>}
+          {
+            rights.url && rights.verb ? (
+              <>
+                {rights.verb} <a href={rights.url} rel="license">{rights.label}</a>.
+              </>
+            ) : (
+              <>{rights.label}.</>
+            )
+          }
         </p>
       </div>
     </footer>

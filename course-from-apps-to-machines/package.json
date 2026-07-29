@@ -1,0 +1,13 @@
+{
+  "name": "course-from-apps-to-machines",
+  "private": true,
+  "scripts": {
+    "build": "npm --prefix ../course-template run build -- --course ../course-from-apps-to-machines",
+    "dev": "npm --prefix ../course-template run dev -- --course ../course-from-apps-to-machines",
+    "verify": "npm --prefix ../course-template run verify -- ../course-from-apps-to-machines/dist",
+    "check-widgets": "npm --prefix ../course-template run check-widgets -- --course ../course-from-apps-to-machines",
+    "typecheck": "npm --prefix ../course-template run typecheck",
+    "test": "npm --prefix ../course-template run test -- ../course-from-apps-to-machines/dist",
+    "deploy": "tigris cp ./dist/ t3://course-from-apps-to-machines/ --recursive"
+  }
+}

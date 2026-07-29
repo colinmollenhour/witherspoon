@@ -14,7 +14,7 @@ One key per course: `course:<slug>:v1`. One JSON blob:
 {
   "v": 1,
   "name": null,
-  "theme": "system",
+  "theme": "light",
   "lastVisited": "unit-1/topic-2.html",
   "topics": {
     "u1t1": { "read": true, "readAt": 1753600000000,

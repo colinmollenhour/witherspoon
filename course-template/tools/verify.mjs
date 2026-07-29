@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Build gates S1–S13 from course-site/references/build-gates.md, plus the advisory
+ * Build gates S1–S15 from course-site/references/build-gates.md, plus the advisory
  * checks. Replaces the inline verify.sh, whose S1 quietly dropped the `fetch(`
  * pattern that the prose version of the gate requires — so the two disagreed about
  * whether the shipped runtime passed.
@@ -366,6 +366,39 @@ for (const [f, html] of pages) {
   if (found.size) {
     const sample = [...found].slice(0, 3).map((s) => s.trim()).join(', ');
     fail('S14', `${relOf(f)} shows ${found.size} run(s) of unrendered markdown: ${sample}`);
+  }
+}
+
+// ---------------------------------------------------------------- S15
+// Copyright and licensing must survive the JSON → collection → layout path. The
+// notice belongs on every page, and open licenses need machine-readable rel links
+// in both the document head and visible footer.
+const LICENSE_URLS = {
+  'all-rights-reserved': null,
+  'cc-by-nc-nd-4.0': 'https://creativecommons.org/licenses/by-nc-nd/4.0/',
+  'cc-by-4.0': 'https://creativecommons.org/licenses/by/4.0/',
+  'cc0-1.0': 'https://creativecommons.org/publicdomain/zero/1.0/',
+};
+
+for (const [f, html] of pages) {
+  const notices = [...html.matchAll(/<p class="site-license" data-license-id="([^"]+)">/g)];
+  if (notices.length !== 1) {
+    fail('S15', `${relOf(f)} has ${notices.length} licensing notices (expected exactly one)`);
+    continue;
+  }
+  const id = notices[0][1];
+  if (!(id in LICENSE_URLS)) {
+    fail('S15', `${relOf(f)} has unknown license id "${id}"`);
+    continue;
+  }
+  const url = LICENSE_URLS[id];
+  if (url) {
+    if (!new RegExp(`<link[^>]+rel="license"[^>]+href="${url}"`).test(html)) {
+      fail('S15', `${relOf(f)} has no head rel=license link for ${id}`);
+    }
+    if (!new RegExp(`<a[^>]+href="${url}"[^>]+rel="license"`).test(html)) {
+      fail('S15', `${relOf(f)} has no visible rel=license link for ${id}`);
+    }
   }
 }
 

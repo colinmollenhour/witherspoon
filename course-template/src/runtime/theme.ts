@@ -2,8 +2,9 @@ import { html } from './config';
 import { Store } from './store';
 import type { ThemePref } from './types';
 
-/** The toggle cycles dark → light → system and must win over the OS setting in
- *  both directions; tokens.css declares the dark values twice to make that work. */
+/** Default is light. The toggle still cycles light → system → dark → light and
+ *  must win over the OS setting in both directions; tokens.css declares the dark
+ *  values twice to make that work. */
 export function initTheme(): void {
   const btn = document.querySelector<HTMLButtonElement>('[data-theme-toggle]');
 
@@ -16,11 +17,11 @@ export function initTheme(): void {
     }
   };
 
-  apply(Store.get().theme || 'system');
+  apply(Store.get().theme || 'light');
   if (!btn) return;
 
   btn.addEventListener('click', () => {
-    const cur = Store.get().theme || 'system';
+    const cur = Store.get().theme || 'light';
     const next: ThemePref = cur === 'dark' ? 'light' : cur === 'light' ? 'system' : 'dark';
     Store.get().theme = next;
     Store.save();

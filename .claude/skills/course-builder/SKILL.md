@@ -58,7 +58,7 @@ Do not narrate beyond a single line.
 
 ### Stage 1 — Interview
 
-**One `AskUserQuestion` call. Four questions. Every question carries a `(Recommended)` default so
+**One `AskUserQuestion` call. Six questions. Every question carries a `(Recommended)` default so
 "take all the defaults" is one interaction.** Infer defaults from Stage 0 and from anything the user
 already said — do not ask what they have already told you; drop that question and keep the rest.
 
@@ -68,12 +68,30 @@ already said — do not ask what they have already told you; drop that question 
 | Feel | How should the course feel? | Hands-on projects · Reading + assessment · Mixed |
 | Size | How big? | ~3 units / 6 topics · ~6 units / 21 topics · Compact single unit |
 | Template | Structure? | `project-based` · `academic` |
+| Rights | How may other people use this course? | All rights reserved · CC BY-NC-ND 4.0 · CC BY 4.0 · CC0 1.0 |
+| Holder | Who should the copyright notice name? | Reliably inferred person/organization `(Recommended)` · No named holder · exact name under Other |
+
+Explain the rights choices in the option descriptions:
+
+- **All rights reserved** (`all-rights-reserved`) — no copying, redistribution, or adaptation without
+  permission. Recommend this when the user wants tight control or has expressed no reuse preference.
+- **CC BY-NC-ND 4.0** (`cc-by-nc-nd-4.0`) — attributed, noncommercial sharing is allowed; adaptations
+  are not.
+- **CC BY 4.0** (`cc-by-4.0`) — sharing and adaptation, including commercial use, with attribution.
+- **CC0 1.0** (`cc0-1.0`) — maximum openness; waive rights where legally possible and do not require
+  attribution.
+
+For Holder, use a person or organization only when the request or local project metadata identifies
+it reliably. Otherwise recommend **No named holder** and tell the user to enter the exact legal name
+under Other if they want one. Set `license.year` to the current year. Do not invent a holder or give
+legal advice; describe what each standardized choice permits.
 
 `project-based` = every unit ends in built work. `academic` = lecture-and-assessment led, projects
 optional. See `references/schema.md`.
 
 Never ask a second interview round. If something is still ambiguous after this, decide it, state the
-assumption in one line at the approval gate, and move on.
+assumption in one line at the approval gate, and move on. Licensing and holder are never assumptions:
+the interview answer is copied exactly into `course.json`.
 
 ### Stage 2 — Spine (provisional)
 
@@ -102,7 +120,8 @@ something that interlocks with its neighbours.
 ### Stage 4 — Approve
 
 Present the outline as a compact syllabus: title, subtitle, the transformation numbers (marked where
-provisional), the failure moment, and the unit/topic tree. Then state exactly:
+provisional), the failure moment, the selected license and copyright holder, and the unit/topic tree.
+Then state exactly:
 
 > Approve and I'll ground this against real sources — **M** research agents confirming the numbers,
 > APIs, and misconceptions — then build with **N** topic and project agents. Tell me what to change
@@ -142,8 +161,8 @@ Report the refinement in two or three lines — what changed and why — then co
 
 ### Stage 7 — Generate
 
-Write `course.json`, `README.md`, `SOURCES.md`, and every `_contract.md` to disk **first**, so the
-skeleton survives any failure.
+Write `course.json`—including the selected `license` object—plus `README.md`, `SOURCES.md`, and every
+`_contract.md` to disk **first**, so the skeleton survives any failure.
 
 Then fan out: **one subagent per topic, one per project**, in parallel batches. Each agent receives:
 

@@ -22,6 +22,11 @@ running problem, and `LECTURE` replaces projects as the second activity.
   "subtitle": "string — states the before→after with real numbers",
   "about": "string — exactly three paragraphs",
   "structureTemplate": "project-based" | "academic",
+  "license": {
+    "id": "all-rights-reserved" | "cc-by-nc-nd-4.0" | "cc-by-4.0" | "cc0-1.0",
+    "holder": "string | null — exact person or organization named in the notice",
+    "year": "integer — copyright year"
+  },
   "categories": ["string"],
 
   "hero": {                                   // optional; home-page artwork
@@ -159,6 +164,23 @@ running problem, and `LECTURE` replaces projects as the second activity.
   ]
 }
 ```
+
+## Rights metadata
+
+`license` is required because a public course without an explicit reuse policy leaves both learners
+and the owner guessing. The interview maps directly to `license.id`:
+
+| ID | Displayed terms |
+| --- | --- |
+| `all-rights-reserved` | No copying, redistribution, or adaptation without permission. |
+| `cc-by-nc-nd-4.0` | Attributed, noncommercial sharing; no adaptations. |
+| `cc-by-4.0` | Sharing and adaptation, including commercial use, with attribution. |
+| `cc0-1.0` | Rights waived where legally possible; attribution not required. |
+
+`holder` is never inferred from a course title. Use the exact person or organization selected in the
+interview, or `null`. `year` is the four-digit year in which the course is created. The site derives
+the canonical Creative Commons URL and human-readable notice from the ID; do not store hand-written
+license URLs or alternate labels in `course.json`.
 
 ## Assessment data
 

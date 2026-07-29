@@ -213,6 +213,74 @@ account, or organization identifier when destination names are account-scoped; l
 the destination ID is globally unambiguous. Store no token, access key, secret, or DNS credential.
 This file makes repeat publication safe and stable.
 
+The final workspace step is to make the build and verified deployment repeatable from the course
+directory:
+
+1. Read `<course-dir>/package.json` when it exists and preserve its name, dependencies, unrelated
+   scripts, and formatting conventions. If it is absent, create a minimal private package using the
+   course slug:
+
+   ```json
+   {
+     "name": "course-slug",
+     "private": true,
+     "scripts": {}
+   }
+   ```
+
+2. When the shared `course-template/package.json` is available, expose its course operations as
+   wrappers in the course package. Compute relative paths from the course and template directories;
+   do not assume they are siblings. For the normal sibling layout, add:
+
+   ```json
+   {
+     "scripts": {
+       "build": "npm --prefix ../course-template run build -- --course ../course-slug",
+       "dev": "npm --prefix ../course-template run dev -- --course ../course-slug",
+       "verify": "npm --prefix ../course-template run verify -- ../course-slug/dist",
+       "check-widgets": "npm --prefix ../course-template run check-widgets -- --course ../course-slug",
+       "typecheck": "npm --prefix ../course-template run typecheck",
+       "test": "npm --prefix ../course-template run test -- ../course-slug/dist"
+     }
+   }
+   ```
+
+   Read the template's current `scripts` before editing. Mirror every course-facing operation it
+   exposes, adapting required course or `dist/` arguments exactly as the template documents. A new
+   template command is not copied blindly: inspect its usage first so it runs with the correct
+   working directory and arguments. The wrappers reuse `course-template/node_modules`; do not add or
+   duplicate template dependencies in the course package.
+
+3. Set `scripts.deploy` to the exact non-interactive form of the method that just succeeded, with
+   `./dist/` as the source and the manifest-owned destination explicit. Examples:
+
+   ```json
+   {
+     "scripts": {
+       "deploy": "tigris cp ./dist/ t3://course-slug/ --recursive"
+     }
+   }
+   ```
+
+   - Tigris: `tigris cp ./dist/ t3://<bucket>/ --recursive`
+   - Netlify: `netlify deploy --site <site-id> --dir ./dist --prod --no-build`
+   - Cloudflare Pages: `wrangler pages deploy ./dist --project-name <project-name>`
+   - Other hosts: the exact proven CLI command with an explicit destination.
+
+4. Never put tokens, access keys, secrets, temporary URLs, interactive login commands, or destructive
+   stale-file cleanup in `scripts.deploy`. The provider CLI must use its normal authenticated local
+   session. If the first upload used MCP or a web UI, configure and prove the provider's official CLI
+   equivalent before writing the script; do not add a command that has not run successfully.
+5. Run `npm run deploy` from `<course-dir>` once, then repeat Stage 5 against the public URL. The
+   package edit is not complete until this exact command successfully republishes the site.
+6. Make this package update the last workspace mutation. After it passes, report without changing
+   course files again.
+
+Preserve an existing wrapper when it already delegates to the current shared template with the
+correct course path. Preserve an existing `deploy` script only when it targets the same
+manifest-owned destination through the method that just passed. Otherwise replace it; the current
+template contract and verified publication are the sources of truth.
+
 Report only after the public browser check passes:
 
 ```text
@@ -221,7 +289,7 @@ Site: <verified clickable entry URL>
 Custom domain: <verified URL | not requested | exact remaining optional step>
 Upload: <file count> files · <bytes>
 Checks: entry HTML · assets/MIME · internal navigation · interaction
-Republish: invoke course-publish again; it will reuse .course-publish.json
+Republish: cd <course-dir> && npm run deploy
 ```
 
 For Tigris, print the `/index.html` URL as the primary link and state in one sentence that the bare

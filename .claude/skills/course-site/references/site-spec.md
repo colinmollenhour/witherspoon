@@ -38,7 +38,9 @@ nav. Three thin pages and three clicks is worse.
 
 - Skip link → `<main>`.
 - Header: course title (links home), unit/topic breadcrumb, search, theme toggle.
-- Footer: prev/next within the course sequence, and a link to the syllabus.
+- Footer: prev/next within the course sequence, syllabus/certificate/sources links, reset progress,
+  and the course's copyright/license notice on every page. Creative Commons notices link to the
+  canonical terms with `rel="license"`; the same relation appears in `<head>`.
 - `<title>`: `<page> — <course title>`.
 - Meta description from the topic description.
 - No external anything. System font stack only.
@@ -59,7 +61,8 @@ nav. Three thin pages and three clicks is worse.
 5. **Syllabus** — units as cards, each listing topics with a per-item state dot (unread / read /
    quizzed) and a unit progress bar.
 6. **FAQ** — `faqs[]` as `<details>` elements. Native, accessible, no JS.
-7. **Footer strip** — certificate link, reset progress, storage status.
+7. **Footer strip** — certificate link, reset progress, storage status, copyright holder, and
+   selected license.
 
 ## Topic page
 

@@ -99,7 +99,7 @@ to change, change the template — that is the point of it being shared.
 ### Stage 5 — Verify
 
 ```bash
-npm run verify -- ../<course-dir>/dist        # gates S1–S13
+npm run verify -- ../<course-dir>/dist        # gates S1–S15
 npm run test -- ../<course-dir>/dist          # runtime behaviour in jsdom
 ```
 

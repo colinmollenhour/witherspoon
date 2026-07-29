@@ -1,5 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { courseLoader, projectsLoader, topicsLoader, unitsLoader } from './lib/loaders';
+import { LICENSE_IDS } from './lib/license';
 
 /**
  * Four collections, all derived from one course directory.
@@ -64,6 +65,11 @@ const course = defineCollection({
     slug: z.string(),
     subtitle: z.string(),
     about: z.string(),
+    license: z.object({
+      id: z.enum(LICENSE_IDS),
+      holder: z.string().min(1).nullable(),
+      year: z.number().int().min(1900).max(9999),
+    }),
     accent: z.string(),
     accentInk: z.string(),
     categories: z.array(z.string()).default([]),

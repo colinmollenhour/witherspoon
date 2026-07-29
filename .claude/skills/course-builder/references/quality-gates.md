@@ -149,6 +149,19 @@ check the widgets in any topic whose reading you are already spot-checking for G
 Also confirm the budget: no topic carries more than two widgets, and none is decorative — if you
 cannot say which sentence a widget answers, cut it.
 
+### G15 — Rights are explicit
+
+`course.json.license` must record the interview choice exactly:
+
+- `id` is one of `all-rights-reserved`, `cc-by-nc-nd-4.0`, `cc-by-4.0`, or `cc0-1.0`
+- `holder` is the exact person/organization supplied by the user, or `null` when they selected no
+  named holder
+- `year` is the current four-digit year
+
+Do not silently replace a restrictive choice with an open one, or the reverse. The site build's S15
+gate confirms that the resulting copyright/license notice appears on every generated page and that
+Creative Commons choices carry machine-readable `rel=\"license\"` links.
+
 ## Advisory checks
 
 Report these; do not block on them.

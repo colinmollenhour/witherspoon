@@ -91,6 +91,7 @@ export function courseLoader(): Loader {
         slug: c.slug,
         subtitle: c.subtitle,
         about: rewriteCourseLinks(c.about),
+        license: c.license,
         // Stated in the build report when the course does not specify one.
         accent: c.brandColors?.primary ?? DEFAULT_ACCENT,
         accentInk: c.brandColors?.ink ?? DEFAULT_ACCENT_INK,

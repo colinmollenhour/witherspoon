@@ -114,6 +114,22 @@ tigris cp /absolute/path/to/course/dist/ t3://COURSE_BUCKET/ --recursive
 Do not upload to `t3://COURSE_BUCKET/dist/`. Do not add `--access private`; objects must inherit the
 public bucket's read access.
 
+After the first upload passes public HTTP and browser verification, persist that exact mechanism in
+the course's `package.json`:
+
+```json
+{
+  "scripts": {
+    "deploy": "tigris cp ./dist/ t3://COURSE_BUCKET/ --recursive"
+  }
+}
+```
+
+Preserve all other package fields and scripts. If the package does not exist, create a minimal
+private package. Never include `tigris login`, access credentials, or stale-object deletion in the
+script. Run `npm run deploy` once from the course directory and repeat public verification; this
+proves the saved command rather than merely recording an assumed equivalent.
+
 For a repeat publish, obtain the remote inventory before upload:
 
 ```bash

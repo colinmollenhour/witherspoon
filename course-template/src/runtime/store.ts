@@ -32,7 +32,7 @@ function blank(): State {
   return {
     v: VERSION,
     name: null,
-    theme: 'system',
+    theme: 'light',
     lastVisited: null,
     topics: {},
     tests: {},

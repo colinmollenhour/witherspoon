@@ -2,18 +2,26 @@
 
 One Astro project that builds a self-contained static site from **any** approved course directory.
 
+Before a course has been published, run the shared template directly:
+
 ```bash
 npm install                                        # first run only
 npm run build -- --course ../course-<slug>         # → ../course-<slug>/dist
 npm run dev   -- --course ../course-<slug>         # live preview
-npm run verify -- ../course-<slug>/dist            # gates S1–S13
+npm run verify -- ../course-<slug>/dist            # gates S1–S15
 npm run test   -- ../course-<slug>/dist            # runtime behaviour in jsdom
 npm run check-widgets -- --course ../course-<slug> # widget JSON, without a build
 npm run typecheck
 ```
 
-Course directories hold content only. Updating a course means editing `course.json` and its markdown;
-improving the site means editing this template, once, for every course.
+`course-publish` adds thin wrappers to the course's `package.json`. After that, stay in the course
+directory and run `npm run build`, `npm run dev`, `npm run verify`, `npm run check-widgets`,
+`npm run typecheck`, `npm run test`, or `npm run deploy`. The wrappers reuse this template and its
+`node_modules`; dependencies are not copied into every course.
+
+Course directories hold their content, publication manifest, and command wrappers. Updating a course
+means editing `course.json` and its markdown; improving the site means editing this template, once,
+for every course.
 
 ## What it reads
 
@@ -68,7 +76,7 @@ src/
   pages/                index · certificate · sources · 404 · [unit]/[page] · assets/search-index.js
 tools/
   build.mjs             the --course wrapper
-  verify.mjs            gates S1–S13
+  verify.mjs            gates S1–S15
   test-runtime.mjs      jsdom behaviour tests
   check-widgets.mjs     widget JSON validation without a build
   render-views.mjs      renders quiz.md / flashcards.md / unit-test.md from course.json

@@ -299,7 +299,7 @@ pages and does not write a builder.
 cd course-template
 npm install                                     # first run only
 npm run build  -- --course ../course-<slug>     # → ../course-<slug>/dist
-npm run verify -- ../course-<slug>/dist         # gates S1–S12
+npm run verify -- ../course-<slug>/dist         # gates S1–S15
 npm run test   -- ../course-<slug>/dist         # runtime behaviour in jsdom
 ```
 
@@ -310,7 +310,7 @@ course-site/                  the skill: what to build and how to check it
     visuals.md                composing tldraw-skill + infographic; budgets and fallbacks
     site-spec.md              the design contract the template implements
     state.md                  localStorage contract and every failure mode
-    build-gates.md            what each of S1–S12 means
+    build-gates.md            what each of S1–S15 means
 
 course-template/              the builder: one Astro project, every course
   src/content.config.ts       four collections, zod-validated

@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import type { CourseLicense } from './license';
 
 /**
  * Reading and deriving from course.json. This is the only module that knows the
@@ -144,6 +145,7 @@ export interface RawCourse {
   slug: string;
   subtitle: string;
   about: string;
+  license: CourseLicense;
   categories?: string[];
   brandColors?: { primary?: string; ink?: string };
   /** Optional home-page artwork. `image` is relative to the course directory. */

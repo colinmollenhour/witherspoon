@@ -147,6 +147,20 @@ field, because a course that ships a broken diagram silently is worse than one t
 Advisory: more than four widgets on a page. Past that they read as decoration and the good ones lose
 their weight.
 
+### S14 — No raw Markdown leaks
+
+Structured prose from `course.json` must pass through the Markdown renderer. The verifier strips
+tags, scripts, styles, preformatted blocks, and code, then fails when visible prose still contains
+backtick code spans or `**bold**` markers. This catches fields rendered with `{value}` instead of the
+shared Markdown component.
+
+### S15 — Rights notice
+
+Every generated page contains exactly one `.site-license` notice whose `data-license-id` is one of
+the four IDs accepted by the course schema. Creative Commons licenses must also appear as canonical
+`rel="license"` links in both `<head>` and the visible footer. A license recorded only in
+`course.json` but absent from the deployed pages fails.
+
 ## Advisory
 
 Report, do not block.
@@ -165,7 +179,7 @@ Report, do not block.
 
 ```bash
 cd course-template
-npm run verify -- ../<course-dir>/dist   # S1–S13 and the advisory checks
+npm run verify -- ../<course-dir>/dist   # S1–S15 and the advisory checks
 npm run test   -- ../<course-dir>/dist   # runtime behaviour in jsdom
 ```
 
