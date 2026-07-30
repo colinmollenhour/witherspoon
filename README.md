@@ -116,17 +116,19 @@ bun run dev                                     # live reload
 cd course-<slug>/dist && python3 -m http.server 8000
 ```
 
-**5 · Publish — free.** Ask your agent to publish the course. `course-publish` uploads `dist/`
-directly to [Tigris](https://storage.new) object storage, wires up a custom domain if you want one,
-and verifies the live URL from the public internet before reporting it. It never deploys through
-GitHub.
+**5 · Publish — free.** Ask your agent to publish the course. It uploads `dist/` straight to
+[Vercel](https://vercel.com) with one CLI call, wires up a custom domain if you want one, and opens
+the live URL from the public internet to verify it before reporting. It never deploys through GitHub.
 
-A course site is static files with no backend, which makes it essentially free to host.
-**[storage.new](https://storage.new)** drops you straight into creating a bucket, and Tigris's free
-tier includes 5 GB of storage and 100,000 GET requests a month **with no egress charges at all**
-*(as published, July 2026)* — so a course, a few MB of HTML, CSS and images, costs nothing to serve
-to the public. The demo above is hosted exactly that way. Any other static host or bucket works too:
-name it and the skill will use it instead.
+A course site is static files with no backend, which makes it essentially free to host. Vercel is the
+default for one specific reason: it serves `index.html` at the root, so the link you share is a bare
+`https://your-course.vercel.app` rather than something ending in `/index.html`. Its free **Hobby**
+plan covers personal and educational publishing; commercial use needs a paid plan, and the skill says
+so before you log in rather than after you publish.
+
+Any other static host works too — Netlify and Cloudflare Pages are built in, and naming any other
+provider and upload mechanism will use that instead. Every route is direct artifact upload; nothing
+goes through a repository or CI.
 
 ## Output layout
 
@@ -308,7 +310,7 @@ that browser. The architecture can verify nothing, so the page never implies it 
 | `course-site/references/build-gates.md` | what each of S1–S15 means |
 | `course-site/references/widgets.md` | the widget catalogue, for authors |
 | `course-site/references/visuals.md` | composing diagram and infographic skills; fallbacks |
-| `course-publish/references/tigris.md` | buckets, public access, custom hostnames |
+| `course-publish/references/vercel.md` | projects, production deploys, custom hostnames |
 
 ## The name
 
@@ -344,6 +346,10 @@ licenses the course under the GPL than writing an essay in a GPL editor does.
 
 ## Sources
 
-The CUDA figures in the worked example (the timing progression, the prefetch speedup) come from
-NVIDIA's public introductory CUDA material and their T4 datasheet. Everything else here — the
-quality model, the pipeline, the contract format, the gates — is our own.
+*From Apps to Machines* is grounded in **186 ledger rows across 41 distinct sources**, recorded in
+its [`SOURCES.md`](course-from-apps-to-machines/SOURCES.md) with a verbatim quote against each claim.
+The bulk are primary and normative: Microsoft Learn for the WSL and Windows paths, the RFC Editor for
+HTTP and IP behaviour, Ubuntu man pages and the Open Group base specifications for shell commands,
+MDN for URL and web semantics, and IANA for port registrations.
+
+Everything else here — the quality model, the pipeline, the contract format, the gates — is our own.
