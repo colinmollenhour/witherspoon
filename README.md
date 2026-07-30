@@ -28,33 +28,51 @@ either way; the MCP server serves the same files.
 
 ## Requirements
 
-- **An agent harness with skill support.** Each skill is a `SKILL.md` with YAML frontmatter and a
-  `references/` directory, loaded per-stage so the entry file stays small. Nothing calls a model
-  vendor's API directly. Four harness capabilities are used, each with a stated fallback:
+Your agent does the work either way — it interviews you, researches, writes the files, runs the
+build. The two routes differ only in how the pipeline reaches it, and that is the only requirement
+that changes.
 
-  | Capability | Used for | Without it |
-  | --- | --- | --- |
-  | Batched multiple-choice question | the interviews | ask as one numbered list |
-  | Web search + web fetch | the grounding expedition | *required* — grounding is the point |
-  | Parallel subagents | writing topics and projects | run the same contracts sequentially |
+### Over MCP — an agent that can add a remote MCP server
 
-  `.claude/skills/` is the conventional location — copy or symlink elsewhere if your harness looks
-  somewhere else. Where a tool has a Claude Code-specific name, the skills give the capability first
-  and the name as an example.
-  Or connect the MCP server instead, which needs none of that — see below.
-- **Optional external tools** for visuals: a diagram CLI and an image generator. `course-site` probes
-  for them and degrades to a styled text panel if absent — the build never blocks on a picture.
+That is the entire requirement. **No skills are involved**: the server hands your agent one stage at
+a time as tool results, so there is nothing to copy to disk, nothing for a harness to load, and
+nothing to re-sync when the pipeline changes. If your agent takes an MCP URL, it can run Witherspoon.
+
+### From skills — a harness that loads skills from disk
+
+Each skill is a `SKILL.md` with YAML frontmatter and a `references/` directory, loaded per stage so
+the entry file stays small. `.claude/skills/` is the conventional location — copy or symlink
+elsewhere if your harness looks somewhere else. Where a tool has a Claude Code-specific name, the
+skills give the capability first and the name as an example. Nothing calls a model vendor's API
+directly.
+
+### What both routes ask of the agent
+
+The instructions are the same files, so the capabilities they call for are the same too, each with a
+stated fallback:
+
+| Capability | Used for | Without it |
+| --- | --- | --- |
+| File and shell access | writing the course, running the build | *required* past the interview |
+| Web search + web fetch | the grounding expedition | *required* — grounding is the point |
+| Batched multiple-choice question | the interviews | ask as one numbered list |
+| Parallel subagents | writing topics and projects | run the same contracts sequentially |
+
+And, on your machine rather than in the agent:
+
 - **Node 20.19+ (or 22.13+, or 24+) or Bun 1.1+** for the site template. npm and bun are equally
   supported; use whichever you already have. Either one alone runs the whole build, gates and
   jsdom tests included. It is needed only for the **website** — the course material is written
   without it, which is why nothing asks you to install anything until the material is done.
+- **Optional external tools** for visuals: a diagram CLI and an image generator. `course-site` probes
+  for them and degrades to a styled text panel if absent — the build never blocks on a picture.
 
 ## Quick start — over MCP
 
 Add the server to your agent by URL. No authentication, nothing to install, no repository to clone:
 
 ```
-https://mcp-production-f93d.up.railway.app/mcp
+https://witherspoon.up.railway.app/mcp
 ```
 
 Then ask for what you want:

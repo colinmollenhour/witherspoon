@@ -53,7 +53,7 @@ to sync ships a server that quietly serves last month's pipeline.
 
 ## Deploying
 
-Live at **https://mcp-production-f93d.up.railway.app/mcp** (Railway project `witherspoon`, service
+Live at **https://witherspoon.up.railway.app/mcp** (Railway project `witherspoon`, service
 `mcp`). Redeploy from this directory:
 
 ```bash
