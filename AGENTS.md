@@ -16,18 +16,24 @@ tool name, it states the capability first and gives the name as an example. Keep
 .claude/skills/course-site/      builds the static site     → course-<slug>/dist/
 .claude/skills/course-publish/   uploads dist/ to Tigris    → public URL
 course-template/                 the shared Astro builder (every course uses it)
+create-witherspoon-course/       npm `create-` package that installs and runs the builder
+mcp-server/                      serves the three skills over MCP, so nothing is installed
 course-from-apps-to-machines/    the one course that exists today
 README.md                        the design rationale behind all of the above — read it
 ```
+
+Two distribution channels, one set of files. The skills are loaded from disk by a harness, **or**
+fetched per stage from `mcp-server/`, whose `content/` is a generated copy synced from
+`.claude/skills/`. The skills are therefore written to work without a checkout of this repo: they
+name published packages, not repo paths. Do not reintroduce a `cd course-template` into a skill, and
+run `npm run check` in `mcp-server/` after editing one.
 
 Skills are invoked in that order: **build → site → publish**. Each skill's `SKILL.md` holds its
 pipeline; its `references/` files are loaded per-stage, not up front, so `SKILL.md` stays small.
 
 ## Commands
 
-Everything runs through `course-template`. A published course also gets thin wrappers in its own
-`package.json`, so `npm run build` from inside `course-from-apps-to-machines/` works and reuses the
-template's `node_modules` (dependencies are never copied per course).
+Everything runs through `course-template`. Working **in this repo**, drive it directly:
 
 ```bash
 cd course-template
@@ -39,6 +45,21 @@ npm run test   -- ../course-<slug>/dist            # runtime behaviour in jsdom 
 npm run check-widgets -- --course ../course-<slug> # widget JSON only, no build
 npm run typecheck                                  # tsc --noEmit
 node tools/render-views.mjs --course ../course-<slug> [--check]   # regenerate the markdown views
+```
+
+**Outside this repo** — the form the skills document — the same operations come from the published
+package via `bun create witherspoon-course`, which writes `build`/`dev`/`verify`/`test`/
+`check-widgets`/`render-views` scripts into a workspace `package.json`. `tools/cli.mjs` is the `bin`
+that backs them, and it just re-execs the same tools.
+
+The MCP server:
+
+```bash
+cd mcp-server
+npm install && npm run sync   # sync copies .claude/skills → content/
+npm start                     # http://localhost:8787/mcp
+npm run check                 # fails if content/ drifted from the skills
+npm run smoke                 # protocol-level check against a running server
 ```
 
 There is no test filter flag. `tools/test-runtime.mjs` and `tools/verify.mjs` each run their whole
@@ -101,6 +122,13 @@ tools/                build.mjs · verify.mjs · test-runtime.mjs · check-widge
   `src/styles/*.css` with esbuild into `assets/site.js` / `assets/site.css`, stages them into
   `.build/public/`, and Astro copies them verbatim. `inlineStylesheets: 'always'` is the backstop.
   Gate S2 fails on any surviving `/_astro/` reference.
+- **Bun is a first-class runtime, and `spawn()` is where that breaks.** The whole pipeline — Astro
+  build, gates, jsdom runtime tests — runs under Bun with no Node installed. The one thing that does
+  not survive is spawning a `node_modules/.bin/*` shim: a package manager substitutes its own runtime
+  for the `#!/usr/bin/env node` shebang, but `spawn()` does not, and the kernel reads it literally.
+  `tools/build.mjs` therefore launches Astro's `astro.js` with `process.execPath`. For the same
+  reason, never document `node_modules/.bin/witherspoon-course` as a command — on a Bun-only machine
+  the shell exits 127. Package scripts and `bunx`/`npx` are the only portable forms.
 - **Dev and production stage separately** (`.build/public-dev` vs `.build/public`). `npm run dev`
   leaves esbuild watching; a shared directory let the watcher write unminified output and a source map
   over a production build before Astro copied it.
@@ -150,6 +178,13 @@ the two that stay manual: serving from a subpath, and loading with JavaScript di
   where the code is obvious; a paragraph where a future reader would otherwise "simplify" a
   load-bearing workaround back into a regression.
 - Prose in courses and docs uses British spelling.
+- **Three licences live here, split on one line: anything that ends up inside a user's published site
+  is permissive, everything else is copyleft.** `course-template/` is MIT, because its bundled JS and
+  CSS ship in every course site. The skills, `mcp-server/` and `create-witherspoon-course/` are
+  GPL-3.0-or-later (root `LICENSE`). Keep new code on the correct side of that line — moving a module
+  into `course-template/src/runtime/` relicenses it. Separately, a *course* carries whatever the
+  author picked at the interview, stored in its `course.json` `license` object and rendered by gate
+  S15; never copy a repo licence into a course, or a course licence into a `package.json`.
 - `dist/`, `node_modules/`, `.astro/`, `course-template/.build/` and `.tmp/` are ignored.
   `course-template/.claude/` and `course-template/.mcp.json` are ignored too — they are sandbox mount
   stubs the agent harness creates, not config. The repo's own `.claude/skills/` **is** tracked.

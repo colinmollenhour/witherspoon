@@ -16,8 +16,15 @@ printable certificate. Built from `course-from-apps-to-machines/` in this repo, 
 .claude/skills/course-site/      course-<slug>/ → dist/            (website)
 .claude/skills/course-publish/   dist/ → a public URL              (hosting)
 course-template/                 the shared Astro builder — every course uses it
+create-witherspoon-course/       `bun create witherspoon-course` — sets the builder up
+mcp-server/                      serves the three skills over MCP — nothing to install
 course-from-apps-to-machines/    a worked example: 6 units, 21 topics, 6 projects
 ```
+
+Two ways in. **Connect the MCP server** and ask your agent for a course — it fetches each stage as it
+needs it, and the only thing that ever lands on your machine is the course itself plus the site
+builder. Or **copy the skills** into a harness that loads them from disk. The pipeline is identical
+either way; the MCP server serves the same files.
 
 ## Requirements
 
@@ -34,11 +41,34 @@ course-from-apps-to-machines/    a worked example: 6 units, 21 topics, 6 project
   `.claude/skills/` is the conventional location — copy or symlink elsewhere if your harness looks
   somewhere else. Where a tool has a Claude Code-specific name, the skills give the capability first
   and the name as an example.
+  Or connect the MCP server instead, which needs none of that — see below.
 - **Optional external tools** for visuals: a diagram CLI and an image generator. `course-site` probes
   for them and degrades to a styled text panel if absent — the build never blocks on a picture.
-- **Node ≥ 20** for the site template.
+- **Node ≥ 20 or Bun ≥ 1.1** for the site template. Either one alone runs the whole build, gates and
+  jsdom tests included. It is needed only for the **website** — the course material is written
+  without it, which is why nothing asks you to install anything until the material is done.
 
-## Quick start
+## Quick start — over MCP
+
+Add the server to your agent by URL. No authentication, nothing to install, no repository to clone:
+
+```
+https://mcp-production-f93d.up.railway.app/mcp
+```
+
+Then ask for what you want:
+
+> Help me create a course using Witherspoon for my 3rd grade science class on the water cycle.
+
+Your agent fetches the pipeline one stage at a time, interviews you once, stops at a single approval
+gate, and then works autonomously. Somewhere around that gate it will hand you a one-line command to
+install Bun or Node — do it while the course generates, and the website builds at the end. If you
+skip it, you still get the complete course material as Markdown.
+
+Your agent needs file and shell access for anything past the interview. Hosting the server yourself
+is `cd mcp-server && npm install && npm run sync && npm start`; see [`mcp-server/`](mcp-server/).
+
+## Quick start — from a checkout
 
 ```bash
 git clone https://github.com/colinmollenhour/witherspoon.git
@@ -58,25 +88,32 @@ figure in a real source, writes `SOURCES.md`, and fans out to write each topic a
 **2 · Review it.** The output is a readable Markdown tree plus `course.json`. Read the readings,
 check `SOURCES.md`, fix what you disagree with.
 
-**3 · Build the site.**
+**3 · Build the site.** From the directory that *contains* `course-<slug>/`:
 
 ```bash
-cd course-template
-npm install                                     # first run only
-npm run build  -- --course ../course-<slug>     # → ../course-<slug>/dist
-npm run verify -- ../course-<slug>/dist         # gates S1–S15
-npm run test   -- ../course-<slug>/dist         # runtime behaviour in jsdom
+bun create witherspoon-course        # or: npm create witherspoon-course
+```
+
+That installs the builder, writes the scripts, and runs the first build. Then:
+
+```bash
+bun run verify        # gates S1–S15
+bun run test          # runtime behaviour in jsdom
 ```
 
 Or ask your agent to run `course-site`, which also plans and generates the diagrams and unit hero
 images before building.
 
+Always go through `bun run <script>` / `npm run <script>`. On a machine with Bun and no Node the bare
+`node_modules/.bin/witherspoon-course` shim cannot execute — its `#!/usr/bin/env node` line has
+nothing to resolve and the shell exits 127.
+
 **4 · Preview.**
 
 ```bash
-npm run dev -- --course ../course-<slug>        # live reload
+bun run dev                                     # live reload
 # or, against the built output:
-cd ../course-<slug>/dist && python3 -m http.server 8000
+cd course-<slug>/dist && python3 -m http.server 8000
 ```
 
 **5 · Publish — free.** Ask your agent to publish the course. `course-publish` uploads `dist/`
@@ -173,7 +210,7 @@ course
 `unit-test.md` are reviewable views rendered *from* it, and nothing parses them back:
 
 ```bash
-node course-template/tools/render-views.mjs --course <course-dir> [--check]
+bunx witherspoon-course-template render-views --course <course-dir> [--check]
 ```
 
 That direction is load-bearing. When quizzes existed only as prose, the site builder had to recover
@@ -222,10 +259,8 @@ gates. It does not write pages and does not write a builder — courses hold con
 holds the site, so fixing a bug once fixes every course.
 
 ```bash
-npm run build  -- --course ../course-<slug>     npm run dev -- --course ../course-<slug>
-npm run verify -- ../course-<slug>/dist         npm run test -- ../course-<slug>/dist
-npm run check-widgets -- --course ../course-<slug>
-npm run typecheck
+bun run build     bun run dev       bun run verify
+bun run test      bun run check-widgets         bun run render-views
 ```
 
 **What it builds:** a home page with a progress ring and resume link · one page per topic carrying
@@ -267,6 +302,7 @@ that browser. The architecture can verify nothing, so the page never implies it 
 | `course-builder/references/project-types.md` | the 8 project types, environments, rubrics |
 | `course-builder/references/quality-gates.md` | the fail-the-build checklist |
 | `course-builder/references/schema.md` | the full `course.json` shape |
+| `course-builder/references/runtime-setup.md` | installing Node or Bun, and when to raise it |
 | `course-site/references/site-spec.md` | the design contract the template implements |
 | `course-site/references/state.md` | the `localStorage` contract and every failure mode |
 | `course-site/references/build-gates.md` | what each of S1–S15 means |
@@ -285,6 +321,26 @@ taught and how, and his standing rests less on any doctrine he left behind than 
 That is the standard this project borrows. A course earns its keep by what a learner can do at the
 end of it; the observable objectives, the machine-checkable rubrics, and the gates all exist to keep
 that claim honest rather than merely asserted.
+
+## Licence
+
+Copyright © 2026 Colin Mollenhour. Three licences, split along one line: **anything that can end up
+inside a site you publish is permissive; everything else is copyleft.**
+
+| Part | Licence | Why |
+| --- | --- | --- |
+| `course-template/` | [MIT](course-template/LICENSE) | its JS and CSS ship inside every course site you build |
+| everything else — the skills, `mcp-server/`, `create-witherspoon-course/` | [GPL-3.0-or-later](LICENSE) | tooling; never embedded in your output |
+| `course-from-apps-to-machines/` | CC BY 4.0 | it is course content, not software |
+
+The practical consequence: **a course site you build and publish carries no copyleft obligation.**
+The template's runtime is bundled into `assets/site.js` and `assets/site.css`, and under MIT you may
+ship that anywhere, including commercially, keeping only the copyright notice.
+
+Your course itself is never touched by any of this. Each one carries whatever licence you chose at
+the interview — all rights reserved, CC BY-NC-ND 4.0, CC BY 4.0, or CC0 1.0 — recorded in its own
+`course.json` and printed in the footer of every page. Generating a course with this tooling no more
+licenses the course under the GPL than writing an essay in a GPL editor does.
 
 ## Sources
 
