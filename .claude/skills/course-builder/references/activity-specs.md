@@ -89,7 +89,7 @@ Default 5 questions. Mix of `MULTIPLE_CHOICE`, `TRUE_FALSE`, `SHORT_ANSWER`.
 
 **Emit these as structured data into the topic's `quiz.questions[]` in `course.json`** — the same
 shape `units[].test.questions[]` uses. Do not hand-write `quiz.md`; it is rendered from the JSON by
-`course-template/tools/render-views.mjs`, and anything you write there is overwritten. The answer key
+the template's `render-views` command, and anything you write there is overwritten. The answer key
 is a field, not something a later tool infers from prose.
 
 **Every question**

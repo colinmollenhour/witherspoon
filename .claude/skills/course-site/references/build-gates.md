@@ -1,16 +1,15 @@
 # Build gates
 
-Read at Stage 5. Nearly all of these are implemented in `course-template/tools/verify.mjs` and run
-in one command:
+Read at Stage 5. Nearly all of these are implemented in the template's `tools/verify.mjs` and run
+in one command from the course workspace:
 
 ```bash
-cd course-template
-npm run verify -- ../<course-dir>/dist
+bun run verify        # or: npm run verify
 ```
 
 Behaviour a static check cannot see — a throwing `localStorage`, a corrupt blob, first-attempt-only
-scoring, reset scope — is covered by `npm run test -- ../<course-dir>/dist`, which drives the built
-runtime against a built page in jsdom.
+scoring, reset scope — is covered by `bun run test`, which drives the built runtime against a built
+page in jsdom.
 
 Two gates stay manual and are called out below: **S4** (load with JavaScript disabled) and **S12**
 (serve from a subpath). Everything else is automated.
@@ -75,7 +74,7 @@ within range for every `MULTIPLE_CHOICE`, `options.length === 4` as rendered, an
 carries a boolean `correctAnswer`.
 
 Most of this is now also enforced upstream, by the collection schemas in
-`course-template/src/content.config.ts` — a course with a bad answer key fails the build naming the
+the template's `src/content.config.ts` — a course with a bad answer key fails the build naming the
 entry and the field, rather than producing a site that grades wrongly. S6 is the check that the
 rendered page agrees with the validated data.
 
@@ -178,10 +177,12 @@ Report, do not block.
 ## Running them
 
 ```bash
-cd course-template
-npm run verify -- ../<course-dir>/dist   # S1–S15 and the advisory checks
-npm run test   -- ../<course-dir>/dist   # runtime behaviour in jsdom
+bun run verify   # S1–S15 and the advisory checks   (npm run verify)
+bun run test     # runtime behaviour in jsdom       (npm run test)
 ```
+
+Without a course workspace, the same two run as
+`bunx witherspoon-course-template verify --course <course-dir>` and `… test --course <course-dir>`.
 
 `verify.mjs` is deliberately loud: it prints the file and the specific problem, so a failure names
 itself.

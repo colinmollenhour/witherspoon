@@ -121,7 +121,7 @@ Markdown views are rendered from the JSON, never parsed back out of it.
 - The rendered views agree with the JSON:
 
 ```bash
-node course-template/tools/render-views.mjs --course <course-dir> --check
+bunx witherspoon-course-template render-views --course <course-dir> --check
 ```
 
 This gate exists because the alternative was inference. With quizzes living only as prose, the site
@@ -136,7 +136,7 @@ that type requires. The site build enforces this and fails naming the file, but 
 saves a whole build cycle:
 
 ```bash
-node course-template/tools/check-widgets.mjs --course <course-dir>
+bunx witherspoon-course-template check-widgets --course <course-dir>
 ```
 
 It also flags any topic carrying more than two widgets.

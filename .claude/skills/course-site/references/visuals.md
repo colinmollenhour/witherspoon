@@ -101,7 +101,7 @@ card. Two authoring forms:
 Alt text is mandatory and must actually describe the picture (≥ 8 characters). A missing file or a
 path that does not start with `assets/` **fails the build** naming the topic — deliberately.
 
-Implemented by `course-template/src/lib/figures.ts`, called from the topic and project loaders the
+Implemented by the template's `src/lib/figures.ts`, called from the topic and project loaders the
 same way widgets are.
 
 ## Hero artwork (course home)
@@ -209,7 +209,7 @@ garble labels); use a **metaphor illustration** and put the takeaway in the capt
    ```
 
 4. Declare `units[i].hero` in `course.json` with alt + caption.
-5. Rebuild: `npm run build -- --course ../<course-dir>`.
+5. Rebuild: `bun run build` (or `npm run build`).
 
 ### Alternate: prompt file first
 

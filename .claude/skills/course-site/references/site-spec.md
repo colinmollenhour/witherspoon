@@ -1,6 +1,6 @@
 # Site spec
 
-**This is the design contract the shared Astro template at `course-template/` is held to.** Read it
+**This is the design contract the shared Astro template — published as `witherspoon-course-template`, checked into this repo as `course-template/` — is held to.** Read it
 when changing the template, not when building a course — building a course is one command, and the
 template already implements everything below.
 

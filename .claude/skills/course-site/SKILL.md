@@ -7,9 +7,10 @@ description: Build a self-contained, interactive static website from an approved
 
 Turn an approved course directory into a static website anyone can open from a link.
 
-The site itself is built by a **shared Astro template** at `course-template/`, checked into this
-repo. You do not write a builder, and you do not write pages — you validate the course, plan and
-generate its visuals, run the template, and check the gates. A fix to the template fixes every course.
+The site itself is built by a **shared Astro template**, published as `witherspoon-course-template`
+and checked into this repo as `course-template/`. You do not write a builder, and you do not write
+pages — you validate the course, plan and generate its visuals, run the template, and check the
+gates. A fix to the template fixes every course.
 
 Hard constraints, all of them load-bearing and all enforced by the template:
 
@@ -29,7 +30,11 @@ authenticate, upload, and verify the public site.
 - A course directory containing `course.json` and its markdown, after `course-builder` has finished
   and the user has approved. If `course.json` is missing or does not parse, stop and say so rather
   than inventing structure.
-- Node 20+, and `npm install` run once in `course-template/`.
+- **Node ≥ 20 or Bun ≥ 1.1.** Either one alone runs the entire build, gates and jsdom tests included.
+  Probe with `node --version 2>/dev/null || bun --version 2>/dev/null || echo MISSING`. If it is
+  missing, stop here and read `course-builder/references/runtime-setup.md`: the material is already
+  finished and on disk, so this is a paused site build, not a failed course. Say that plainly rather
+  than reporting an error.
 
 ## Pipeline
 
@@ -90,15 +95,29 @@ deliberately, because a silently broken diagram is worse than a build that stops
 
 ### Stage 4 — Build
 
+Run this **from the directory that contains `course-<slug>/`**, not from inside it:
+
 ```bash
-cd course-template
-npm install                                    # first run only
-npm run build -- --course ../<course-dir>
+bun create witherspoon-course        # or: npm create witherspoon-course
 ```
 
-That is the whole build. The template reads `course.json` and the course's markdown through Astro
-content collections, renders every page, copies `<course-dir>/assets/` into the output, and writes
-`<course-dir>/dist/`.
+That is the whole build, first time and every time. It finds the course directory, writes a
+`package.json` carrying the build scripts, installs the template, and runs the build. Afterwards:
+
+```bash
+bun run build          # or: npm run build
+```
+
+Always go through `bun run <script>` / `npm run <script>`. On a machine with Bun and no Node the bare
+`node_modules/.bin/witherspoon-course` shim cannot execute — its `#!/usr/bin/env node` line has
+nothing to resolve and the shell exits 127. A one-off command with no workspace is
+`bunx witherspoon-course-template <command> --course <course-dir>`.
+
+The template reads `course.json` and the course's markdown through Astro content collections, renders
+every page, copies `<course-dir>/assets/` into the output, and writes `<course-dir>/dist/`.
+
+Working inside a checkout of this repo instead, the equivalent is
+`cd course-template && npm install && npm run build -- --course ../<course-dir>`.
 
 Do not hand-write pages, do not copy assets around, and do not write a build script. If the site needs
 to change, change the template — that is the point of it being shared.
@@ -106,8 +125,8 @@ to change, change the template — that is the point of it being shared.
 ### Stage 5 — Verify
 
 ```bash
-npm run verify -- ../<course-dir>/dist        # gates S1–S15
-npm run test -- ../<course-dir>/dist          # runtime behaviour in jsdom
+bun run verify        # gates S1–S15          (npm run verify)
+bun run test          # runtime behaviour in jsdom
 ```
 
 **Read `references/build-gates.md`** for what each gate means and for the two checks that are manual:

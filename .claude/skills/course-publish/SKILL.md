@@ -39,10 +39,11 @@ CI pipelines.
 3. Read `<course-dir>/.course-publish.json` when present. It is the deployment identity for a repeat
    publish; it is not authority to operate on any other destination.
 4. If `course.json` exists but `dist/index.html` does not, invoke `course-site` to build and verify
-   the approved course, then resume here. If `course-site` or its build runtime is unavailable, state
-   that exact prerequisite and ask the user to install it or provide the built `dist/`; never upload
-   course source as a substitute. If there is neither a build nor buildable course source, stop with
-   the exact missing path.
+   the approved course, then resume here. If `course-site` or a JavaScript runtime is unavailable,
+   state that exact prerequisite — `course-builder/references/runtime-setup.md` has the install
+   commands — and ask the user to install it or provide the built `dist/`; never upload course source
+   as a substitute. If there is neither a build nor buildable course source, stop with the exact
+   missing path.
 5. Inspect available provider tools without triggering authentication. For Tigris, note whether a
    connected MCP server can create a public bucket and recursively upload every file while
    preserving bytes, object keys, and MIME types. Merely having a Tigris MCP connector is not enough.
@@ -89,19 +90,21 @@ Before authenticating or creating remote resources:
 1. Resolve `dist/` to an absolute path and confirm `index.html` is a regular file.
 2. Reject symlinks that escape `dist/` and files that look like credentials (`.env*`, private keys,
    access-key dumps). Name every rejected path. Do not “publish around” it silently.
-3. If this repository's `course-template/` and Node/npm are available, run its current build gates
-   against this exact `dist/`:
+3. If a JavaScript runtime is available, run the template's current build gates against this exact
+   `dist/`. From a scaffolded course workspace:
 
    ```bash
-   cd course-template
-   npm run verify -- /absolute/path/to/course/dist
-   npm run test -- /absolute/path/to/course/dist
+   bun run verify        # or: npm run verify
+   bun run test          # or: npm run test
    ```
 
+   Without a workspace, the same two are
+   `bunx witherspoon-course-template verify /absolute/path/to/course/dist` and `… test <dist>`.
+
    Fix a real build issue through `course-site`; do not mutate generated files in `dist/` by hand.
-   If Node/npm is unavailable but `dist/index.html` already exists, continue with the static
+   If no runtime is available but `dist/index.html` already exists, continue with the static
    artifact checks and mandatory public browser smoke test; state that the template gates were not
-   rerun. Do not force a build-tool installation merely to upload an existing verified artifact.
+   rerun. Do not force a runtime installation merely to upload an existing verified artifact.
 4. Record the relative file keys and total byte size. These become the upload and verification
    inventory.
 
@@ -221,63 +224,59 @@ This file makes repeat publication safe and stable.
 The final workspace step is to make the build and verified deployment repeatable from the course
 directory:
 
-1. Read `<course-dir>/package.json` when it exists and preserve its name, dependencies, unrelated
-   scripts, and formatting conventions. If it is absent, create a minimal private package using the
-   course slug:
+1. **Locate the package.json that already carries the build scripts.** `create-witherspoon-course`
+   writes one into the *workspace* — the directory containing `course-<slug>/` — with `build`, `dev`,
+   `verify`, `test`, `check-widgets` and `render-views` scripts and a `witherspoon-course-template`
+   dependency. In a checkout of the Witherspoon repo the equivalent wrappers live in the course's own
+   `package.json` instead. Walk up from `dist/` and use whichever you find; do not create a second
+   one alongside it.
+
+2. If there is none — the site was built some other way — create a minimal private package next to
+   the course and wire it to the published template:
 
    ```json
    {
-     "name": "course-slug",
+     "name": "course-slug-site",
      "private": true,
-     "scripts": {}
+     "scripts": {
+       "build": "witherspoon-course build --course ./course-slug",
+       "verify": "witherspoon-course verify --course ./course-slug",
+       "test": "witherspoon-course test --course ./course-slug"
+     },
+     "dependencies": { "witherspoon-course-template": "^1.0.0" }
    }
    ```
 
-2. When the shared `course-template/package.json` is available, expose its course operations as
-   wrappers in the course package. Compute relative paths from the course and template directories;
-   do not assume they are siblings. For the normal sibling layout, add:
+   Preserve any existing name, dependencies, unrelated scripts, and formatting. Never invoke
+   `node_modules/.bin/witherspoon-course` directly in a script or in instructions to the user: on a
+   machine with Bun and no Node that shim cannot execute at all. Package scripts and `bunx`/`npx` are
+   the only forms that work everywhere.
+
+3. Set `scripts.deploy` to the exact non-interactive form of the method that just succeeded, with the
+   manifest-owned destination explicit. **Write the `dist/` path relative to the package.json you are
+   editing** — from a scaffolded workspace that is `./course-slug/dist/`, not `./dist/`, and getting
+   this wrong uploads nothing or uploads the wrong tree. Examples, shown from a workspace:
 
    ```json
    {
      "scripts": {
-       "build": "npm --prefix ../course-template run build -- --course ../course-slug",
-       "dev": "npm --prefix ../course-template run dev -- --course ../course-slug",
-       "verify": "npm --prefix ../course-template run verify -- ../course-slug/dist",
-       "check-widgets": "npm --prefix ../course-template run check-widgets -- --course ../course-slug",
-       "typecheck": "npm --prefix ../course-template run typecheck",
-       "test": "npm --prefix ../course-template run test -- ../course-slug/dist"
+       "deploy": "tigris cp ./course-slug/dist/ t3://course-slug/ --recursive"
      }
    }
    ```
 
-   Read the template's current `scripts` before editing. Mirror every course-facing operation it
-   exposes, adapting required course or `dist/` arguments exactly as the template documents. A new
-   template command is not copied blindly: inspect its usage first so it runs with the correct
-   working directory and arguments. The wrappers reuse `course-template/node_modules`; do not add or
-   duplicate template dependencies in the course package.
-
-3. Set `scripts.deploy` to the exact non-interactive form of the method that just succeeded, with
-   `./dist/` as the source and the manifest-owned destination explicit. Examples:
-
-   ```json
-   {
-     "scripts": {
-       "deploy": "tigris cp ./dist/ t3://course-slug/ --recursive"
-     }
-   }
-   ```
-
-   - Tigris: `tigris cp ./dist/ t3://<bucket>/ --recursive`
-   - Netlify: `netlify deploy --site <site-id> --dir ./dist --prod --no-build`
-   - Cloudflare Pages: `wrangler pages deploy ./dist --project-name <project-name>`
+   - Tigris: `tigris cp <dist>/ t3://<bucket>/ --recursive`
+   - Netlify: `netlify deploy --site <site-id> --dir <dist> --prod --no-build`
+   - Cloudflare Pages: `wrangler pages deploy <dist> --project-name <project-name>`
    - Other hosts: the exact proven CLI command with an explicit destination.
 
 4. Never put tokens, access keys, secrets, temporary URLs, interactive login commands, or destructive
    stale-file cleanup in `scripts.deploy`. The provider CLI must use its normal authenticated local
    session. If the first upload used MCP or a web UI, configure and prove the provider's official CLI
    equivalent before writing the script; do not add a command that has not run successfully.
-5. Run `npm run deploy` from `<course-dir>` once, then repeat Stage 5 against the public URL. The
-   package edit is not complete until this exact command successfully republishes the site.
+5. Run `bun run deploy` (or `npm run deploy`) once from the directory holding that package.json, then
+   repeat Stage 5 against the public URL. The package edit is not complete until this exact command
+   successfully republishes the site.
 6. Make this package update the last workspace mutation. After it passes, report without changing
    course files again.
 
@@ -295,7 +294,7 @@ Custom domain: <verified URL | not requested | exact remaining optional step>
 Upload: <file count> files · <bytes>
 Rights: <verified copyright/license notice>
 Checks: entry HTML · assets/MIME · internal navigation · interaction
-Republish: cd <course-dir> && npm run deploy
+Republish: cd <workspace> && bun run deploy
 ```
 
 For Tigris, print the `/index.html` URL as the primary link and state in one sentence that the bare

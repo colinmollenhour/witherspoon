@@ -201,8 +201,8 @@ license URLs or alternate labels in `course.json`.
 relationship `README.md` already has to the JSON. Nothing downstream parses them.
 
 ```bash
-node course-template/tools/render-views.mjs --course <course-dir>           # write them
-node course-template/tools/render-views.mjs --course <course-dir> --check   # assert they match
+bunx witherspoon-course-template render-views --course <course-dir>           # write them
+bunx witherspoon-course-template render-views --course <course-dir> --check   # assert they match
 ```
 
 This is not a stylistic preference. When topic quizzes existed only as prose, the site builder had to
@@ -232,7 +232,7 @@ Emit the structured data; let the markdown be rendered.
 - No field anywhere contains a provisional `?` marker.
 
 Most of these are enforced a second time by the collection schemas in
-`course-template/src/content.config.ts`, so a violation that slips through fails the site build
+the template's `src/content.config.ts`, so a violation that slips through fails the site build
 naming the entry and the field.
 
 ## `README.md` assembly

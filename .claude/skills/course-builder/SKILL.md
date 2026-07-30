@@ -54,6 +54,17 @@ Search the working directory and any attached or referenced sources for material
 transcripts, specs, existing curricula, code. This is a quick orientation to make Stage 1's questions
 informed — the real research happens in Stage 5.
 
+Also probe for a JavaScript runtime, silently:
+
+```bash
+node --version 2>/dev/null || bun --version 2>/dev/null || echo MISSING
+```
+
+Node ≥ 20 or Bun ≥ 1.1 is enough; either alone builds the whole site. Record the result and say
+nothing about it now. Only the website needs a runtime — the material does not — so this must not
+become a prerequisite. If it is missing you will raise it once, at the Stage 4 gate, where the user
+can install it during the long autonomous stretch that follows. See `references/runtime-setup.md`.
+
 Do not narrate beyond a single line.
 
 ### Stage 1 — Interview
@@ -132,6 +143,17 @@ Then state exactly:
 Approving is the user's opt-in to both fan-outs. Do not spawn agents before it. This is the only
 approval gate — after it, work autonomously through to the report.
 
+**If Stage 0's probe found no runtime, append the install block here** — read
+`references/runtime-setup.md` and give the commands for the user's platform, framed as something to
+do *while* the course builds and explicitly not blocking:
+
+> While that runs, install a runtime so the website can be built at the end — about a minute, and
+> nothing here waits on it.
+
+This is the only moment the user is guaranteed present and about to reply, and grounding plus one
+agent per topic and project runs long enough to cover the install. Do not raise it before this point,
+and do not hold the pipeline for it. If the probe found a runtime, say nothing.
+
 ### Stage 5 — Grounding expedition
 
 **Read `references/grounding.md`.** This is active research, not a recall check.
@@ -189,11 +211,18 @@ which you merge into that topic's `quiz.questions[]` and `flashcards[]` in `cour
 `projects[].path` for every project. Then render the reviewable markdown views:
 
 ```bash
-node course-template/tools/render-views.mjs --course <course-dir>
+bunx witherspoon-course-template render-views --course <course-dir>
+# or, with npm:  npx witherspoon-course-template render-views --course <course-dir>
 ```
 
 `quiz.md`, `flashcards.md` and `unit-test.md` are generated from the JSON, the way `README.md`
 already is. Nothing downstream parses them, so the answer key is never inferred.
+
+This is the one step in Stage 7 that needs a runtime. Re-probe first; by now the user has usually
+installed one during the fan-out. If there still is none, skip it, note that the markdown views will
+be rendered at the site stage, and continue — `course.json` already holds every answer key.
+**Never hand-write these three files.** They are generated output, and a hand-written view is exactly
+the ambiguity this direction retires.
 
 If a topic agent fails, re-run that one topic. Never leave a contract without content.
 
@@ -212,7 +241,7 @@ Report honestly. If a gate still fails, say so plainly rather than declaring com
 Then offer the handoff, once, in one line:
 
 > Review the markdown and `course.json`. When you're happy with them, run `course-site` to build a
-> shareable interactive website into `dist/` using the shared template in `course-template/` — that
+> shareable interactive website into `dist/` using the shared Witherspoon template — that
 > step also plans and generates unit heroes, optional course artwork, and any diagrams the readings
 > earn.
 
