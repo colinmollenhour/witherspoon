@@ -7,7 +7,7 @@ Three agent skills plus one shared [Astro](https://astro.build) template. The sk
 directories of Markdown, so any agent harness that loads skills can run them. The site builder is
 ordinary Node and runs on its own.
 
-**→ [See a finished course](https://course-from-apps-to-machines.t3.tigrisfiles.io/index.html)** —
+**→ [See a finished course](https://course-from-apps-to-machines.vercel.app)** —
 *From Apps to Machines*: 6 units, 21 topics, 27 quizzes and tests, interactive widgets, and a
 printable certificate. Built from `course-from-apps-to-machines/` in this repo, and hosted free.
 

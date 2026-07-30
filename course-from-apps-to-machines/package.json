@@ -8,6 +8,6 @@
     "check-widgets": "npm --prefix ../course-template run check-widgets -- --course ../course-from-apps-to-machines",
     "typecheck": "npm --prefix ../course-template run typecheck",
     "test": "npm --prefix ../course-template run test -- ../course-from-apps-to-machines/dist",
-    "deploy": "tigris cp ./dist/ t3://course-from-apps-to-machines/ --recursive"
+    "deploy": "vercel deploy ./dist --prod --yes --project course-from-apps-to-machines"
   }
 }

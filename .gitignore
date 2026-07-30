@@ -13,3 +13,6 @@ course-template/.mcp.json
 
 # Scratch for generated artefacts (image briefs, model output).
 .tmp/
+
+# Vercel CLI project linkage — local state, and a stale one silently redeploys elsewhere.
+.vercel/

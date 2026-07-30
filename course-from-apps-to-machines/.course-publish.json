@@ -1,8 +1,8 @@
 {
   "version": 1,
-  "provider": "tigris",
-  "accountScope": "to_3d870a51123a280bb2d7a736667e113b",
+  "provider": "vercel",
+  "accountScope": "colin-mollenhours-projects",
   "destination": "course-from-apps-to-machines",
-  "entryUrl": "https://course-from-apps-to-machines.t3.tigrisfiles.io/index.html",
+  "entryUrl": "https://course-from-apps-to-machines.vercel.app",
   "customHostname": null
 }

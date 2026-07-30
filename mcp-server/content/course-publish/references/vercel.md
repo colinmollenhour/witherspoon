@@ -39,11 +39,32 @@ npm install -g vercel
 `npx vercel` works for a one-off publish without a global install, but a saved `deploy` script should
 use whichever form is actually installed and proven.
 
+## Never run bare `vercel` from a course directory
+
+`vercel` with no arguments deploys **and builds** the current directory. Run from a course directory
+it uploads the course *source*, sees a `build` script in `package.json`, and runs that script on
+Vercel's builders — where the site template is not installed and any sibling path the script reaches
+for does not exist. The failure is remote and unhelpful:
+
+```text
+Error: Command "npm run build" exited with 254
+npm error enoent Could not read package.json: .../course-template/package.json
+```
+
+It also auto-creates a randomly named project such as `project-qmmxg` and writes a `.vercel/`
+directory pointing at it, so the *next* bare `vercel` silently redeploys to that junk project. Delete
+any stray `.vercel/` before deploying properly, and add `.vercel/` to the course's `.gitignore`.
+
+Witherspoon builds locally and uploads the finished artifact. Vercel must run no build at all — which
+is exactly what happens when the deployed path is `dist/`, because `dist/` carries no `package.json`
+and so triggers no framework detection. Do not add a `vercel.json`, a build command, or an
+output-directory setting to "fix" a detection that is already correct. If a deploy unexpectedly tries
+to build, the wrong path was given; check that before changing any setting.
+
 ## Destination
 
 Derive the project name from the course slug: lowercase ASCII letters, digits and hyphens, no dots,
-no leading or trailing hyphen, 100 characters or fewer. List what already exists before creating
-anything:
+no leading or trailing hyphen, 100 characters or fewer. List what already exists first:
 
 ```bash
 vercel projects ls
@@ -51,6 +72,17 @@ vercel projects ls
 
 Reuse the project named in `.course-publish.json`. **A same-named project without that manifest is a
 collision, not permission to deploy into it** — append a short stable suffix instead.
+
+**Create the project before the first deploy.** `--project` selects a project; it does not create
+one, and `--yes` does not change that. Deploying to a name that does not exist yet fails with
+`project_not_found`, naming the scope it searched:
+
+```bash
+vercel project add COURSE_PROJECT
+```
+
+If that reports the project is in another scope, the account has multiple teams — pass
+`--scope <team-slug>` on both commands rather than switching the user's default scope.
 
 ## Deploy
 
@@ -62,17 +94,14 @@ vercel deploy /absolute/path/to/course/dist --prod --yes --project COURSE_PROJEC
 
 Three parts of that line are load-bearing:
 
-- **`--project COURSE_PROJECT` is required, not optional.** With `--yes` and no `--project`, Vercel
-  names the project after the directory it was given — which is `dist`. Every course published that
-  way collides on one meaningless project name.
-- **`--prod`** creates a production deployment. Without it the result is a preview URL with a
-  generated hash that changes on every deploy, which is not a link anyone can share.
+- **`--project COURSE_PROJECT`**, or Vercel names the project after the directory it was given —
+  which is `dist`. It must already exist; see above.
+- **`--prod`** creates a production deployment, which is what gets the stable
+  `https://COURSE_PROJECT.vercel.app` alias. Without it the result is a preview URL carrying a
+  generated hash that changes every deploy, which is not a link anyone can share.
 - **`--yes`** skips the interactive project-setup prompts. Only use it with `--project` set.
 
-`dist/` carries no `package.json`, so Vercel detects no framework and serves the files as they are.
-That is the intended behaviour; do not add a `vercel.json`, a build command, or an output-directory
-setting to "fix" a detection that is already correct. If a deployment unexpectedly tries to build,
-run `vercel deploy --dry` and read what preset it detected before changing anything.
+The command prints both a hashed deployment URL and the stable production alias. Report the alias.
 
 For a large course, `--archive=tgz` compresses the upload into a single request, which is more
 reliable over a poor connection than several thousand individual file uploads.
