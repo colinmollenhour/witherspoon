@@ -16,16 +16,27 @@
  */
 import { spawn, spawnSync } from 'node:child_process';
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
 
 const HERE = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
+/**
+ * The same tool is reachable two ways — as `witherspoon-course build` from an
+ * installed package, and as `npm run build --` from a checkout of this repo. Quoting
+ * the form the caller did not use sends them to a script that does not exist on their
+ * machine, so tools/cli.mjs sets WITHERSPOON_CLI and every hint below follows it.
+ */
+const viaCli = process.env.WITHERSPOON_CLI === '1';
+const cliInvoke = process.env.WITHERSPOON_INVOKE || 'npx witherspoon-course';
+const invoke = (cmd) => (viaCli ? `${cliInvoke} ${cmd}` : `npm run ${cmd} --`);
+
 function usage(message) {
   console.error(`${message}\n`);
-  console.error('Usage: npm run build -- --course <path-to-course-dir>');
-  console.error('       npm run dev   -- --course <path-to-course-dir> [--host <ip>] [--port <n>]');
+  console.error(`Usage: ${invoke('build')} --course <path-to-course-dir>`);
+  console.error(`       ${invoke('dev')} --course <path-to-course-dir> [--host <ip>] [--port <n>]`);
   process.exit(2);
 }
 
@@ -140,7 +151,24 @@ function prune(dir, base = dir) {
 }
 
 // ---- hand off to Astro ------------------------------------------------------
-const astro = path.join(HERE, 'node_modules/.bin/astro');
+/**
+ * Spawn Astro's JS entry with *this* runtime rather than `node_modules/.bin/astro`.
+ *
+ * That shim starts `#!/usr/bin/env node`. A package manager running our scripts
+ * substitutes its own runtime for that shebang, but `spawn()` does not — the kernel
+ * reads it literally. So on a machine with Bun and no Node, launching the shim dies
+ * with `env: 'node': No such file or directory` *after* the esbuild stage has already
+ * succeeded, which reads as a template bug rather than a missing runtime.
+ *
+ * `process.execPath` is whichever runtime is executing this file, so the child
+ * inherits it. Resolve through `astro/package.json` and not `astro/astro.js`: the
+ * latter is absent from Astro's `exports` map and fails to resolve under both
+ * runtimes. Resolving from HERE/package.json (not from this module's URL) keeps the
+ * lookup anchored to the template's own dependency tree — Bun will otherwise
+ * auto-install and silently resolve an unrelated Astro from its global cache.
+ */
+const require = createRequire(path.join(HERE, 'package.json'));
+const astroEntry = path.join(path.dirname(require.resolve('astro/package.json')), 'astro.js');
 const astroEnv = {
   ...process.env,
   COURSE_DIR: courseDir,
@@ -155,7 +183,7 @@ const astroArgs = [dev ? 'dev' : 'build'];
 if (dev && host) astroArgs.push('--host', host);
 if (dev && port) astroArgs.push('--port', port);
 
-const child = spawn(astro, astroArgs, {
+const child = spawn(process.execPath, [astroEntry, ...astroArgs], {
   cwd: HERE,
   stdio: 'inherit',
   env: astroEnv,
@@ -170,10 +198,14 @@ child.on('exit', (code) => {
     // `astro build` removes .astro/ on its way out, taking the generated types
     // with it, so sync runs afterwards. This is what makes `npm run typecheck`
     // and editor completion resolve the `astro:content` virtual module.
-    spawnSync(astro, ['sync'], { cwd: HERE, stdio: 'ignore', env: astroEnv });
+    spawnSync(process.execPath, [astroEntry, 'sync'], {
+      cwd: HERE,
+      stdio: 'ignore',
+      env: astroEnv,
+    });
 
     console.log(`\nBuilt: ${dist}`);
-    console.log(`Verify: npm run verify -- ${dist}`);
+    console.log(`Verify: ${invoke('verify')} ${dist}`);
   }
   process.exit(code ?? 1);
 });

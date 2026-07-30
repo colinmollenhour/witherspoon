@@ -1,26 +1,52 @@
 {
-  "name": "course-template",
+  "name": "witherspoon-course-template",
   "version": "1.0.0",
-  "private": true,
   "type": "module",
   "description": "Shared Astro template that builds a self-contained static site from any approved course directory.",
+  "keywords": [
+    "witherspoon",
+    "course",
+    "curriculum",
+    "static-site",
+    "astro",
+    "e-learning"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colinmollenhour/witherspoon.git",
+    "directory": "course-template"
+  },
+  "homepage": "https://github.com/colinmollenhour/witherspoon#readme",
+  "bin": {
+    "witherspoon-course": "tools/cli.mjs",
+    "witherspoon-course-template": "tools/cli.mjs"
+  },
   "engines": {
     "node": ">=20"
   },
+  "files": [
+    "src",
+    "tools",
+    "astro.config.mjs",
+    "tsconfig.json",
+    "README.md"
+  ],
   "scripts": {
     "build": "node tools/build.mjs",
     "dev": "node tools/build.mjs --dev",
     "verify": "node tools/verify.mjs",
     "check-widgets": "node tools/check-widgets.mjs",
+    "render-views": "node tools/render-views.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node tools/test-runtime.mjs"
   },
   "dependencies": {
-    "astro": "^5.14.1"
+    "astro": "^5.14.1",
+    "esbuild": "^0.25.10",
+    "jsdom": "^30.0.1"
   },
   "devDependencies": {
-    "esbuild": "^0.25.10",
-    "jsdom": "^30.0.1",
     "typescript": "^5.9.3"
   }
 }

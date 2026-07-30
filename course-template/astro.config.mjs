@@ -9,8 +9,9 @@ const here = path.dirname(fileURLToPath(import.meta.url));
 const courseDir = process.env.COURSE_DIR;
 if (!courseDir) {
   throw new Error(
-    'COURSE_DIR is not set. Build through the wrapper:\n' +
-      '  npm run build -- --course <path-to-course-dir>',
+    'COURSE_DIR is not set. Never invoke astro directly — build through the wrapper:\n' +
+      '  witherspoon-course build --course <path-to-course-dir>\n' +
+      '  (from a checkout of this repo: npm run build -- --course <path-to-course-dir>)',
   );
 }
 
