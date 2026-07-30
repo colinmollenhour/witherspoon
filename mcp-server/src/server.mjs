@@ -154,7 +154,7 @@ When the material is written and the user has approved it, call \`witherspoon_bu
         'the per-stage contracts behind the pipeline: how to pick the running example, the topic ' +
         'generation contract, the grounding expedition, activity and project specs, the quality ' +
         'gates, the course.json schema, the site build gates, the widget catalogue, the visuals ' +
-        'pipeline, the localStorage contract, and the Tigris publishing reference. Fetch one at a ' +
+        'pipeline, the localStorage contract, and the Vercel publishing reference. Fetch one at a ' +
         'time, when you need it.',
       inputSchema: {
         doc: z.enum(referenceNames).describe('Which reference document to fetch.'),
@@ -230,9 +230,9 @@ When the gates pass, call \`witherspoon_publish\`.`,
     {
       title: 'Publish the course website',
       description:
-        'Publish a built Witherspoon course site to a public URL by direct artifact upload — Tigris ' +
-        'object storage by default, or Netlify, Cloudflare Pages, or any host the user names. ' +
-        'Handles authentication, optional custom domains, and verifies the live site from the public ' +
+        'Publish a built Witherspoon course site to a public URL by direct artifact upload — Vercel ' +
+        'by default, or Netlify, Cloudflare Pages, or any host the user names. Handles ' +
+        'authentication, optional custom domains, and verifies the live site from the public ' +
         'internet before reporting. Never deploys through GitHub. Use when the user asks to publish, ' +
         'deploy, host, upload, or share the course website.',
       annotations: { readOnlyHint: true, openWorldHint: false },
@@ -242,7 +242,7 @@ When the gates pass, call \`witherspoon_publish\`.`,
         envelope({
           title: 'Witherspoon — course-publish',
           body: skill.publish(),
-          next: `Fetch \`witherspoon_reference\` with \`doc: "tigris"\` at Stage 3 if the user chose Tigris,
+          next: `Fetch \`witherspoon_reference\` with \`doc: "vercel"\` at Stage 3 if the user chose Vercel,
 which is the default.
 
 Publication is not complete until the public browser check in Stage 5 passes.`,

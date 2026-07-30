@@ -1,14 +1,15 @@
 ---
 name: course-publish
-description: Publish a built course site's dist/ to a public URL using the user's preferred static host. Defaults to Tigris Object Storage through a capable connected MCP server or the Tigris CLI, handles authentication, direct artifact upload, optional custom domains, and end-to-end verification. Use when the user asks to publish, deploy, host, upload, or share a course website. Never uses GitHub.
+description: Publish a built course site's dist/ to a public URL using the user's preferred static host. Defaults to Vercel via direct CLI upload, handles authentication, optional custom domains, and end-to-end verification. Use when the user asks to publish, deploy, host, upload, or share a course website. Never uses GitHub.
 ---
 
 # Course Publish
 
 Publish a built course and return a link that has been opened and verified. The user chooses the
-provider; Tigris is the default because its direct-upload flow is small, its free allowance is
-useful for course sites, it charges no egress, and a custom domain can remain at the user's current
-DNS provider.
+provider; Vercel is the default because it serves `index.html` at the root — so the shared link is a
+bare hostname with no `/index.html` suffix — because `vercel deploy` uploads a built directory
+straight from the machine with no repository or CI, and because a custom domain can stay at the
+user's current DNS provider.
 
 This skill publishes build artifacts. It does not create repositories, commits, pull requests, or
 CI pipelines.
@@ -24,9 +25,10 @@ CI pipelines.
 - Never overwrite an existing destination unless `.course-publish.json` identifies it as belonging
   to this course or the user explicitly identifies it as the destination.
 - Never delete unknown remote objects. A stale-file cleanup is allowed only for a destination that
-  the manifest marks as dedicated to this course.
-- Do not hide provider limitations. In particular, Tigris does not serve a default index document;
-  its working URL ends in `/index.html`, including on a custom domain.
+  the manifest marks as dedicated to this course — and on Vercel there is nothing to clean, because
+  each production deployment is a complete immutable snapshot rather than a mutable directory.
+- Do not hide provider limitations or costs. In particular, Vercel's free Hobby plan is for
+  non-commercial use; say so before the user authenticates, not after they publish.
 
 ## Pipeline
 
@@ -38,15 +40,17 @@ CI pipelines.
    are plausible, include the course choice in Stage 1.
 3. Read `<course-dir>/.course-publish.json` when present. It is the deployment identity for a repeat
    publish; it is not authority to operate on any other destination.
-4. If `course.json` exists but `dist/index.html` does not, invoke `course-site` to build and verify
-   the approved course, then resume here. If `course-site` or a JavaScript runtime is unavailable,
+4. If `course.json` exists but `dist/index.html` does not, run the site-build stage — a skill named
+   `course-site`, or the `witherspoon_build_site` tool — to build and verify the approved course,
+   then resume here. If neither that stage nor a JavaScript runtime is available,
    state that exact prerequisite — `course-builder/references/runtime-setup.md` has the install
    commands — and ask the user to install it or provide the built `dist/`; never upload course source
    as a substitute. If there is neither a build nor buildable course source, stop with the exact
    missing path.
-5. Inspect available provider tools without triggering authentication. For Tigris, note whether a
-   connected MCP server can create a public bucket and recursively upload every file while
-   preserving bytes, object keys, and MIME types. Merely having a Tigris MCP connector is not enough.
+5. Inspect available provider tools without triggering authentication. Note whether the provider's
+   official CLI is installed, and whether any connected MCP server can perform a *complete*
+   deployment — recursive upload preserving bytes, relative keys and MIME types, plus a returned
+   public URL. Merely having a connector for a provider is not enough.
 
 Do not ask the user for facts the workspace or provider manifest already establishes.
 
@@ -60,7 +64,7 @@ has a recommended choice so accepting defaults is one interaction.
 
 | Option | Meaning |
 | --- | --- |
-| **Tigris direct upload (Recommended)** | Use an already-connected, capable Tigris MCP server; otherwise use the official Tigris CLI. No repository. Tell new Tigris users up front that a public bucket requires adding a verified payment method; the verification is a short Link flow. |
+| **Vercel direct deploy (Recommended)** | `vercel deploy <dist> --prod` from the machine. No repository, no CI. The URL is a bare hostname — Vercel serves `index.html` at the root. Tell the user up front that the free Hobby plan is non-commercial. |
 | Netlify direct deploy | Upload `dist/` with Netlify's CLI/API/drop flow; no Git integration. |
 | Cloudflare Pages direct upload | Upload `dist/` with Wrangler/direct upload; no Git integration. |
 
@@ -110,9 +114,9 @@ Before authenticating or creating remote resources:
 
 ### Stage 3 — Publish
 
-For Tigris, read and follow [references/tigris.md](references/tigris.md). That reference is the
-command and provider-behavior contract; do not improvise around its `/index.html`, MIME, public
-access, or custom-domain constraints.
+For Vercel, read and follow [references/vercel.md](references/vercel.md). That reference is the
+command and provider-behaviour contract; do not improvise around its project-naming, `--prod`, MIME,
+or custom-domain constraints.
 
 For another provider:
 
@@ -172,8 +176,7 @@ not obscure whether the upload itself worked.
 - If the user chose “later,” return the exact future DNS target and provider settings path without
   treating the optional domain as unfinished publication.
 
-Tigris-specific custom-domain steps and limitations are in
-[references/tigris.md](references/tigris.md).
+Vercel-specific custom-domain steps are in [references/vercel.md](references/vercel.md).
 
 ### Stage 5 — Verify from the public internet
 
@@ -208,10 +211,10 @@ After verification, create or update `<course-dir>/.course-publish.json`:
 ```json
 {
   "version": 1,
-  "provider": "tigris",
+  "provider": "vercel",
   "accountScope": null,
   "destination": "course-slug",
-  "entryUrl": "https://course-slug.t3.tigrisfiles.io/index.html",
+  "entryUrl": "https://course-slug.vercel.app",
   "customHostname": null
 }
 ```
@@ -260,12 +263,12 @@ directory:
    ```json
    {
      "scripts": {
-       "deploy": "tigris cp ./course-slug/dist/ t3://course-slug/ --recursive"
+       "deploy": "vercel deploy ./course-slug/dist --prod --yes --project course-slug"
      }
    }
    ```
 
-   - Tigris: `tigris cp <dist>/ t3://<bucket>/ --recursive`
+   - Vercel: `vercel deploy <dist> --prod --yes --project <project-name>`
    - Netlify: `netlify deploy --site <site-id> --dir <dist> --prod --no-build`
    - Cloudflare Pages: `wrangler pages deploy <dist> --project-name <project-name>`
    - Other hosts: the exact proven CLI command with an explicit destination.
@@ -297,6 +300,6 @@ Checks: entry HTML · assets/MIME · internal navigation · interaction
 Republish: cd <workspace> && bun run deploy
 ```
 
-For Tigris, print the `/index.html` URL as the primary link and state in one sentence that the bare
-bucket/custom-domain root is not an entry URL. Do not call a Tigris bare-domain `403` a deployment
-failure; do call a failing `/index.html` URL a deployment failure.
+For Vercel, print the bare production URL as the primary link — no `/index.html` suffix, since Vercel
+serves the index at the root. A preview URL carrying a generated hash is not the link to report: if
+what came back looks like one, `--prod` was missing and the deploy must be repeated.

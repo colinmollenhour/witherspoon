@@ -85,9 +85,9 @@ export const REFERENCES = {
     path: 'course-site/references/visuals.md',
     blurb: 'composing diagram and image tools, wiring heroes, and the fallbacks',
   },
-  tigris: {
-    path: 'course-publish/references/tigris.md',
-    blurb: 'Tigris buckets, public access and custom hostnames',
+  vercel: {
+    path: 'course-publish/references/vercel.md',
+    blurb: 'Vercel projects, production deploys and custom hostnames',
   },
 };
 

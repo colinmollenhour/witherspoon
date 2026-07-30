@@ -22,8 +22,9 @@ Hard constraints, all of them load-bearing and all enforced by the template:
 - **Path-independent.** It must work served from a bucket root *or* a subpath. Every URL is relative.
 - **Content works without JavaScript.** JS adds progress, grading, and flair — never the words.
 
-Output goes to `<course-dir>/dist/`. After the gates pass, invoke `course-publish` to choose a host,
-authenticate, upload, and verify the public site.
+Output goes to `<course-dir>/dist/`. After the gates pass, the publish stage — a skill named
+`course-publish`, or the `witherspoon_publish` tool — chooses a host, authenticates, uploads, and
+verifies the public site.
 
 ## Prerequisites
 
@@ -35,6 +36,10 @@ authenticate, upload, and verify the public site.
   missing, stop here and read `course-builder/references/runtime-setup.md`: the material is already
   finished and on disk, so this is a paused site build, not a failed course. Say that plainly rather
   than reporting an error.
+
+**References.** Each stage below names a reference document. Load it at the moment that stage calls
+for it — from `references/<name>.md` beside this file, or by fetching `<name>` through a reference
+tool such as `witherspoon_reference`. One at a time, never all up front.
 
 ## Pipeline
 
@@ -151,10 +156,14 @@ Rights: <© year holder | no named holder> · <license label>
 Preview locally:
   cd <course-dir>/dist && python3 -m http.server 8000
 
-Publish: invoke `course-publish`. It defaults to a direct Tigris upload, asks for the user's
-preferred host and URL, handles authentication, and verifies the live site. No GitHub deployment is
-required.
+Publish: say the word and I'll put this on a public URL — Vercel by default, or name another
+host. Nothing is deployed through GitHub.
 ```
+
+That last line addresses the **user**, so it names no skill and no tool: they cannot invoke either,
+and an instruction they cannot follow reads as a broken handoff. Publishing is a separate stage,
+reached as a skill named `course-publish` or a `witherspoon_publish` tool call — your business, not
+theirs. Do not begin it before the user asks.
 
 If any visual was skipped, say which and why — and mention that any prompt files kept in
 `<course-dir>/assets/prompts/` can be generated later without re-running Stage 2.

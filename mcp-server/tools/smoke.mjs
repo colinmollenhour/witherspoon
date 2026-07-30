@@ -73,8 +73,31 @@ const site = await callText('witherspoon_build_site');
 check(site.includes('bun create witherspoon-course'), 'build_site gives the scaffold command');
 check(site.includes('exits 127'), 'build_site warns about the bare bin on Bun-only machines');
 
+// Every `> ` block in a skill is a line addressed to the user. Naming a skill or a
+// tool in one hands them an instruction they cannot act on — over MCP there is no
+// `course-site` to run — so those lines must describe the action, not the mechanism.
+// Scoped to the quoted blocks deliberately: the surrounding prose *explains* the rule
+// and quotes the bad phrasing as an example, which a whole-document grep trips over.
+const quoted = started
+  .split('\n')
+  .filter((line) => line.trimStart().startsWith('> '))
+  .join('\n');
+const leaked = quoted.match(/course-site|course-publish|course-builder|witherspoon_\w+/)?.[0];
+check(
+  quoted.length > 0 && !leaked,
+  'no user-facing handoff names a skill or a tool',
+  leaked ?? `${quoted.split('\n').length} quoted lines clean`,
+);
+check(
+  started.includes('Address the user, not the machinery'),
+  'start_course carries the channel-neutral handoff rule',
+);
+
 const publish = await callText('witherspoon_publish');
 check(publish.includes('No GitHub'), 'publish keeps the no-GitHub rule');
+check(publish.includes('Vercel'), 'publish defaults to Vercel');
+check(!/tigris/i.test(publish), 'publish no longer references Tigris');
+check(!/tigris/i.test(site), 'build_site no longer references Tigris');
 
 const prereqs = await callText('witherspoon_prereqs', { platform: 'windows' });
 check(prereqs.includes('Microsoft Store'), 'prereqs leads with the platform block');

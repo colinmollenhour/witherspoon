@@ -14,7 +14,7 @@ tool name, it states the capability first and gives the name as an example. Keep
 ```
 .claude/skills/course-builder/   generates course material  → course-<slug>/
 .claude/skills/course-site/      builds the static site     → course-<slug>/dist/
-.claude/skills/course-publish/   uploads dist/ to Tigris    → public URL
+.claude/skills/course-publish/   uploads dist/ to Vercel    → public URL
 course-template/                 the shared Astro builder (every course uses it)
 create-witherspoon-course/       npm `create-` package that installs and runs the builder
 mcp-server/                      serves the three skills over MCP, so nothing is installed

@@ -46,6 +46,11 @@ These are the quality bar. Do not proceed past a stage that violates one.
 7. **Project grading is machine-checkable.** `completionCriteria` a script can evaluate, rubric
    weights summing to 100, at least one adversarial test case, a pinned environment.
 
+**References.** Each stage below names a reference document. Load it at the moment that stage calls
+for it — from `references/<name>.md` beside this file, or by fetching `<name>` through a reference
+tool such as `witherspoon_reference`. One at a time, never all up front; the split exists to keep
+each stage's context small.
+
 ## Pipeline
 
 ### Stage 0 — Scan (silent, fast)
@@ -240,14 +245,18 @@ Report honestly. If a gate still fails, say so plainly rather than declaring com
 
 Then offer the handoff, once, in one line:
 
-> Review the markdown and `course.json`. When you're happy with them, run `course-site` to build a
-> shareable interactive website into `dist/` using the shared Witherspoon template — that
-> step also plans and generates unit heroes, optional course artwork, and any diagrams the readings
-> earn.
+> Review the markdown and `course.json`. When you're happy with them, say so and I'll build the
+> shareable interactive website into `dist/` — that step also plans and generates unit heroes,
+> optional course artwork, and any diagrams the readings earn.
 
-Do not run `course-site` yourself. It is a separate skill, invoked after the user has approved the
+**Address the user, not the machinery.** Do not name a skill or a tool in that sentence: the reader
+has no way to run either, and telling them to "run `course-site`" is an instruction they cannot
+follow. Whether the next stage arrives as a skill named `course-site` or as a `witherspoon_build_site`
+tool call is yours to know and theirs to be spared.
+
+Do not start it yourself. It is a separate stage that runs only after the user has approved the
 material. **Do not generate site artwork here** either: images live under `assets/`, are wiped out of
-`dist/` on every rebuild, and only become part of the product when `course-site` wires them through
+`dist/` on every rebuild, and only become part of the product when the site stage wires them through
 `course.json` and the template. Leaving hero fields empty is correct; filling them without the site
 pipeline is how visuals get orphaned.
 
