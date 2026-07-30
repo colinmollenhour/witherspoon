@@ -293,6 +293,111 @@ fails the build naming the entry and the field rather than producing a site that
 The certificate states on its face that it is a **self-reported completion record** stored only in
 that browser. The architecture can verify nothing, so the page never implies it does.
 
+## The MCP server
+
+`mcp-server/` serves the same three skills over MCP, so a course can be authored with nothing
+installed. It ships **instructions only**. A server reached over a URL has no filesystem and no shell
+on your machine, so every tool returns a document and your agent does the work with its own tools —
+which means it needs file and shell access. A chat-only client can run the interview and nothing
+else, and the server says so rather than half-building a course.
+
+Five tools. The descriptions carry the routing vocabulary, so *"help me build a course for my 3rd
+grade science class"* reaches the right one without anybody naming a tool:
+
+| Tool | Returns | Called |
+| --- | --- | --- |
+| `witherspoon_start_course` | the nine-stage authoring pipeline | once, at the start |
+| `witherspoon_reference` | one of 14 reference documents | at each stage that names one |
+| `witherspoon_build_site` | the site-build pipeline | after you approve the material |
+| `witherspoon_publish` | the publishing pipeline | when you ask for a public URL |
+| `witherspoon_prereqs` | Node/Bun install commands per platform | only if the runtime probe fails |
+
+**One document per call, never all at once.** The skills total ~153 KB; returned together they would
+spend most of a context window before any work began, and would defeat the per-stage split the
+`references/` directories exist to provide. The tool descriptions cost about 1.1k tokens and are
+always in context; a stage costs 2.8–4.5k when fetched.
+
+### How a course gets built
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor U as You
+    participant A as Your agent
+    participant W as Witherspoon MCP
+    participant M as Your machine
+
+    U->>A: Build a course on X for Y
+    A->>W: witherspoon_start_course
+    W-->>A: the 9 stages + reference index
+    A->>M: probe for node or bun (silent)
+    A->>U: 6 questions, one turn, all with defaults
+
+    rect rgb(240, 240, 245)
+    Note over A,W: Stages 2-3 — provisional, nothing written yet
+    A->>W: witherspoon_reference [spine]
+    W-->>A: running example, transformation, failure moment
+    A->>W: witherspoon_reference [outline-contract]
+    W-->>A: the per-topic generation contract
+    end
+
+    opt no runtime found
+    A->>W: witherspoon_prereqs [platform]
+    W-->>A: install commands
+    end
+
+    A->>U: syllabus + numbers + install a runtime while this runs
+    U->>A: approve
+    Note right of U: the only gate — everything after runs autonomously
+
+    rect rgb(235, 245, 240)
+    Note over A,M: Stages 5-8 — research, then write
+    A->>W: witherspoon_reference [grounding]
+    A->>A: 5 research angles, in parallel
+    A->>M: write SOURCES.md
+    A->>W: witherspoon_reference [activity-specs, project-types]
+    A->>M: fan out one agent per topic and project
+    A->>W: witherspoon_reference [quality-gates]
+    A->>M: course-slug/ — markdown + course.json
+    end
+
+    par while that runs
+    U->>M: install Bun or Node
+    end
+
+    A->>U: what was built, what grounding changed, offer to build the site
+    U->>A: go ahead
+
+    rect rgb(245, 240, 240)
+    Note over A,M: the site
+    A->>W: witherspoon_build_site
+    A->>W: witherspoon_reference [widgets, visuals]
+    A->>M: bun create witherspoon-course
+    M-->>A: course-slug/dist
+    A->>W: witherspoon_reference [build-gates]
+    A->>M: verify gates S1-S15, run jsdom tests
+    end
+
+    A->>U: built, gates passed, offer to publish
+    U->>A: publish it
+
+    A->>W: witherspoon_publish
+    A->>W: witherspoon_reference [vercel]
+    A->>M: vercel deploy --prod
+    A->>M: open the live URL and exercise it
+    A-->>U: verified public link
+```
+
+Two things that diagram is meant to make obvious. **There is exactly one gate** — everything after
+your approval runs without stopping, which is why the runtime install is raised *there*, to be done
+in parallel with a fan-out that takes twenty minutes or more. And **references are fetched at the
+stage that needs them**, not up front; that is the whole reason the pipeline fits in a context
+window alongside the course being written.
+
+`content/` in the server is generated from `.claude/skills/` by `tools/sync-content.mjs`, and
+`npm run check` fails if it has drifted — editing a `SKILL.md` and forgetting to sync would quietly
+serve last month's pipeline. The server is stateless, so it replicates and restarts freely.
+
 ## Reference
 
 | Document | Covers |
