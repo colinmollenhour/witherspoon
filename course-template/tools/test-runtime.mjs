@@ -316,15 +316,40 @@ function answerAll(dom, doc) {
   const reset = doc.querySelector('[data-quiz-reset]');
   check('reload: a reset control is offered', !!reset && !reset.hidden);
 
-  // Reset clears this quiz and nothing else.
+  // Retake is the result-panel control; Reset is the meter control. Both must
+  // land the clear *before* location.reload kills the debounce timer — that is
+  // the whole bug. Assert synchronously, no settle(): a debounced write would
+  // still look fine if we waited 250 ms, which is exactly what hid the bug.
+  const retake = [...result.querySelectorAll('button')].find((b) => /Retake/i.test(b.textContent ?? ''));
+  check('reload: a Retake control is offered', !!retake);
+
   store.setItem('course:other:v1', 'untouched');
-  reset.dispatchEvent(new again.dom.window.Event('click', { bubbles: true }));
-  await settle(store, (b) => !Object.values(b.topics ?? {})[0]?.quiz);
-  const key = [...store._map.keys()].find((k) => k.startsWith('course:') && k !== 'course:other:v1');
-  const blob = key ? JSON.parse(store.getItem(key)) : {};
-  const rec = Object.values(blob.topics ?? {})[0]?.quiz;
-  check('reset: the quiz record is gone', !rec, JSON.stringify(rec ?? null));
-  check('reset: other courses untouched', store.getItem('course:other:v1') === 'untouched');
+  retake.dispatchEvent(new again.dom.window.Event('click', { bubbles: true }));
+  {
+    const key = [...store._map.keys()].find((k) => k.startsWith('course:') && k !== 'course:other:v1');
+    const blob = key ? JSON.parse(store.getItem(key)) : {};
+    const rec = Object.values(blob.topics ?? {})[0]?.quiz;
+    check('retake: the quiz record is gone immediately (not after debounce)', !rec,
+      JSON.stringify(rec ?? null));
+    check('retake: other courses untouched', store.getItem('course:other:v1') === 'untouched');
+  }
+
+  // Re-answer and exercise the meter Reset the same way.
+  {
+    const store2 = memoryStorage();
+    const visit = load({ storage: store2 });
+    answerAll(visit.dom, visit.dom.window.document);
+    await settle(store2, (b) => Object.values(b.topics ?? {})[0]?.quiz?.score !== undefined);
+    const re = load({ storage: store2 });
+    const reDoc = re.dom.window.document;
+    const meterReset = reDoc.querySelector('[data-quiz-reset]');
+    meterReset.dispatchEvent(new re.dom.window.Event('click', { bubbles: true }));
+    const key = [...store2._map.keys()].find((k) => k.startsWith('course:'));
+    const blob = key ? JSON.parse(store2.getItem(key)) : {};
+    const rec = Object.values(blob.topics ?? {})[0]?.quiz;
+    check('reset: the quiz record is gone immediately (not after debounce)', !rec,
+      JSON.stringify(rec ?? null));
+  }
 }
 
 // ------------------------------------------------- 7. partial progress survives

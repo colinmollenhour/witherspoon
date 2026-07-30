@@ -63,7 +63,9 @@ export function initQuiz(): void {
       const topic = st.topics[data.id];
       if (topic) delete topic.quiz;
     }
-    Store.save();
+    // Flush, not save: both callers reload immediately, and a debounced write
+    // is killed by the unload — Retake / Reset would appear to do nothing.
+    Store.flush();
     progressChanged();
   }
 

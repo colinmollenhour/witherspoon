@@ -164,8 +164,24 @@ export const Store = {
     if (timer) clearTimeout(timer);
     timer = setTimeout(persist, 250);
   },
+  /**
+   * Write now and cancel any pending debounce. Required before `location.reload()`
+   * (Retake / Reset): a debounced save never lands if the page unloads first.
+   * Also the path for anything else that must not race the next paint.
+   */
+  flush(): void {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
+    persist();
+  },
   available: ok,
   reset(): void {
+    if (timer) {
+      clearTimeout(timer);
+      timer = null;
+    }
     mem = blank();
     if (ok) {
       try {
@@ -181,3 +197,13 @@ export const Store = {
     listeners.push(cb);
   },
 };
+
+// Closing a tab mid-answer would otherwise drop anything still in the debounce
+// window. beforeunload is the last chance to land the in-memory blob.
+window.addEventListener('beforeunload', () => {
+  if (timer) {
+    clearTimeout(timer);
+    timer = null;
+    persist();
+  }
+});
