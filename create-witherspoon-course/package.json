@@ -1,0 +1,31 @@
+{
+  "name": "create-witherspoon-course",
+  "version": "1.0.1",
+  "type": "module",
+  "description": "Set up the Witherspoon site builder around a generated course directory, install it, and build the site.",
+  "keywords": [
+    "witherspoon",
+    "course",
+    "curriculum",
+    "static-site",
+    "create",
+    "scaffold"
+  ],
+  "license": "GPL-3.0-or-later",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/colinmollenhour/witherspoon.git",
+    "directory": "create-witherspoon-course"
+  },
+  "homepage": "https://github.com/colinmollenhour/witherspoon#readme",
+  "bin": {
+    "create-witherspoon-course": "index.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "index.mjs",
+    "README.md"
+  ]
+}
