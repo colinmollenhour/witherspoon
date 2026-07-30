@@ -93,7 +93,7 @@ The shell reports that it cannot find a command. What is wrong?
 You run a command against a huge folder and it starts pouring output down the screen and will not stop. You realise you pointed it at the wrong path and want to rerun it against `~/projects/first-site` instead — without retyping the whole thing. Describe the two keystrokes you use, in order, and what each one does.
 
 
-**A grader must see:**
+**A strong answer covers:**
 
 **Sample answer:**
 

@@ -135,7 +135,7 @@ at all because a request arrived and was answered.
 
 **Explanation:**
 
-A grader must see three things: that the **first field** is the client's address,
+A strong answer covers three things: that the **first field** is the client's address,
 that it holds the phone's address rather than `127.0.0.1`, and that reachability is proved by the
 line's *existence and its first field*, not by the status code. The tempting mistake is to hunt for
 the `200` and treat any error status as failure — but a `404` line means the request arrived, was

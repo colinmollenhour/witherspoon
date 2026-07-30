@@ -3,9 +3,9 @@
 <!-- Rendered from course.json by course-template/tools/render-views.mjs.
      Edit course.json, then re-render. Edits here are overwritten. -->
 
-**Assesses:** Assesses where the shell is standing and why `ls` answers differently in two directories; moving with `cd`, `cd ..`, `cd -` and bare `cd`, and reading your location out of the prompt; building a path with `mkdir -p` and an empty file with `touch`; `cp`, `mv` and `rm`, including what `rm` does not do; whether `mv` renames or moves, and quoting a filename with a space; reading files with `cat`, `less` and `head`, and leaving a pager with `q`; counting with `wc -l` and searching with `grep -n`; searching a tree with `grep -rn` and reading `path:line:text`; Tab, the Up arrow and `history`; `--help` and `man`; `Ctrl-C`, `which`, and reading `command not found` as a `$PATH` statement.
+**What's covered:** Can you tell where the shell is standing, move with `cd` / `cd ..` / `cd -` / bare `cd`, build a path with `mkdir -p` and `touch`, use `cp` / `mv` / `rm` (no trash, no undo), read files with `cat`, `less`, `head`, `wc`, and `grep`, and look things up with Tab, `history`, `--help`, and `man`?.
 
-**Passing score:** 70%
+**Pass at:** 70%
 
 ## Question 1
 
@@ -275,7 +275,7 @@ because this is a reminder about a flag, not a question about what `ls` is for. 
 
 **Explanation:**
 
-A grader must see:
+A strong answer covers:
 
 (1) Tab named for completion, with some sign the learner knows Tab only
 completes names that exist; (2) the Up arrow and/or `history` for recall; (3) both `--help` and

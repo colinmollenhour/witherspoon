@@ -38,13 +38,19 @@ These are the quality bar. Do not proceed past a stage that violates one.
 3. **Every load-bearing number, API, and claim traces to `SOURCES.md`.** Nothing is written from
    recall alone. An ungrounded figure is a defect, not a placeholder.
 4. **Objectives are observable actions with the real API, term, or artifact embedded.** Three per
-   topic. "Understand X" is a defect; "Use `X` to do Y" is an objective.
+   topic. "Understand X" is a defect; "Use `X` to do Y" is an objective. The string that ships to the
+   learner is that action in natural language — not checklist-speak (see learner-facing voice below).
 5. **Every objective is assessed, and every assessment cites its objective.** Quiz and test
    explanations end with `(objective N)` or `(objectives N, M)`.
 6. **At least one designed failure moment.** The learner hits a wall before being handed the fix, and
    the cliffhanger is written into the unit description so the next unit has somewhere to land.
 7. **Project grading is machine-checkable.** `completionCriteria` a script can evaluate, rubric
    weights summing to 100, at least one adversarial test case, a pinned environment.
+8. **Learner-facing voice is energetic, direct, and credible.** Hero copy, about, unit descriptions,
+   project goals, skills, and readings lead with capability and real situations — not compliance
+   metrics, literacy surveys, or assessment bureaucracy. Short sentences. Age-appropriate without
+   sounding childish, slangy, or patronizing. Exact numbers stay where the learner needs them for
+   instructions, scoring, or transparency.
 
 **References.** Each stage below names a reference document. Load it at the moment that stage calls
 for it — from `references/<name>.md` beside this file, or by fetching `<name>` through a reference
@@ -268,3 +274,7 @@ pipeline is how visuals get orphaned.
   a rate, and grounding targets published rates, standards, and case material.
 - The expedition is where fabrication gets caught. Treat a number you "remember" as unverified until
   a ledger row backs it.
+- **Assessability is for the author and the grader; the page is for the learner.** Keep machine-checkable
+  criteria, `(objective N)` citations, and adversarial tests. Do not paste "Assesses whether…",
+  "A grader must see…", "course-defined mastery threshold", or "state exactly… exactly… exactly…" onto
+  surfaces the learner reads first. Full voice rules live in `references/outline-contract.md`.

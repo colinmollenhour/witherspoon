@@ -101,7 +101,7 @@ separate arguments — `My`, `Project`, and `first-site` — rather than two. `m
 destination, not one folder called `My Project`. Either quote the name — `mv "My Project" first-site` —
 or escape the space with a backslash — `mv My\ Project first-site`.
 
-**A grader must see:** (1) that the shell splits on whitespace and the space made `My` and `Project`
+**A strong answer covers:** (1) that the shell splits on whitespace and the space made `My` and `Project`
 two arguments rather than one name; (2) a working fix using either double quotes around the whole name
 or a backslash before the space.
 

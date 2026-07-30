@@ -103,7 +103,7 @@ standing in the home directory right now, and that part of the prompt changes as
 prompt ending in `#` on either shell means the shell is running as the root user, with permission to
 change or delete anything on the machine.
 
-**A grader must see:**
+**A strong answer covers:**
 
 **Sample answer:**
 

@@ -2,10 +2,10 @@
 
 Your phone is on the same Wi-Fi. Your laptop is serving `~/projects/first-site/index.html` — the file
 you built by hand in Unit 1, rebuilt by keyboard in Unit 2, and generated from command output in
-Unit 3. You typed `http://localhost:8000`
-into the phone's browser and got nothing. Here is the part that is going to annoy you: **the server
-was never misconfigured.** It has been reachable from your phone this whole time. Nothing on your
-laptop needs to change. You handed the phone an address that told it not to look.
+Unit 3. You typed `http://localhost:8000` into the phone's browser and got nothing. Here is the
+annoying part: **the server was never misconfigured.** It has been reachable from your phone this
+whole time. Nothing on your laptop needs to change. You handed the phone an address that told it not
+to look.
 
 ## What your phone actually did
 

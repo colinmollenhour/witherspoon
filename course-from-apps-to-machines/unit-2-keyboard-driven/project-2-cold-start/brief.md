@@ -5,12 +5,11 @@
 
 ## Goal
 
-Destroy `~/projects/first-site/` completely and rebuild it from the keyboard in eight commands or
-fewer, then prove the rebuild with four pieces of captured terminal output.
+Wipe `~/projects/first-site/` and rebuild it from the keyboard in eight commands or fewer. Prove the rebuild with four pieces of real terminal output.
 
 ---
 
-## How this runs
+## How this works
 
 You work on **your own machine**, in your own terminal. Nothing runs in a sandbox and nothing is
 simulated. You will really delete the folder you built in Project 1, and you will really put it back.

@@ -3,9 +3,9 @@
 <!-- Rendered from course.json by course-template/tools/render-views.mjs.
      Edit course.json, then re-render. Edits here are overwritten. -->
 
-**Assesses:** Assesses whether you can take a URL apart into its six labelled slots and say which slot the server never receives; write a raw HTTP/1.1 request with its compulsory header; split `curl -v` output into the half you sent and the half you received; choose `curl -I` when you want headers without a body; assign blame from a status code; read `Content-Type`, `Content-Length`, and the DevTools Network columns; start `python3 -m http.server 8000` and read its access log; and show that the same page over `file://` has no status code and no headers while over `http://` it has both.
+**What's covered:** Take a URL apart, write a raw HTTP request, split `curl -v` into what you sent and what came back, read status codes and headers, start `python3 -m http.server 8000`, and show what `file://` is missing that `http://` has.
 
-**Passing score:** 70%
+**Pass at:** 70%
 
 ## Question 1
 
@@ -119,7 +119,7 @@ body, because it is asking, not sending.
 
 **Explanation:**
 
-A grader must see three things. First, a request line with the three slots in the
+A strong answer covers three things. First, a request line with the three slots in the
 right order — `GET`, then the target, then the version — not `HTTP/1.1 GET /` and not `GET
 developer.mozilla.org HTTP/1.1`, since the target is the path, and the host travels in a header.
 Second, a `Host:` header naming the site. Third, `400` as the consequence of omitting it. Credit the

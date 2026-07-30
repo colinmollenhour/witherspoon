@@ -1,71 +1,39 @@
 # From Apps to Machines: Files, the Terminal, and the Web Under the Hood
 
-Learn the tooling a working web developer uses every day — no coding — starting with where a file
-actually lives on disk and ending with your own page served over HTTP at `http://192.168.x.x:8000`
-and loading on a second device on your network.
+Start with a file you can only open by double-clicking. Finish with that same page loading on your phone across the room — no coding required.
 
 ---
 
 ## About
 
-If you grew up on a phone or a tablet, you have never needed to know where a file *is*. You searched
-for it and it appeared. That habit works right up until the moment you open a terminal, and then it
-stops working completely — because the shell cannot search on your behalf. It has to be told exactly
-where to look. This is not a gap in you; it is a documented gap in how a whole generation learned to
-use computers, and university librarians now list "saving everything to desktop / not using file
-directories" and "unable to use browser (only uses phone applications)" among the literacy problems
-they see in current students. This course closes that gap in one straight line. You start with one
-file you can only open by double-clicking it, whose address bar reads
-`file:///home/you/projects/first-site/index.html` and which is useless to anyone but you. You finish
-with the same file being served over HTTP on port 8000, answering with a real `HTTP/1.0 200 OK`, and
-loading on your phone across the room.
+If you grew up on a phone or tablet, you never had to know where a file *is*. You searched, and it appeared. That habit works until you open a terminal — then it fails completely. The shell cannot search for you. You have to tell it exactly where to look. That is not a personal failing; it is how a whole generation learned computers. This course closes the gap in a straight line. You start with one file that only you can open, at `file:///home/you/projects/first-site/index.html`. You finish with the same file answering over HTTP on port 8000 — a real `HTTP/1.0 200 OK` — and loading on your phone across the room.
 
-You build one thing and carry it the whole way. In Unit 1 you create `~/projects/first-site/index.html`
-by hand with a mouse, and count how many clicks it took. In Unit 2 you delete it and rebuild it from
-nothing in eight typed commands. In Unit 3 you stop typing it at all and generate it from command
-output with `>` and `|`. In Unit 4 you turn around and look at the machine it lives on — its LAN IP,
-which of RFC 1918's private ranges that falls in, and which programs are listening on which of its
-65,535 ports. In Unit 5 you learn to read the HTTP conversation itself, then start a real web server
-with `python3 -m http.server 8000` and watch your own page come back with a status code for the first
-time — and then you try it on your phone, and it fails. Unit 6 is why, and the fix, and what it takes
-to go further.
+You build one thing and carry it the whole way. Unit 1: create `~/projects/first-site/index.html` with a mouse and notice how many clicks it took. Unit 2: delete it and rebuild it from the keyboard in eight commands or fewer. Unit 3: stop typing it at all and generate it with `>` and `|`. Unit 4: look at the machine itself — its LAN IP, which private range it sits in, and what is listening on which ports. Unit 5: read the HTTP conversation, start `python3 -m http.server 8000`, watch your page come back with a status code — then try your phone, and watch it fail. Unit 6 is why, the fix, and what it takes to go further.
 
-You need a Mac, a Linux machine, or Windows with WSL; a phone on the same Wi-Fi; and no prior
-experience with any of it. You do not need to know how to code, and this course does not teach you —
-HTML appears only as a text file that a browser happens to render. Every number, command, error
-message, and quoted claim in this material is traceable to a primary source in
-[`SOURCES.md`](SOURCES.md), most of it captured by actually running the commands. Where something
-could not be verified, the course says so rather than guessing.
+You need a Mac, a Linux machine, or Windows with WSL; a phone on the same Wi-Fi; and no prior experience. You do not need to code, and this course does not teach coding — HTML is just a text file a browser happens to render. Every number, command, error message, and quoted claim traces to a primary source in [`SOURCES.md`](SOURCES.md). Where something could not be checked, the course says so rather than guessing.
 
 ---
 
 ## What you'll be able to do
 
-**Locate any file** — State the absolute path of any file on your machine and navigate to it from a
-terminal without touching a file manager.
+**Locate any file** — Write the full path to any file on your machine and walk there from a terminal — no file manager required.
 
-**Drive a machine by keyboard** — Create, move, read, search, and destroy files from the shell, and
-look up any command you don't know instead of memorising it.
+**Drive a machine by keyboard** — Create, move, read, search, and delete files from the shell, and look up any command you do not know instead of memorising it.
 
-**Turn commands into files** — Capture command output with redirection and chain programs together
-with pipes, so files are generated rather than typed.
+**Turn commands into files** — Catch command output with redirection and chain programs with pipes so files are generated rather than typed.
 
-**Read your own network** — Find your machine's LAN IP, identify which private range it belongs to,
-and list every program listening on every port.
+**Read your own network** — Find your machine's LAN IP, name which private range it belongs to, and list every program listening on every port.
 
-**Read an HTTP conversation** — Take apart any URL, run `curl -v` against any site, and tell from a
-status code whether the problem is yours or the server's.
+**Read an HTTP conversation** — Take any URL apart, run `curl -v` against any site, and tell from a status code whether the problem is yours or the server's.
 
-**Serve and reach a page** — Run a real web server on your own machine and make it load on a second
-device on your network, then diagnose it yourself when it doesn't.
+**Serve and reach a page** — Run a real web server on your machine, load it on a second device on your network, and diagnose it yourself when it does not.
 
 ---
 
 ## Syllabus
 
 ### Unit 1 — Where your stuff actually lives
-On a tablet a file has no address; on a dev machine every file sits at exactly one path. This unit
-installs that idea and gets a terminal open.
+On a phone, a file hides inside an app. On a laptop, every file has one written address. This unit plants that idea, gets a terminal open, and leaves you holding a real path you can say out loud.
 
 1. **A tablet hides the filesystem; a dev machine hands it to you** — `/Users/you`, `/home/you`, WSL and `/mnt/c`
 2. **Paths: every file has an address** — absolute vs relative, `~` `.` `..`, case sensitivity
@@ -75,7 +43,7 @@ installs that idea and gets a terminal open.
 absolute path and its `file://` URL, and count how many clicks it took.
 
 ### Unit 2 — Driving the machine from the keyboard
-The shell is always standing in exactly one directory. Everything else in this unit follows from that.
+The shell always stands in exactly one folder. Once you feel that, you can build, move, read, and clean up without reaching for the mouse — and you stop memorising commands you can look up.
 
 4. **The shell always stands somewhere** — `pwd`, `ls`, `cd`, and why `ls` prints differently in different places
 5. **Making, moving, and destroying** — `mkdir -p`, `touch`, `cp`, `mv`, `rm` (no trash, no undo)
@@ -86,7 +54,7 @@ The shell is always standing in exactly one directory. Everything else in this u
 commands or fewer.
 
 ### Unit 3 — Text in, text out
-Command output stops being something that scrolls past and becomes material you can keep.
+Command output used to scroll by and vanish. Now it becomes material you keep: redirect it into files, pipe it between programs, and generate your page instead of typing it.
 
 8. **Editing in place** — `nano`, `code .`, and how to escape `vim`
 9. **Redirection** — `>` vs `>>`, stdout vs stderr, `/dev/null`
@@ -95,7 +63,7 @@ Command output stops being something that scrolls past and becomes material you 
 **Project: Generated Page** — build `index.html` and a `MANIFEST.txt` entirely from command output.
 
 ### Unit 4 — Machines have addresses
-The same idea as Unit 1, one level up: files have addresses, and so do machines.
+Files have addresses. So do machines. Find your LAN IP, see what is listening, and learn the two questions every network failure comes down to: is the machine there, and is anything answering?
 
 11. **IP addresses** — RFC 1918 private ranges, `127.0.0.1`, why NAT hides you
 12. **Names become addresses** — DNS, `dig +short`, `/etc/hosts`, why `localhost` resolves
@@ -106,7 +74,7 @@ The same idea as Unit 1, one level up: files have addresses, and so do machines.
 is not your LAN address.
 
 ### Unit 5 — HTTP: reading the conversation, and joining it
-HTTP is plain text, and by now you read plain text well.
+HTTP is plain text — and by now you read plain text well. Take a URL apart, watch a real request and response, start your own server, and hit the wall that makes Unit 6 necessary.
 
 15. **Anatomy of a URL** — scheme, host, port, path, query, fragment; what `file://` has no room for
 16. **Request and response** — `GET / HTTP/1.1`, the `Host:` header, `curl -v`, `curl -I`
@@ -116,7 +84,7 @@ HTTP is plain text, and by now you read plain text well.
 **Project: HTTP Field Notes** — capture and annotate three real HTTP exchanges, including your own.
 
 ### Unit 6 — Reachable: from your laptop to the whole house
-Why the phone failed, how to fix it, and where the edge of your network actually is.
+Your laptop can already see the page. Your phone cannot — yet. Fix that on your own Wi-Fi, build a short runbook so you can do it again, and see where your home network ends.
 
 19. **Loopback versus the network** — `0.0.0.0` vs `127.0.0.1`, your LAN IP, the phone finally loads it
 20. **When it doesn't work** — `Address already in use`, `Permission denied` on port 80, firewalls

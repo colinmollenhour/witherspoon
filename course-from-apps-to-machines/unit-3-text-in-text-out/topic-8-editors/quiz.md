@@ -113,7 +113,7 @@ its presence on current macOS is not something to assume. My options are to run 
 `index.html` in Visual Studio Code, or to fall back on `vi`, which Unix-like systems ship as a matter
 of course — and if I end up in `vi` and want out, `Esc` then `:q!` gets me back to the prompt.
 
-**A grader must see:**
+**A strong answer covers:**
 
 **Sample answer:**
 

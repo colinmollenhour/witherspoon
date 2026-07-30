@@ -7,12 +7,44 @@ contract already says how that topic hands off to its neighbours, independent wr
 that interlocks. Get this right and parallel generation is safe; get it wrong and you get twenty-one
 disconnected essays.
 
+## Learner-facing voice
+
+Every field below ships to the site unless noted. Write for a motivated pre-teen or teen by default —
+energetic, direct, and credible — unless Stage 1 named a clearly different audience. Never childish,
+slang-heavy, or patronizing. Never bureaucratic.
+
+**Lead with capability and a real situation** (the phone fails, the folder is gone, the demo is in
+six months). Do **not** lead with compliance metrics, literacy surveys, competitor audits, or
+assessment bureaucracy on hero, about, unit intros, project goals, skills, or CTAs.
+
+| Ship this | Not this |
+| --- | --- |
+| Start with a file you can only double-click. Finish with it loading on your phone. | Learn 18 of 20 verified behaviors against the course-defined mastery threshold. |
+| Quick check: can you find home and read an `ls -la` line? | Assesses locating your home directory and knowing why the Desktop is wrong. |
+| Build the folder, capture the path, notice how many clicks it cost. | State exactly where it lives, exactly what URL shows, and exactly what it cost. |
+| A strong answer covers three things: … | A grader must see three things: … |
+| How this works / evidence from your screen / checks | How this runs / captured evidence / grading scripts |
+
+**Metrics stay** where the learner acts on them: command budgets, pass %, ports, sizes, weights, field
+rules in `completionCriteria`. Put cohort studies, librarian quotes, and competitor surveys **inside
+a reading** when they teach — not on the homepage about.
+
+**Sentence craft:** short and direct. One concrete payoff per paragraph. British spelling in prose.
+Cut educational jargon (*mastery threshold*, *observable behaviors*, *blank playbook*, *cohort*)
+unless the domain itself uses the term (e.g. a real privileged-port threshold of 1024).
+
 ## Course-level fields
+
+### `subtitle`
+
+One or two sentences. States the before→after with real numbers **and** a human payoff. Lead with
+what they can do, not with a feature list.
 
 ### `about` — exactly three paragraphs
 
 1. **Hook that corrects a misconception.** Name the belief the reader arrives with, then break it
-   with the transformation numbers.
+   with the transformation numbers. Open on the situation, not on a survey of how far behind "a
+   generation" is.
 2. **The straight-line build.** Unit by unit, in prose, ending on what they will have.
 3. **Prerequisites and promise.** What they need, what they don't, and why the material is
    trustworthy.
@@ -26,11 +58,14 @@ Reference tone:
 
 ### `skills[]` — 4 to 6
 
-Each is a **performance statement**, not a noun phrase.
+Each is a **performance statement**, not a noun phrase — and it should sound like something a person
+would say they can do, not a checklist item.
 
-- Good: *"Identify whether a given problem is a good fit for GPU acceleration based on how the work
-  is structured."*
+- Good: *"Tell whether a problem is a good fit for the GPU from how the work is structured."*
+- Also good: *"Identify whether a given problem is a good fit for GPU acceleration based on how the
+  work is structured."*
 - Bad: *"GPU fundamentals."*
+- Bad: *"State three conditions under which…"* when *"Name three cases where…"* says the same thing.
 
 Format: `title` (2–4 words, scannable) + `description` (one sentence, what they can now do).
 
@@ -44,14 +79,16 @@ different from the official docs / the free tutorial?"* and the answer must be s
 > fix them.
 
 Others worth covering: hardware/tooling needed, prerequisite depth, what the course is *not* about.
+Keep answers concrete; do not open with a multi-product survey unless the contrast *is* the answer.
 
 ## Units
 
 3–6 units. Each has:
 
 - **`title`** — names the shift in capability, not the topic area.
-- **`description`** — 2–4 sentences. Where the learner is coming from, what this unit adds, and
-  **it ends on the hook into the next unit.**
+- **`description`** — **2–4 sentences, never one.** Where the learner is coming from, what this unit
+  adds, and **it ends on the hook into the next unit.** A one-sentence description that only restates
+  the title is a defect.
 
 > "Once `add` runs on the GPU with one thread, the next step is to actually use the GPU's
 > parallelism. Learn the `<<<blocks, threads>>>` execution configuration, how `threadIdx` and
@@ -60,6 +97,19 @@ Others worth covering: hardware/tooling needed, prerequisite depth, what the cou
 
 Each unit owns exactly one `test`, and (in `project-based`) one or more projects.
 
+### Unit test description
+
+`test.description` is learner-facing on the unit page and the test page. Write it as a **quick check
+in second person**, not as an assessment abstract.
+
+- Good: *"Quick check: can you launch with `<<<N,1>>>`, read the nsys summary, and say why a single
+  thread is still slower than the CPU path?"*
+- Bad: *"Assesses whether the learner can launch kernels, interpret profiler output, and explain…"*
+
+Do not start with *Assesses*, *Evaluates*, *This test covers*, or *The learner will demonstrate*.
+Pass score is shown separately by the site (`Pass at {passingScore}%`); you may mention it once in
+the description only if you need a second emphasis — not as the lead.
+
 ## Topics
 
 2–4 per unit. Each has a title, a description, **three learning objectives**, and a contract.
@@ -67,17 +117,22 @@ Each unit owns exactly one `test`, and (in `project-based`) one or more projects
 ### Learning objectives — the hard part
 
 Three per topic. Each is an **observable action with the real API, term, number, or artifact
-embedded**.
+embedded** — and the string in `learningGoals[].title` is what the site prints under **You will be
+able to**. Write the assessable action in language a learner would recognize as invitation, not
+audit.
 
-| Bad | Good |
-| --- | --- |
-| Understand thread indexing | Use `blockIdx.x * blockDim.x + threadIdx.x` to give every thread in the grid a unique index |
-| Learn about profiling | Read an nsys profiler summary and identify Unified Memory H2D/D2H memcpy traffic |
-| Know how to compile | Compile a `.cu` file with `nvcc` and run the resulting binary |
-| Understand openers | Deliver a 15-second opener containing a permission ask, without filler |
+| Bad (vague) | Bad (stiff but assessable) | Good (assessable and natural) |
+| --- | --- | --- |
+| Understand thread indexing | State the formula that yields a unique thread index | Give every thread a unique index with `blockIdx.x * blockDim.x + threadIdx.x` |
+| Learn about profiling | Use `nsys` to identify Unified Memory H2D/D2H memcpy traffic | Read an nsys summary and spot Unified Memory H2D/D2H memcpy traffic |
+| Know how to compile | Invoke `nvcc` to produce a runnable binary from a `.cu` file | Compile a `.cu` file with `nvcc` and run the binary |
+| Understand openers | Deliver a 15-second opener containing a permission ask, without filler | Deliver a 15-second opener with a permission ask and no filler |
+
+Prefer natural verbs (*find, open, fix, tell, map, split, build, stop*) over audit verbs (*state,
+classify, demonstrate, list three things a…, identify whether*) when both stay precise.
 
 Banned openers: *understand, learn, know, be aware of, appreciate, be familiar with, gain insight
-into*.
+into*. Also avoid shipping *demonstrate mastery of*, *exhibit competency in*, *achieve the threshold*.
 
 Objectives are numbered per unit (1..N across the unit's topics) because assessments cite them by
 number.

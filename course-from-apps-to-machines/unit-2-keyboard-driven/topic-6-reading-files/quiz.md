@@ -71,7 +71,7 @@ What exactly does `wc -l /etc/hosts` print, and why that value?
 words, bytes — so 7 is the line count, 40 is words and 384 is bytes. `-l` keeps only the line count
 and drops the other two columns; the filename still appears.
 
-**A grader must see:** (1) the value `7`, not 40 or 384 — the first column is lines; (2) that `-l`
+**A strong answer covers:** (1) the value `7`, not 40 or 384 — the first column is lines; (2) that `-l`
 narrows the output to one number rather than adding information; (3) that the filename is still
 printed alongside it.
 
@@ -114,7 +114,7 @@ The second command searches a whole directory tree, so the path is the only thin
 file each match came from, and `grep` prints it. Adding `-H` forces the filename on even for a
 single-file search.
 
-**A grader must see:** (1) the difference is one file versus a directory (or many files), not a
+**A strong answer covers:** (1) the difference is one file versus a directory (or many files), not a
 broken or inconsistent tool; (2) the reason — with one file the path carries no information; (3) the
 flag `-H`.
 

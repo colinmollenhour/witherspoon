@@ -68,7 +68,9 @@ implicit runtime.
 ### G8 — Objective form
 
 No objective begins with *understand, learn, know, be aware of, appreciate, be familiar with, gain
-insight into*. Every objective names a real API, term, artifact, or number.
+insight into*. Every objective names a real API, term, artifact, or number. Prefer natural verbs over
+audit verbs when both stay precise (*find* / *open* / *fix* over *state* / *demonstrate* /
+*classify* for the same action).
 
 ### G9 — Failure moment present
 
@@ -176,6 +178,11 @@ Report these; do not block on them.
 - **Source concentration** — flag any unit whose grounded facts all trace to a single ledger row. Thin
   grounding usually means that unit was written from recall with one citation bolted on.
 - **Stale-risk claims** — flag anything version-sensitive that A3 did not explicitly confirm.
+- **Learner-facing voice** — spot-check the homepage about, every unit `description`, every project
+  `goal`, and every unit-test `description`. Flag: *Assesses…*, *A grader must see…*, *mastery
+  threshold*, *observable behaviors*, *exactly… exactly… exactly…* in goals, one-sentence unit
+  descriptions with no next-unit hook, about paragraphs that open on literacy surveys rather than
+  the learner's situation. Fix by rewriting the surface copy; do not weaken assessment contracts.
 
 ## Completion report
 

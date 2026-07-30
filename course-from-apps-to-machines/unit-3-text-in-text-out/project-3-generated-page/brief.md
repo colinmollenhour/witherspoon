@@ -5,8 +5,7 @@
 
 ## Goal
 
-Write a shell script that builds `~/projects/first-site/index.html` and `~/projects/first-site/MANIFEST.txt`
-entirely out of command output, using `>`, `>>` and `|`, so that neither file is ever typed by hand.
+Write a shell script that builds `~/projects/first-site/index.html` and `MANIFEST.txt` entirely from command output using `>`, `>>`, and `|` — neither file gets typed by hand.
 
 ## Learning goals
 
@@ -20,7 +19,7 @@ entirely out of command output, using `>`, `>>` and `|`, so that neither file is
 
 ## Instructions
 
-### How this runs
+### How this works
 
 There are two code cells and they are **not** run the same way.
 
@@ -126,27 +125,27 @@ One page in the folder, and the manifest says zero. That is the lie.
 
 - [ ] **1. Run it before you change it** — Execute cell 2, then cell 4, untouched. Read both printed
       blocks and find the claim that does not match the folder.
-      *Criteria:* `build.sh exits with status 0; ~/projects/first-site/index.html has exactly 1 line;
+      *Done when:* `build.sh exits with status 0; ~/projects/first-site/index.html has exactly 1 line;
       the last line of ~/projects/first-site/MANIFEST.txt is 0`
 - [ ] **2. Resolve TODO A** — Append the heading to `index.html` with `echo` and `>>`.
-      *Criteria:* `~/projects/first-site/index.html is non-empty, has exactly 2 lines, contains the
+      *Done when:* `~/projects/first-site/index.html is non-empty, has exactly 2 lines, contains the
       substring "<title>" and contains the substring "<h1>"`
 - [ ] **3. Resolve TODO B** — Replace the hard-coded `0` with a counting pipeline.
-      *Criteria:* `build.sh contains at least one non-comment line in which "ls", "|", "wc" and ">>" all
+      *Done when:* `build.sh contains at least one non-comment line in which "ls", "|", "wc" and ">>" all
       appear; the last line of MANIFEST.txt equals the output of "ls -la | grep html | wc -l" run in
       ~/projects/first-site`
 - [ ] **4. Prove the count generalises** — Create four extra `.html` files in
       `~/projects/first-site/`, re-run the script, and check the manifest.
-      *Criteria:* `after 4 additional .html files exist, the last line of MANIFEST.txt is 5`
+      *Done when:* `after 4 additional .html files exist, the last line of MANIFEST.txt is 5`
 - [ ] **5. Prove nothing was typed** — Confirm the script itself carries the operators, not just the
       output.
-      *Criteria:* `build.sh line 1 begins with "#!" followed by an absolute path; build.sh contains ">>"
+      *Done when:* `build.sh line 1 begins with "#!" followed by an absolute path; build.sh contains ">>"
       at least once and "|" at least once outside of comments; build.sh does not invoke nano, vim, vi or
       code`
 - [ ] **6. Notice what `wc` printed** *(noticing step)* — Compare the last line of `MANIFEST.txt` with
       what `wc -l /etc/hosts` prints by hand [src 27]. One has a filename beside the number and one does
       not. That is the pipe.
-      *Criteria:* `the last line of MANIFEST.txt consists only of digits and whitespace — no filename
+      *Done when:* `the last line of MANIFEST.txt consists only of digits and whitespace — no filename
       appears on it`
 
 ---

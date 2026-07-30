@@ -120,7 +120,7 @@ back. `localhost` is different: it is written down in `/etc/hosts` on this machi
 `/etc/hosts` is read first, the name is found there, and the lookup finishes on local disk without a
 single packet being sent.
 
-**A grader must see:**
+**A strong answer covers:**
 
 **Sample answer:**
 

@@ -19,8 +19,8 @@ running problem, and `LECTURE` replaces projects as the second activity.
 {
   "title": "string",
   "slug": "kebab-case",
-  "subtitle": "string — states the before→after with real numbers",
-  "about": "string — exactly three paragraphs",
+  "subtitle": "string — before→after with real numbers and a human payoff",
+  "about": "string — exactly three paragraphs; situation-first, not survey-first",
   "structureTemplate": "project-based" | "academic",
   "license": {
     "id": "all-rights-reserved" | "cc-by-nc-nd-4.0" | "cc-by-4.0" | "cc0-1.0",
@@ -39,11 +39,11 @@ running problem, and `LECTURE` replaces projects as the second activity.
   // may leave hero fields null; course-site fills assets/ and these declarations.
 
   "skills": [
-    { "title": "2-4 words", "description": "one sentence — a performance statement", "orderIndex": 0 }
+    { "title": "2-4 words", "description": "one sentence — what they can now do, natural language", "orderIndex": 0 }
   ],
 
   "faqs": [
-    { "question": "string", "answer": "string", "orderIndex": 0 }
+    { "question": "string", "answer": "string — concrete; not a multi-product survey unless that is the point", "orderIndex": 0 }
   ],
 
   "spine": {
@@ -64,7 +64,7 @@ running problem, and `LECTURE` replaces projects as the second activity.
   "units": [
     {
       "title": "string — names the shift in capability",
-      "description": "string — ends on the hook into the next unit",
+      "description": "string — 2–4 sentences; ends on the hook into the next unit",
       "orderIndex": 0,
 
       // Optional. Filled by course-site when unit artwork is generated.
@@ -83,7 +83,7 @@ running problem, and `LECTURE` replaces projects as the second activity.
           "orderIndex": 0,
           "instructions": "Topic generation prompt: …\nRequested activities:\n- READ: …",
           "learningGoals": [
-            { "title": "observable action with the real API/term embedded",
+            { "title": "observable action + real API/term; natural learner-facing wording",
               "description": "string | null", "orderIndex": 0, "unitObjectiveNumber": 1 }
           ],
           "activities": [
@@ -105,8 +105,8 @@ running problem, and `LECTURE` replaces projects as the second activity.
       ],
 
       "test": {
-        "title": "string — names the assessed area",
-        "description": "string — what it assesses",
+        "title": "string — plain-language name of the area",
+        "description": "string — second-person quick check; never starts with Assesses",
         "passingScore": 70,
         "questions": [
           {
@@ -118,9 +118,9 @@ running problem, and `LECTURE` replaces projects as the second activity.
             "correctAnswer": false,           // TRUE_FALSE only
             "sampleAnswer": "string",         // SHORT_ANSWER only
             "graderNotes": "string",          // SHORT_ANSWER, optional — what a
-                                              // full-credit answer must contain.
-                                              // Shown to the learner when they
-                                              // self-mark, so it is content.
+                                              // full-credit answer must cover,
+                                              // learner-facing ("A strong answer
+                                              // covers…"). Shown on self-mark.
             "explanation": "why right, why the tempting wrong one is wrong (objective 2, 11)"
           }
         ]
@@ -129,7 +129,7 @@ running problem, and `LECTURE` replaces projects as the second activity.
       "projects": [
         {
           "title": "string",
-          "goal": "one sentence — the outcome in the learner's terms",
+          "goal": "build + capture/prove + why it matters next (mission voice)",
           "type": "code-notebook" | "coding-agents" | "scenarios" | "spreadsheet"
                 | "writing-research" | "image-generation" | "prompt-challenge"
                 | "interactive-form",
@@ -141,9 +141,9 @@ running problem, and `LECTURE` replaces projects as the second activity.
 
           "config": {
             "title": "string",
-            "description": "string",
+            "description": "string — usually mirrors goal",
             "language": "cpp" | "python" | null,
-            "instructions": "markdown — How this runs / Your tasks / Scaffolding / Expected output / Rules",
+            "instructions": "markdown — How this works / Your tasks / Scaffolding / Expected output / Rules",
             "starterCells": [
               { "id": "cell-reference", "type": "markdown" | "code",
                 "content": "string", "readOnly": true }
@@ -152,7 +152,7 @@ running problem, and `LECTURE` replaces projects as the second activity.
 
           "steps": [
             { "id": "step-implement", "title": "string", "description": "string",
-              "completionCriteria": "machine-checkable condition" }
+              "completionCriteria": "machine-checkable condition (shown as You are done when:)" }
           ],
 
           "rubric": [
@@ -163,7 +163,7 @@ running problem, and `LECTURE` replaces projects as the second activity.
           "testCases": [
             { "name": "snake_case", "code": "string — self-contained",
               "expectedOutput": "PASS", "weight": 50,
-              "description": "what it verifies; for the adversarial case, what shortcut it catches" }
+              "description": "what it checks; adversarial: 'Catches a shortcut: …'" }
           ],
 
           "environment": {

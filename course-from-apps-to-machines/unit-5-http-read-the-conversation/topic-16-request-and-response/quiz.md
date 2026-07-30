@@ -71,7 +71,7 @@ without `Host` there is no way to tell which of those sites the bare `/` refers 
 "the host and port information from the target URI," letting the origin server distinguish among
 resources while servicing requests for multiple host names.
 
-**A grader must see:** (1) the server responds 400 / Bad Request — not that it guesses or ignores the
+**A strong answer covers:** (1) the server responds 400 / Bad Request — not that it guesses or ignores the
 problem; (2) that `Host` is mandatory on every HTTP/1.1 request, not optional; (3) the reason — one
 server/one address can serve multiple host names, and `Host` is what tells them apart.
 

@@ -139,7 +139,7 @@ no equivalent.
 
 **Explanation:**
 
-A grader must see three things: that the cause is the port number being below 1024,
+A strong answer covers three things: that the cause is the port number being below 1024,
 not anything about the folder or the file; that the failure happens at bind time and so has nothing to
 do with read permissions on `index.html`; and that 8000 works simply because it is above the threshold.
 Mentioning that the 1024 rule is a Unix convention while the sysctl is Linux-specific is the mark of a

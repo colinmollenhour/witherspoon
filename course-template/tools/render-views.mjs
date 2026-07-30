@@ -81,9 +81,9 @@ function renderUnitTest(unit, index) {
     '<!-- Rendered from course.json by course-template/tools/render-views.mjs.',
     '     Edit course.json, then re-render. Edits here are overwritten. -->',
     '',
-    `**Assesses:** ${unit.test.description}`,
+    `**What's covered:** ${unit.test.description}`,
     '',
-    `**Passing score:** ${unit.test.passingScore}%`,
+    `**Pass at:** ${unit.test.passingScore}%`,
     '',
     ...qs.map((q, i) => renderQuestion(q, i + 1)),
   ].join('\n');

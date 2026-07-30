@@ -3,9 +3,9 @@
 <!-- Rendered from course.json by course-template/tools/render-views.mjs.
      Edit course.json, then re-render. Edits here are overwritten. -->
 
-**Assesses:** Assesses why `localhost` fails on a second device and what the access log proves about it; `0.0.0.0` as a bind instruction versus `127.0.0.1` as an address, read off the server's own banner; finding the LAN IP per platform and loading it from a second device; diagnosing `Address already in use` and finding the process that owns a port; why port 80 is refused and 8000 is not; the ordered diagnostic for "the phone still can't reach it", including refusal versus timeout; why a WSL 2 server is unreachable by default; the mirrored-mode fix and the Hyper-V firewall rule it requires; and why a private address stops at your front door, with what hosting would add.
+**What's covered:** Explain why `localhost` fails on a second device, use the access log as proof, bind and LAN-IP rules, diagnose `Address already in use` and port 80 permission errors, run the ordered phone diagnostic, and name why a private address stops at your front door.
 
-**Passing score:** 70%
+**Pass at:** 70%
 
 ## Question 1
 
@@ -96,7 +96,7 @@ first command named, because Wi-Fi is not reliably `en0` — and the result shou
 
 **Explanation:**
 
-A grader must see four things. First, that `/etc/hosts` is consulted *before* DNS,
+A strong answer covers four things. First, that `/etc/hosts` is consulted *before* DNS,
 which is why the phone never asked the network. Second, that `127.0.0.1` is per-machine — the phone
 resolved the name to itself, not to the laptop. Third, the replacement: the laptop's LAN IPv4 with
 `:8000` still attached, since the port is only omitted for the standard ones. Fourth, the macOS
@@ -284,7 +284,7 @@ and a machine that stays running when my laptop's lid closes.
 
 **Explanation:**
 
-A grader must see three elements. First, that the failure is about *private
+A strong answer covers three elements. First, that the failure is about *private
 addressing*, not about a typo, a firewall, or the server being off — the RFC 1918 quote and the
 no-coordination consequence, "An enterprise that decides to use IP addresses out of the address space
 defined in this document can do so without any coordination with IANA or an Internet registry", which

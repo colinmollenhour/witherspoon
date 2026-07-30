@@ -1,10 +1,9 @@
 # You are not supposed to memorise this
 
 You have typed `~/projects/first-site/` by hand in three topics now, and picked up a dozen commands
-on the way. If you are quietly worried that the price of using a computer this way is holding all of
-it in your head — stop. Nobody does. What experienced people have instead is a handful of keystrokes
-that make the machine do the remembering, and one correct way of reading the error that scares
-beginners most.
+on the way. If you are quietly worried that the price of working this way is holding all of it in
+your head — stop. Nobody does. Experienced people keep a handful of keystrokes that make the machine
+remember for them, and one solid way of reading the error that scares beginners most.
 
 ## Tab finishes the typing for you
 

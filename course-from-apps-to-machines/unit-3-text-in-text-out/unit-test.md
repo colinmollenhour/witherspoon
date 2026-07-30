@@ -3,9 +3,9 @@
 <!-- Rendered from course.json by course-template/tools/render-views.mjs.
      Edit course.json, then re-render. Edits here are overwritten. -->
 
-**Assesses:** Assesses editing files in place from the terminal and escaping any editor you land in (`which nano`, `Ctrl-O`, `Ctrl-X`, `code .`, `Esc` then `:q!`); turning command output into files with `>` and `>>` and knowing which of the two destroys what is already there; the two output streams, and why an error still reaches your screen through a redirect; discarding output with `> /dev/null`; chaining programs with `|`, what each stage receives, and paging long output with `| less`; and generating `~/projects/first-site/index.html` from command output rather than typing it.
+**What's covered:** Edit in place from the terminal and escape any editor you land in. Turn output into files with `>` and `>>`, keep stdout and stderr straight, discard noise with `/dev/null`, chain programs with `|`, and generate `index.html` from commands rather than typing it.
 
-**Passing score:** 70%
+**Pass at:** 70%
 
 ## Question 1
 
@@ -210,7 +210,7 @@ separate job for `>`.
 
 **Explanation:**
 
-A grader must see:
+A strong answer covers:
 
 (1) the pipe with `less` on its right-hand side; (2) that `less` is receiving
 `grep`'s output on stdin rather than being given a filename; (3) that nothing is written to disk — this
@@ -250,7 +250,7 @@ different reason: when a directory is requested, the web server looks for a file
 
 **Explanation:**
 
-A grader must see:
+A strong answer covers:
 
 (1) both commands, with `>` on the first and `>>` on the second — the order is the
 answer, not a detail; (2) the reason: start the file once, then add to it, because `>` on the second line

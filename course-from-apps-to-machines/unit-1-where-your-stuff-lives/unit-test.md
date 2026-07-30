@@ -3,9 +3,9 @@
 <!-- Rendered from course.json by course-template/tools/render-views.mjs.
      Edit course.json, then re-render. Edits here are overwritten. -->
 
-**Assesses:** Assesses locating your home directory on macOS, Linux, and WSL and knowing why the Desktop is the wrong place; naming what a desktop OS gives you that a tablet does not; reading a terminal prompt for your username and your platform; classifying a path as absolute or relative and writing one out; rewriting a location with `~`, `.`, and `..`; predicting case-sensitivity collisions across platforms; knowing that renaming an extension leaves the bytes alone; reading every field of an `ls -la` line; and telling a file apart from the program that opens it.
+**What's covered:** Quick check: can you find home on macOS, Linux, or WSL and say why the Desktop is the wrong parking spot? Read a prompt for your username, tell absolute from relative paths, rewrite a location with `~`, `.`, and `..`, predict case-sensitivity traps, and read an `ls -la` line field by field.
 
-**Passing score:** 70%
+**Pass at:** 70%
 
 ## Question 1
 
@@ -153,7 +153,7 @@ All four spellings name one file. Only the first one, `/home/...`, is true from 
 
 **Explanation:**
 
-A grader must see:
+A strong answer covers:
 
 (1) three distinct correct rewrites — a `~` form, a `.` form, and a `..` form —
 that all resolve to `/home/colin/projects/first-site/index.html` from the stated starting directory;
@@ -282,7 +282,7 @@ confusing.
 
 **Explanation:**
 
-A grader must see:
+A strong answer covers:
 
 (1) all three fields named correctly — type character, link count, size in bytes;
 (2) Linux identified as case-sensitive, giving two distinct files; (3) a default Mac identified as

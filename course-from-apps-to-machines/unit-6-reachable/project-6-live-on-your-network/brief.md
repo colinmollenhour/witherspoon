@@ -6,18 +6,15 @@
 
 ## Goal
 
-Serve `~/projects/first-site/index.html` from your own machine, load it on your phone over your own
-Wi-Fi, prove it with the server's own access log, and write the runbook you would need to do it again
-in six months.
+Serve `~/projects/first-site/index.html` from your machine, load it on your phone over your Wi-Fi, prove it with the server's access log, and write a short runbook you could follow again in six months.
 
 ---
 
-## How this runs
+## How this works
 
-Nothing here is auto-run code. You do the work on real hardware — your machine, your Wi-Fi, your
-phone — and you submit **captured evidence** of what happened. The grader is a set of small parsers
-that read your submission file field by field, plus a human or model reading your runbook and your
-account of what went wrong.
+Nothing here is auto-run. You work on real hardware — your machine, your Wi-Fi, your phone — and
+you submit **evidence of what actually happened**. Small parsers read your submission field by
+field; a human or model reads your runbook and your account of what went wrong.
 
 You submit one file: `starter/submission.txt`, filled in. It is a plain text file split into fields
 by header lines that look like this:
@@ -327,7 +324,7 @@ Each step's completion is checked mechanically against your submitted fields.
 
 ## Expected output
 
-By the end you should have seen all four of these on your own machine:
+When you finish, you should have seen all four of these on your own machine:
 
 ```
 Serving HTTP on 0.0.0.0 port 8000 (http://0.0.0.0:8000/) ...

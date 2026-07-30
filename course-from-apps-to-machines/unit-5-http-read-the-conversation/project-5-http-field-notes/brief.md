@@ -5,12 +5,11 @@
 
 ## Goal
 
-Capture and annotate three real HTTP exchanges — a public site, a redirect, and your own local server
-— and show what a `file://` load has that none of them do, and what it lacks that all of them have.
+Capture and annotate three real HTTP exchanges — a public site, a redirect, and your own local server — then show what a `file://` load has that none of them do, and what it lacks that all of them have.
 
 ---
 
-## How this runs
+## How this works
 
 There is no code to write. You run four or five commands, **copy what comes back exactly as it came
 back**, and write down what each line does.
@@ -194,43 +193,43 @@ rather than your file — see the rules below.
 
 - [ ] **1. Capture a public conversation.**
       Run `curl -v https://example.com` and paste the complete output into `curl_v_public`.
-      *Completion criteria:* `curl_v_public` contains at least one line whose first non-whitespace
+      *You are done when:* `curl_v_public` contains at least one line whose first non-whitespace
       character is `>` and at least one line whose first non-whitespace character is `<`.
 
 - [ ] **2. Capture a redirect.**
       Find a URL that answers with a `3xx` code and paste its `curl -I` response head into
       `curl_i_redirect`.
-      *Completion criteria:* the first line of `curl_i_redirect` begins with `HTTP/` and its second
+      *You are done when:* the first line of `curl_i_redirect` begins with `HTTP/` and its second
       whitespace-separated field is a three-digit integer in the range `300`–`399`.
 
 - [ ] **3. Serve your own page and capture the response.**
       Run `python3 -m http.server 8000` from inside `~/projects/first-site`, then
       `curl -I http://localhost:8000/index.html`, and paste the response head into `curl_i_local`.
-      *Completion criteria:* `curl_i_local` contains a line beginning `HTTP/1.0 200` **and** a line
+      *You are done when:* `curl_i_local` contains a line beginning `HTTP/1.0 200` **and** a line
       beginning `Server: SimpleHTTP/`.
 
 - [ ] **4. Copy the status line.**
-      *Completion criteria:* `status_line_local`, stripped of surrounding whitespace, equals
+      *You are done when:* `status_line_local`, stripped of surrounding whitespace, equals
       `HTTP/1.0 200 OK`, and the same string is the first non-empty line of `curl_i_local`.
 
 - [ ] **5. Copy the `Content-Type` value.**
-      *Completion criteria:* `content_type_local`, stripped of surrounding whitespace and lowercased,
+      *You are done when:* `content_type_local`, stripped of surrounding whitespace and lowercased,
       equals `text/html`, and `curl_i_local` contains no occurrence of the substring `charset`.
 
 - [ ] **6. Annotate at least six lines.**
-      *Completion criteria:* `annotations` contains at least 6 entries, each with a distinct `LINE:`
+      *You are done when:* `annotations` contains at least 6 entries, each with a distinct `LINE:`
       value that appears verbatim as a substring of `curl_v_public`, `curl_i_redirect`, or
       `curl_i_local`, and each with a non-empty `WHAT IT IS:` and a `WHAT IT DOES:` of at least 8
       words.
 
 - [ ] **7. Compare against `file://`.**
-      *Completion criteria:* `file_url_comparison` is at least 30 words and contains both the
+      *You are done when:* `file_url_comparison` is at least 30 words and contains both the
       substring `status` and the substring `header` (case-insensitive).
 
 - [ ] **8. Notice what your phone does.** *(Do this last. It is the note Unit 6 starts from.)*
       Type `http://localhost:8000` into your phone's browser on the same Wi-Fi and record what
       happened, including whether a new line appeared in your server's terminal.
-      *Completion criteria:* `phone_result` is at least 20 words and is non-identical to
+      *You are done when:* `phone_result` is at least 20 words and is non-identical to
       `file_url_comparison`.
 
 ---

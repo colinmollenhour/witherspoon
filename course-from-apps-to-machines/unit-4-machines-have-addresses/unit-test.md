@@ -3,9 +3,9 @@
 <!-- Rendered from course.json by course-template/tools/render-views.mjs.
      Edit course.json, then re-render. Edits here are overwritten. -->
 
-**Assesses:** Assesses whether you can find and classify your own machine's LAN IPv4 address, say what `127.0.0.1` means and why a private address is not reachable across the internet, resolve a hostname and explain where `localhost` is actually defined, read the resolution order, place a port number in the right range and name what 80, 443, and 22 are for, read a `host:port` and the port implied when it is omitted, list what is listening on your machine, and tell a closed port from an unreachable host without guessing. 10 questions: 7 multiple choice, 2 true/false, 1 short answer. Questions 3 and 8 are synthesis questions, each requiring two topics at once.
+**What's covered:** Find and classify your LAN IPv4 address, say what `127.0.0.1` means, resolve a hostname, read where `localhost` is defined, place a port in range, list listeners, and tell a closed port from an unreachable host.
 
-**Passing score:** 70%
+**Pass at:** 70%
 
 ## Question 1
 
@@ -265,7 +265,7 @@ a newline. One line in, one number out.
 
 **Explanation:**
 
-A grader must see all three of these:
+A strong answer covers all three of these:
 
 1. The command itself, with all three flags and a URL — `curl -s -o /dev/null -w '%{http_code}\n' <url>`.
 2. `-o /dev/null` identified as discarding the body, not as saving it or as silencing curl.

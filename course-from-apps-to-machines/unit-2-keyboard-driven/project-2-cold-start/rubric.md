@@ -5,7 +5,7 @@ Four criteria. Integer weights, summing to exactly **100**.
 | # | Criterion | Weight |
 | --- | --- | --- |
 | 1 | The rebuild really happened, in the right order | 30 |
-| 2 | The captured evidence is genuine and self-consistent | 25 |
+| 2 | The evidence is genuine and self-consistent | 25 |
 | 3 | The transcript is economical | 20 |
 | 4 | The comparison is made, in honest numbers | 25 |
 | | **Total** | **100** |
@@ -22,7 +22,7 @@ that recreates the path; and a `cp` or `touch` that puts `index.html` back. Full
 from nothing. Deduct if the deletion targets only `index.html`, if the backup copy is missing or
 taken after the `rm`, or if the folder is rebuilt at a path other than `~/projects/first-site`.
 
-### 2. The captured evidence is genuine and self-consistent (25)
+### 2. The evidence is genuine and self-consistent (25)
 
 `pwd_output` is a single absolute path line ending in `/projects/first-site`. `ls_la_output` is a
 real long listing: one line per entry, each beginning with a ten- or eleven-character mode string,

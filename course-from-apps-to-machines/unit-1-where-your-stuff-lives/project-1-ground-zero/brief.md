@@ -5,23 +5,20 @@
 
 ## Goal
 
-Create `~/projects/first-site/index.html` on your own machine using nothing but the graphical file
-manager and a text editor, then state exactly where it lives, exactly what URL the browser shows when
-you double-click it, and exactly what it cost you in clicks.
+Build `~/projects/first-site/index.html` on your own machine with only the file manager and a text editor. Capture its absolute path, the `file://` URL the browser shows when you double-click it, and how many clicks it cost — you will want that number in Unit 2.
 
 ---
 
 ## Instructions
 
-### How this runs
+### How this works
 
-You do the work on **your own machine**. Nothing is uploaded, and no sandbox does any of this for you —
-there is no cloud environment where `~/projects/first-site/index.html` could exist. What you hand in is
-**captured evidence**: five named fields in `starter/submission.txt`, filled in with values you read off
-your own screen.
+You do this on **your own machine**. Nothing is uploaded and no cloud sandbox stands in for you —
+`~/projects/first-site/index.html` only exists where you make it. What you submit is **evidence from
+your screen**: five named fields in `starter/submission.txt`.
 
 Open `starter/submission.txt`, keep it open beside you, and fill each field as you finish the step that
-produces it. The grading scripts in `tests/` read that file, split each line at its **first** colon, and
+produces it. The checks in `tests/` read that file, split each line at its **first** colon, and
 check the values. That means:
 
 - The field names on the left of the colon are fixed. Do not rename, reorder, or delete them.
@@ -154,31 +151,31 @@ Each prints `PASS`, or one line beginning `FAIL:` that names what is wrong.
 
 - [ ] **1 — Name your platform and locate home.**
       Choose `macOS`, `Linux`, or `WSL` and identify your home directory's absolute path.
-      *Completion criteria:* `platform` is exactly one of `macOS`, `Linux`, `WSL` (case-insensitive);
+      *You are done when:* `platform` is exactly one of `macOS`, `Linux`, `WSL` (case-insensitive);
       and `absolute_path` starts with `/Users/` when `platform` is macOS, or with `/home/` when
       `platform` is Linux or WSL, and does not start with `/mnt/`.
 
 - [ ] **2 — Build `projects/first-site` in the graphical file manager.**
       Two nested folders inside home, both named by you, neither on the Desktop.
-      *Completion criteria:* `absolute_path` ends with the exact string
+      *You are done when:* `absolute_path` ends with the exact string
       `/projects/first-site/index.html` and contains no space character.
 
 - [ ] **3 — Create `index.html` in a text editor and save it into `first-site`.**
       Plain text, one `<h1>` line, lowercase filename, no appended `.txt`.
-      *Completion criteria:* the last whitespace-separated field of `ls_la_line` is exactly
+      *You are done when:* the last whitespace-separated field of `ls_la_line` is exactly
       `index.html`, and the fifth whitespace-separated field parses as an integer greater than `0`.
 
 - [ ] **4 — Record the absolute path.**
       The full address from `/` down, with nothing abbreviated.
-      *Completion criteria:* `absolute_path` starts with `/`, contains no `~`, no `\`, and no path
+      *You are done when:* `absolute_path` starts with `/`, contains no `~`, no `\`, and no path
       segment equal to `.` or `..`.
 
 - [ ] **5 — Double-click the file and copy the address bar into `file_url`.**
-      *Completion criteria:* `file_url` starts with `file://` and ends with the value of
+      *You are done when:* `file_url` starts with `file://` and ends with the value of
       `absolute_path`.
 
 - [ ] **6 — Run `ls -la ~/projects/first-site` once and copy the `index.html` line.**
-      *Completion criteria:* the first whitespace-separated field of `ls_la_line` is 10 or 11
+      *You are done when:* the first whitespace-separated field of `ls_la_line` is 10 or 11
       characters long, its first character is `-`, and characters 2–10 match the pattern
       `[-r][-w][-xsS][-r][-w][-xsS][-r][-w][-xtT]`.
 
@@ -186,7 +183,7 @@ Each prints `PASS`, or one line beginning `FAIL:` that names what is wrong.
       Count every distinct click, drag, and typed name, and every separate application you switched
       between. Unit 2 rebuilds this exact folder and file in two typed commands; write your number down
       so you can compare it there.
-      *Completion criteria:* `mouse_actions` matches the pattern `actions=<integer> apps=<integer>`,
+      *You are done when:* `mouse_actions` matches the pattern `actions=<integer> apps=<integer>`,
       with both integers greater than or equal to `1`.
 
 ---
@@ -228,5 +225,5 @@ not, which makes now the cheap time to fix it.
 
 ## Grading
 
-Machine tests are 100 points as tabled above. The human/model rubric is a separate 100 points —
+Automated checks are 100 points as tabled above. The human/model rubric is a separate 100 points —
 see [`rubric.md`](rubric.md).

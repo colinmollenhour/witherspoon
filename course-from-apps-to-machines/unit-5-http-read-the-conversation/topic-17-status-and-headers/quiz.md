@@ -91,7 +91,7 @@ so it appeared instantly.
 
 **Explanation:**
 
-A grader must see three things: that the second request was *conditional*, that the
+A strong answer covers three things: that the second request was *conditional*, that the
 server answered `304` because nothing had changed, and that the saving came from the body not being
 sent — the head still travelled, which is why Size drops to almost nothing rather than to zero. The
 common wrong answer is that the browser skipped the request entirely; it did not, or there would be

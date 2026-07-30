@@ -2,14 +2,14 @@
 
 Your terminal is open and you know your home directory's absolute path. The file this course will
 build does not exist yet — Project 1 creates it — but it already has a name:
-`~/projects/first-site/index.html`. That string is not a description of the file; it is the file's
-address, written in a grammar with about four pieces of punctuation. Learn the grammar now and you
-will never again have to guess where something lives.
+`~/projects/first-site/index.html`. That string is not a description of the file. It is the file's
+address, written with about four pieces of punctuation. Learn that grammar now and you stop guessing
+where things live.
 
 ## The one rule that does the most work
 
-The Open Group publishes the specification that defines how Unix-like systems — macOS, Linux, and the
-Linux running inside WSL — interpret a directory you name. Its rule for the very first character is
+Unix-like systems — macOS, Linux, and the Linux inside WSL — all follow the same rule for the first
+character of a path. The Open Group spells it out in the specification:
 this:
 
 > "If the directory operand begins with a &lt;slash&gt; character, set curpath to the operand and

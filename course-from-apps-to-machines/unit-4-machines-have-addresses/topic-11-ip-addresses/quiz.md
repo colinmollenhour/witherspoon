@@ -117,7 +117,7 @@ nobody registers them, millions of separate home networks have their own `192.16
 is unique inside my network only, so it identifies no particular machine from outside it and nothing
 out on the internet can route to it.
 
-**A grader must see:**
+**A strong answer covers:**
 
 **Sample answer:**
 

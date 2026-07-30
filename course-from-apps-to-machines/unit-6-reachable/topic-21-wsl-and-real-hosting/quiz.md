@@ -134,7 +134,7 @@ Hyper-V firewall rule has to allow inbound TCP on port 8000, because that firewa
 
 **Explanation:**
 
-A grader must see three things: that `ipconfig.exe`'s address is the one the phone
+A strong answer covers three things: that `ipconfig.exe`'s address is the one the phone
 needs, that the `172.` address is the WSL virtual machine's own NAT'd address rather than a wrong
 answer, and that at least one further change is required — mirrored mode, the restart, or the Hyper-V
 firewall rule. The trap is treating this as a choice between two addresses only, which is where the

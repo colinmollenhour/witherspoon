@@ -1,14 +1,13 @@
 # Making, moving, and destroying
 
-## Fourteen actions, or two
+## A pile of clicks — or a few keystrokes
 
-In Project 1 you built `~/projects/first-site/index.html` with the mouse. It took roughly fourteen
-separate actions spread across three applications — a file manager to make the folders, a text editor
-to make the file, a browser to open it. Topic 4 taught you to walk to that folder with `cd` and
-confirm where you are standing with `pwd`. But you still cannot *build* anything without reaching for
-the mouse.
+In Project 1 you built `~/projects/first-site/index.html` with the mouse. It took a pile of separate
+actions across three apps — file manager for the folders, text editor for the file, browser to open
+it. Topic 4 taught you to walk there with `cd` and confirm with `pwd`. You still cannot *build*
+anything without the mouse.
 
-Pretend the folder is gone. New laptop, borrowed machine, empty home directory. Rebuild it.
+Pretend the folder is gone. New laptop, borrowed machine, empty home. Rebuild it.
 
 ## `mkdir` makes one directory
 

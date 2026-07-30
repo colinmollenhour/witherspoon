@@ -129,7 +129,7 @@ the `<h1>` becomes a large heading and the tag itself is no longer visible. Noth
 differs between the two; the difference is entirely in how each program interprets it. A file is
 bytes, and the "type" lives in the program that opens them, not in the file.
 
-**A grader must see:**
+**A strong answer covers:**
 
 **Sample answer:**
 

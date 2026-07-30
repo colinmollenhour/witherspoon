@@ -1,12 +1,12 @@
 # A tablet hides the filesystem; a dev machine hands it to you
 
-You have almost certainly never told a phone where a file is. You type three letters into a search box
-and the thing appears. That works so well that "where is that file?" stops sounding like a question
-with an answer. A desktop or laptop works the other way around: every file sits at exactly one written
-address, and the tool you are about to open — the terminal — cannot search on your behalf. It has to
-be told where to look. That is the gap this unit closes.
+You have almost certainly never told a phone where a file is. You type three letters into search and
+the thing appears. That works so well that "where is that file?" stops sounding like a real question.
+A laptop works the other way around: every file sits at one written address, and the tool you are
+about to open — the terminal — cannot search for you. You have to tell it where to look. That is the
+gap this unit closes.
 
-## You are not behind, you are unlocated
+## You are not behind — nobody taught you this
 
 College librarians writing in ACRLog in 2024 listed what they watch students struggle with:
 
@@ -19,10 +19,10 @@ and, flatly:
 > "The technical understanding of computers, programs, and how they work just isn't there in many
 > young adults"
 
-That describes a cohort, not you. Nobody taught this because nobody needed it. You need it now, and
-it takes one unit.
+That is a generation-wide pattern, not a personal report card. Nobody taught this because phones made
+it optional. You need it now — and it takes one unit.
 
-## What a desktop machine gives you that a tablet does not
+## What a desktop gives you that a tablet does not
 
 Three things, and each one matters later in this course:
 

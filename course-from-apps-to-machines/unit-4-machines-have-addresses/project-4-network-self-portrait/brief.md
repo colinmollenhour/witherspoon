@@ -5,16 +5,13 @@
 
 ## Goal
 
-Produce a one-page portrait of your own machine's place on the network: its LAN IPv4 address and
-which RFC 1918 block that address falls in, the address of its default gateway, what is listening on
-which ports, and evidence — read off your own screen — that loopback and the LAN address are not the
-same thing.
+Sketch your machine on the network: LAN IPv4 and which private block it sits in, the default gateway, what is listening where, and proof from your own screen that loopback and the LAN address are not the same thing.
 
 ---
 
 ## Instructions
 
-### How this runs
+### How this works
 
 There is no sandbox and no cloud machine. **You run every command on your own machine**, in your own
 terminal, and paste what it prints into a submission file. That is the whole point: the only machine

@@ -20,7 +20,7 @@ const { id, steps } = Astro.props;
               Rendered as plain text they ship visible backticks. */}
           <strong><Markdown text={s.title} inline /></strong>
           <Markdown text={s.description} />
-          <span class="criteria">Done when: <Markdown text={s.completionCriteria} inline /></span>
+          <span class="criteria">You are done when: <Markdown text={s.completionCriteria} inline /></span>
         </label>
       </li>
     ))

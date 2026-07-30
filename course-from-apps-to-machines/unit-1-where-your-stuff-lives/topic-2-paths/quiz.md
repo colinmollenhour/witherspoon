@@ -50,7 +50,7 @@ at `/home/you/projects/first-site/index.html` — the same file I started next t
 
 **Explanation:**
 
-A grader must see three things: that the first `..` gives `/home/you/projects`, that
+A strong answer covers three things: that the first `..` gives `/home/you/projects`, that
 `../..` gives `/home/you`, and that the final absolute path is
 `/home/you/projects/first-site/index.html`. The tempting mistake is to treat `../..` as "go to the
 root" and answer `/projects/first-site/index.html` — but `..` moves exactly one level per use, and

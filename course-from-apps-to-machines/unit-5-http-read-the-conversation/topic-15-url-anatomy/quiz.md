@@ -130,7 +130,7 @@ being addressed, no port because there is no gate to knock on, and no program an
 browser reads the file itself. The `http://` form needs all three: an address for the machine, a gate on
 it, and something listening behind that gate.
 
-**A grader must see:**
+**A strong answer covers:**
 
 **Sample answer:**
 

@@ -121,7 +121,7 @@ me and the machine is discarding packets without replying. The failed `ping` add
 needs a privileged raw socket and ICMP is commonly dropped on purpose, so it fails on plenty of
 machines whose networking is fine. Only a successful `ping` would have been evidence.
 
-**A grader must see:** (1) the slow timeout / exit 28 / "0 bytes received" read as *nothing answered*,
+**A strong answer covers:** (1) the slow timeout / exit 28 / "0 bytes received" read as *nothing answered*,
 i.e. unreachable rather than a closed port, with the instant `(7)` refusal named as the contrast;
 (2) the conclusion that the address is wrong or packets are being dropped in between; (3) that the
 failed `ping` contributes no evidence, with a reason (raw-socket privilege or ICMP being blocked).

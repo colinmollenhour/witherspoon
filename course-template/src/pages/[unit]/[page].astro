@@ -222,7 +222,7 @@ const longRead = props.kind === 'topic' || props.kind === 'project';
 
         {props.topic.data.objectives.length > 0 && (
           <div class="callout">
-            <h2 class="callout__title">By the end of this topic you can</h2>
+            <h2 class="callout__title">You will be able to</h2>
             <ol class="objectives">
               {props.topic.data.objectives.map((o) => (
                 <li>
@@ -268,8 +268,8 @@ const longRead = props.kind === 'topic' || props.kind === 'project';
           <Markdown text={props.unit.data.test!.description} inline />
         </p>
         <p>
-          Passing score: {props.unit.data.test!.passingScore}%. Feedback appears as you go, and only
-          your first answer to each question counts.
+          Pass at {props.unit.data.test!.passingScore}%. Feedback appears as you go, and only your
+          first answer to each question counts.
         </p>
         <Quiz
           id={props.unit.data.unitId}

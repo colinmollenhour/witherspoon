@@ -11,6 +11,10 @@ Universal rules:
   figures is fine if you show the derivation.
 - Quote the primary source where the contract points you at it. Specific beats paraphrased.
 - Second person, present tense, no throat-clearing. Never open with "In this lesson, we will…".
+- **Voice:** energetic, direct, credible for a motivated pre-teen/teen by default. Short sentences.
+  Lead with a real situation, not with how far behind a cohort is. Cohort studies and competitor
+  surveys belong mid-reading when they prove a point — never as the first paragraph. See
+  `outline-contract.md` → Learner-facing voice.
 - Respect the contract's **Do not cover** list. Overlap is a defect, not thoroughness.
 
 ---
@@ -119,9 +123,13 @@ Note the explanation walks *each* distractor. Do that.
 marking it true. Explanation opens by naming the reversal: *"The opposite is true."*
 
 **Short answer** — supply a `sampleAnswer` that would earn full credit, and put the two or three
-elements a grader must see in `graderNotes`. Short answers cannot be auto-graded without a backend,
-so the site shows both and asks the learner to self-mark; `graderNotes` is what makes that honest
-rather than a guess.
+elements a full-credit answer must cover in `graderNotes`. Phrase those notes for the learner
+("A strong answer covers…"), not for a proctor ("A grader must see…") — the site shows them when
+the learner self-marks. Short answers cannot be auto-graded without a backend; `graderNotes` is
+what makes self-marking honest rather than a guess.
+
+**Explanations** use the same learner-facing voice. Prefer *"A strong answer covers…"* over
+*"A grader must see…"* when listing required elements.
 
 Ban: "all of the above", "none of the above", negated stems ("which is NOT…") unless the negation is
 the actual skill, and any question answerable by pattern-matching the longest option.
@@ -210,10 +218,13 @@ is wrong. The tutor asks — it does not answer. Never let a prompt be answerabl
 
 ## Unit test (`unit-test.md`)
 
-Written by the unit's own agent, not per topic.
+Written by the unit's own agent, not per topic. The markdown view is **rendered** from
+`units[].test` in `course.json` (labels: **What's covered** / **Pass at**).
 
 - 6–10 questions spanning **every objective in the unit**. Coverage is checked in Stage 6.
 - Mix of types, weighted toward `MULTIPLE_CHOICE`.
 - At least two questions must be **synthesis** — requiring two topics at once.
-- `title` names the assessed area; `description` lists what it assesses.
+- `title` names the area in plain language.
+- `description` is a second-person quick check of what they will face — **never** open with
+  *Assesses*, *Evaluates*, or *This test covers*. Example: *"Quick check: can you …?"*
 - Same explanation rules as QUIZ, including the `(objective N)` citation.

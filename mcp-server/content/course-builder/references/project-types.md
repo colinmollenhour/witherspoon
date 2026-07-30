@@ -27,18 +27,24 @@ course.
 
 ### `goal`
 
-One sentence, the outcome, in the learner's terms.
+One or two sentences: what they **build**, what they **capture or prove**, and why it matters next.
+Mission voice — not a compliance triple of "state exactly… exactly… exactly…".
 
-> "Produce a working single-threaded CUDA kernel that adds two 1M-element float arrays using Unified
-> Memory."
+> "Write a single-threaded CUDA kernel that adds two 1M-element float arrays with Unified Memory, and
+> capture the elapsed ms you will compare to the multi-thread launch in the next project."
+
+Bad: *"State exactly which APIs you used, exactly what the timer printed, and exactly how many
+threads you launched."* Keep those details in steps and `completionCriteria`, not in the goal.
 
 ### `config.instructions`
 
 Markdown the learner reads before starting. Sections, in order:
 
-1. **How this runs** — the mechanics that will otherwise confuse them.
+1. **How this works** (not "How this runs") — the mechanics that will otherwise confuse them.
    *"All code cells are concatenated into a single `.cu` file and compiled with `nvcc` on a T4 GPU
    sandbox. There is no per-cell execution — hit Run once."*
+   Prefer *evidence from your screen* / *checks* over *captured evidence* / *grading scripts* when
+   describing what they hand in.
 2. **Your tasks** — a numbered list keyed to the TODO markers in the starter.
 3. **What the scaffolding is for** — why the banner, the timer, the validation loop exist, and what
    the learner should notice. This is where the spine gets reinforced:
@@ -61,6 +67,9 @@ Markdown the learner reads before starting. Sections, in order:
 ### `steps[]`
 
 Each: `title`, `description`, and a **machine-checkable** `completionCriteria`.
+
+The site shows criteria as **You are done when:** — keep the condition precise (field names, exact
+substrings, path shapes). Soften only the surrounding step *description*, not the check itself.
 
 | Bad `completionCriteria` | Good |
 | --- | --- |
@@ -91,7 +100,9 @@ Always include one craft criterion (style, clarity, structure) worth 15–25 —
 For any type where output can be executed or parsed. Each: `name`, `code`, `expectedOutput`,
 `weight`, `description`.
 
-**At least one must be adversarial** — designed to catch the plausible shortcut:
+**At least one must be adversarial** — designed to catch the plausible shortcut. In the
+learner-facing `description`, lead with what shortcut it catches (*"Catches a shortcut: …"*), not
+the all-caps label `ADVERSARIAL.` alone.
 
 ```cpp
 // Intentionally not a nice power of two — make sure the loop bound is `i < n`,

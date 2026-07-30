@@ -62,7 +62,7 @@ LISTEN 0      5            0.0.0.0:8000      0.0.0.0:*    users:(("python3",pid=
 Which port is taken, which program has it, and what would it mean if the last column were blank instead?
 
 
-**A grader must see:**
+**A strong answer covers:**
 
 **Sample answer:**
 
