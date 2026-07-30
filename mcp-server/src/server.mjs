@@ -263,10 +263,12 @@ When the gates pass, call \`witherspoon_publish\`.`,
       title: 'Publish the course website',
       description:
         'Publish a built Witherspoon course site to a public URL by direct artifact upload — Vercel ' +
-        'by default, or Netlify, Cloudflare Pages, or any host the user names. Handles ' +
-        'authentication, optional custom domains, and verifies the live site from the public ' +
-        'internet before reporting. Never deploys through GitHub. Use when the user asks to publish, ' +
-        'deploy, host, upload, or share the course website.',
+        'by default, or Netlify, Cloudflare Pages, or any host the user names. Recommends the ' +
+        'browser upload at vercel.com/drop first, which needs no CLI and works even when the ' +
+        'harness cannot run commands on the user’s machine, with the Vercel CLI for repeatable ' +
+        'one-command updates. Handles authentication, optional custom domains, and verifies the ' +
+        'live site from the public internet before reporting. Never deploys through GitHub. Use ' +
+        'when the user asks to publish, deploy, host, upload, or share the course website.',
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async () =>
@@ -275,7 +277,11 @@ When the gates pass, call \`witherspoon_publish\`.`,
           title: 'Witherspoon — course-publish',
           body: skill.publish(),
           next: `Fetch \`witherspoon_reference\` with \`doc: "vercel"\` at Stage 3 if the user chose Vercel,
-which is the default.
+which is the default. That reference carries both routes: the browser drop to recommend first, and
+the CLI for repeatable updates.
+
+On the drop route the upload happens in the user's browser, so Stage 3 ends by handing over the
+folder path and project name and waiting for them to return a URL — never report that step as done.
 
 Publication is not complete until the public browser check in Stage 5 passes.`,
         }),

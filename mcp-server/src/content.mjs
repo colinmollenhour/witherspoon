@@ -87,7 +87,7 @@ export const REFERENCES = {
   },
   vercel: {
     path: 'course-publish/references/vercel.md',
-    blurb: 'Vercel projects, production deploys and custom hostnames',
+    blurb: 'Vercel: the browser drop walkthrough, the CLI route, custom hostnames',
   },
 };
 

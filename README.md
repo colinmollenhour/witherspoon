@@ -123,15 +123,28 @@ with JavaScript off) — not for reading the course back:
 cd course-<slug>/dist && python3 -m http.server 8000
 ```
 
-**5 · Publish — free.** Ask your agent to publish the course. It uploads `dist/` straight to
-[Vercel](https://vercel.com) with one CLI call, wires up a custom domain if you want one, and opens
-the live URL from the public internet to verify it before reporting. It never deploys through GitHub.
+**5 · Publish — free.** Ask your agent to publish the course. The route it recommends first needs no
+terminal at all: drag `course-<slug>/dist` onto [vercel.com/drop](https://vercel.com/drop), type a
+project name, and the site is live. Your agent builds the folder, gives you the exact path and name,
+walks you through the four steps, and then opens the resulting URL from the public internet to check
+it before calling it published. Nothing is installed, and nothing goes through GitHub — signing in to
+Vercel with a GitHub account creates no repository and connects nothing.
+
+If you would rather it did the whole thing, or you expect to update the course often, the same skill
+uses the Vercel CLI instead: one command, redeployed into the same project, so the link never
+changes. A drop always creates a *new* project, so keeping one stable link across re-uploads means
+freeing the old project's name first — the skill walks you through that too, and it is the main
+reason to graduate to the CLI.
 
 A course site is static files with no backend, which makes it essentially free to host. Vercel is the
 default for one specific reason: it serves `index.html` at the root, so the link you share is a bare
 `https://your-course.vercel.app` rather than something ending in `/index.html`. Its free **Hobby**
 plan covers personal and educational publishing; commercial use needs a paid plan, and the skill says
 so before you log in rather than after you publish.
+
+**Then keep editing.** `bun run dev` for small changes — a reworded paragraph appears on save. When
+you say it looks good, the agent commits the course source and re-cuts the build, and hands you back
+the `dist/` folder to upload again. It does not publish on its own; that stays your call.
 
 Any other static host works too — Netlify and Cloudflare Pages are built in, and naming any other
 provider and upload mechanism will use that instead. Every route is direct artifact upload; nothing
@@ -355,7 +368,7 @@ sequenceDiagram
 
     A->>U: syllabus + numbers + install a runtime while this runs
     U->>A: approve
-    Note right of U: the only gate — everything after runs autonomously
+    Note right of U: the only gate on the material — writing runs to completion
 
     rect rgb(235, 245, 240)
     Note over A,M: Stages 5-8 — research, then write
@@ -390,16 +403,21 @@ sequenceDiagram
 
     A->>W: witherspoon_publish
     A->>W: witherspoon_reference [vercel]
-    A->>M: vercel deploy --prod
+    A-->>U: drag course-slug/dist onto vercel.com/drop as <name>
+    U->>A: the live URL
     A->>M: open the live URL and exercise it
     A-->>U: verified public link
 ```
 
-Two things that diagram is meant to make obvious. **There is exactly one gate** — everything after
-your approval runs without stopping, which is why the runtime install is raised *there*, to be done
-in parallel with a fan-out that takes twenty minutes or more. And **references are fetched at the
-stage that needs them**, not up front; that is the whole reason the pipeline fits in a context
-window alongside the course being written.
+Two things that diagram is meant to make obvious. **There is exactly one gate on the material** —
+once you approve the syllabus, the writing runs to completion without stopping, which is why the
+runtime install is raised *there*, to be done in parallel with a fan-out that takes twenty minutes or
+more. And **references are fetched at the stage that needs them**, not up front; that is the whole
+reason the pipeline fits in a context window alongside the course being written.
+
+The one step at the end that is genuinely yours is the drop, because it happens in your browser
+rather than on your machine. Choosing the CLI route instead moves it back to the agent, at the cost
+of an install and a terminal login.
 
 `content/` in the server is generated from `.claude/skills/` by `tools/sync-content.mjs`, and
 `npm run check` fails if it has drifted — editing a `SKILL.md` and forgetting to sync would quietly
@@ -422,7 +440,7 @@ serve last month's pipeline. The server is stateless, so it replicates and resta
 | `course-site/references/build-gates.md` | what each of S1–S15 means |
 | `course-site/references/widgets.md` | the widget catalogue, for authors |
 | `course-site/references/visuals.md` | composing diagram and infographic skills; fallbacks |
-| `course-publish/references/vercel.md` | projects, production deploys, custom hostnames |
+| `course-publish/references/vercel.md` | the browser drop walkthrough, the CLI route, custom hostnames |
 
 ## The name
 

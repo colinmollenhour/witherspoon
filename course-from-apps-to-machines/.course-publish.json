@@ -1,6 +1,7 @@
 {
   "version": 1,
   "provider": "vercel",
+  "method": "cli",
   "accountScope": "colin-mollenhours-projects",
   "destination": "course-from-apps-to-machines",
   "entryUrl": "https://course-from-apps-to-machines.vercel.app",

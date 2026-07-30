@@ -156,8 +156,9 @@ Rights: <© year holder | no named holder> · <license label>
 Preview locally:
   bun run dev        (or: npm run dev) — live reload, edit a reading and the page updates
 
-Publish: say the word and I'll put this on a public URL — Vercel by default, or name another
-host. Nothing is deployed through GitHub.
+Publish: say the word and I'll put this on a public URL. The easiest route is dragging the built
+folder onto vercel.com/drop — nothing to install — and I'll walk you through it and check the
+live site. Or name another host. Nothing is deployed through GitHub.
 ```
 
 **Offer the dev server, not a static file server.** `npm run dev` (or `bun run dev` — both are fully
@@ -193,6 +194,32 @@ theirs. Do not begin it before the user asks.
 
 If any visual was skipped, say which and why — and mention that any prompt files kept in
 `<course-dir>/assets/prompts/` can be generated later without re-running Stage 2.
+
+### Stage 7 — Revise, then re-cut the build
+
+Most courses get read once and then edited. Keep that loop on the dev server: hot reload shows a
+reworded paragraph or a fixed widget on save, so the user can look at several changes before anything
+is rebuilt. Edit course source only — `course.json`, `read.md`, `brief.md`, or the template. Nothing
+in `dist/` survives the next build, and a fix made there is a fix that disappears.
+
+**An affirmation ends the loop.** When the user says the change looks good — "looks good", "perfect",
+"ship it", "yes, that's it", any plain approval of what they are looking at — do these in order,
+without asking a confirming question:
+
+1. **Commit the course source**, when the workspace is a git repository (`git rev-parse
+   --git-dir`). Stage the course files you actually changed and write a message naming the change.
+   Never `git push` — nothing here publishes through a remote — never `git init` a workspace that is
+   not already a repository, and never commit `dist/`, `node_modules/` or `.vercel/`. Outside a
+   repository, skip this silently; it is a convenience, not a gate.
+2. **Rebuild and re-run the gates** — `bun run build`, then `bun run verify` and `bun run test`. The
+   dev server renders from source and proves nothing about the artifact anyone will upload.
+3. **Report the absolute `dist/` path** and say it is ready to publish or re-upload. If the course is
+   already live, that is the folder the user drags onto `vercel.com/drop` again — the publish stage
+   owns the naming step that keeps the existing link.
+
+Approval of an edit is not an instruction to deploy it. Build, commit, offer — then wait for the user
+to ask. Publishing remains a separate stage, reached as a skill named `course-publish` or a
+`witherspoon_publish` tool call.
 
 ## Notes
 
