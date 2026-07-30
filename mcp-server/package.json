@@ -1,0 +1,21 @@
+{
+  "name": "witherspoon-mcp-server",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Public, unauthenticated MCP server that serves the Witherspoon course-authoring skills to any connected agent.",
+  "license": "GPL-3.0-or-later",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node index.mjs",
+    "sync": "node tools/sync-content.mjs",
+    "check": "node tools/sync-content.mjs --check",
+    "smoke": "node tools/smoke.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "zod": "^3.23.8"
+  }
+}
