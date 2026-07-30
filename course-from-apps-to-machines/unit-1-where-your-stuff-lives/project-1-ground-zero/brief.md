@@ -213,7 +213,7 @@ Pinned to the learner's own machine — this project cannot run anywhere else.
 | Platform | Exactly one of the three rows below. No other OS is supported. |
 | macOS | Catalina or later — the release from which "your Mac uses zsh as the default login shell and interactive shell", which is why the prompt ends in `%`. |
 | Linux | Ubuntu 26.04 LTS "Resolute Raccoon", released 2026-04-23, or the equivalent current release of your distribution. |
-| Windows + WSL | "You must be running Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11"; install Ubuntu from the Microsoft Store (https://apps.microsoft.com/detail/9pdxgncfsczv) — WSL is not pre-installed. |
+| Windows + WSL | "You must be running Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11"; enable Windows Subsystem for Linux, Virtual Machine Platform, and Windows Hypervisor Platform in *Turn Windows features on or off*, restart, then install Windows Terminal and Ubuntu from the Microsoft Store — WSL is not pre-installed. |
 | Tools used | The platform's own graphical file manager (on macOS, the Finder) and its own plain-text editor. Nothing is downloaded or installed for this project. |
 | Grading runtime | Python 3.14.6 |
 | Test timeout | 10000 ms per test |

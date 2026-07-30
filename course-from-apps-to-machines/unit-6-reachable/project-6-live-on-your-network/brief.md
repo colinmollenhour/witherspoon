@@ -392,13 +392,15 @@ no `ss`; use `networksetup`, `ipconfig getifaddr`, and `lsof`.
 **Your machine — Linux.** Ubuntu 26.04 LTS "Resolute Raccoon". `python3`, `curl`, and `iproute2`
 (which provides `ip` and `ss`) are present.
 
-**Your machine — WSL.** Install Ubuntu from the Microsoft Store
-(https://apps.microsoft.com/detail/9pdxgncfsczv) if you have not already — WSL is not pre-installed.
-You need "Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11". New installs
-default to WSL 2. The default WSL Ubuntu image ships `python3 3.12.3-0ubuntu2`, `curl
-8.5.0-2ubuntu10.6`, and `iproute2 6.1.0-1ubuntu6`. Mirrored networking needs "Windows 11 22H2 and
-higher"; the Hyper-V firewall "will be turned on by default" on "Windows 11 22H2 and higher, with
-WSL 2.0.9 and higher", which is why the rule is required.
+**Your machine — WSL.** If you have not set this up: enable Windows Subsystem for Linux, Virtual
+Machine Platform, and Windows Hypervisor Platform in *Turn Windows features on or off*, restart,
+install Windows Terminal and Ubuntu from the Microsoft Store
+(https://apps.microsoft.com/detail/9pdxgncfsczv). WSL is not pre-installed. You need "Windows 10
+version 2004 and higher (Build 19041 and higher) or Windows 11". New installs default to WSL 2. The
+default WSL Ubuntu image ships `python3 3.12.3-0ubuntu2`, `curl 8.5.0-2ubuntu10.6`, and `iproute2
+6.1.0-1ubuntu6`. Mirrored networking needs "Windows 11 22H2 and higher"; the Hyper-V firewall "will
+be turned on by default" on "Windows 11 22H2 and higher, with WSL 2.0.9 and higher", which is why
+the rule is required.
 
 **The server itself.** `python3 -m http.server 8000` — port 8000, bound to `0.0.0.0`, answering
 HTTP/1.0. Port 8000 is not a registered HTTP port; it is `irdmi` in IANA's registry, and its use for

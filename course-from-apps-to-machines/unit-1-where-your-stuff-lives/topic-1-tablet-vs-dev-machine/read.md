@@ -172,13 +172,29 @@ Decide this now. It is the one setup choice that nags you for the rest of the co
   requires the command line developer tools. Would you like to install the tools now?"* Say yes, or
   run `xcode-select --install`, which "opens a user interface dialog to request automatic installation
   of the command line developer tools."
-- **Windows needs WSL, and it is not pre-installed.** You do not need a terminal command for this.
-  Open the **Microsoft Store**, search for **Ubuntu**, and install it — or open this direct link:
-  [Ubuntu on the Microsoft Store](https://apps.microsoft.com/detail/9pdxgncfsczv). That Store app
-  installs a complete Ubuntu terminal environment under Windows Subsystem for Linux. When the
-  install finishes, open **Ubuntu** once from the Start menu so setup can finish and ask you for a
-  Linux username and password. Microsoft's requirement: "You must be running Windows 10 version
-  2004 and higher (Build 19041 and higher) or Windows 11".
+- **Windows needs WSL, and it is not pre-installed.** Do this in order — still no terminal command
+  required. Microsoft's version requirement: "You must be running Windows 10 version 2004 and
+  higher (Build 19041 and higher) or Windows 11".
+
+  1. **Turn on three Windows features first.** Search the Start menu for **Turn Windows features
+     on or off**. Tick **Windows Subsystem for Linux**, **Virtual Machine Platform**, and
+     **Windows Hypervisor Platform**. Click OK and **restart** when Windows asks. Skipping this
+     is the usual reason a later Store install dies with a vague *"Catastrophic failure"* (or a
+     virtual-machine error such as `0x80370102`). Microsoft's manual install says you must enable
+     the Windows Subsystem for Linux feature "before installing any Linux distributions on
+     Windows", and enable Virtual Machine Platform before WSL 2.
+  2. **Install Windows Terminal from the Microsoft Store** — not the old blue **Command Prompt**
+     window. Search the Store for **Windows Terminal**, or open
+     [Windows Terminal on the Microsoft Store](https://apps.microsoft.com/detail/9n0dx20hk701).
+     Microsoft: "We recommend using WSL with Windows Terminal".
+  3. **Install Ubuntu from the Microsoft Store** — search for **Ubuntu**, or open
+     [Ubuntu on the Microsoft Store](https://apps.microsoft.com/detail/9pdxgncfsczv). That is the
+     Linux distribution this course uses under WSL.
+  4. **Open Ubuntu once** from the Start menu (or from the dropdown in Windows Terminal) so setup
+     can finish and ask you for a Linux username and password.
+
+  Do **not** install Docker Desktop for this course. It still needs the same virtualisation
+  features underneath, is a much larger install, and this course never uses containers.
 - **Linux and WSL are already set** once Ubuntu is installed. Ubuntu's WSL package manifest lists
   `python3`, `curl`, and `nano` as present.
 
@@ -190,7 +206,7 @@ The terminal is a window where you type instructions instead of tapping them. Op
 | --- | --- | --- |
 | macOS | Terminal | "In the Finder, open the /Applications/Utilities folder, then double-click Terminal." |
 | Linux | **Ptyxis** | The default since Ubuntu 25.04 and Fedora Workstation 41 — older tutorials say GNOME Terminal |
-| Windows | Windows Terminal | "We recommend using WSL with Windows Terminal" — then open your Ubuntu tab |
+| Windows | **Windows Terminal** (from the Store — not Command Prompt) | Open an **Ubuntu** tab after the install steps above |
 
 A line of text is waiting for you. That is the **prompt**: the machine saying it is ready. On Linux
 and WSL the stock one looks like this:

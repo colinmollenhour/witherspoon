@@ -67,7 +67,7 @@
     },
     {
       "question": "What hardware and software do I need?",
-      "answer": "A Mac, a Linux machine, or Windows 10 build 19041+ / Windows 11 with Ubuntu installed from the Microsoft Store (WSL — it does not come pre-installed; Unit 1 links the Store page). A phone or second computer on the same Wi-Fi for the capstone. If you're on macOS, note that macOS ships no Python runtime at all — typing `python3` pops a dialog asking to install the command line developer tools, so you'll run `xcode-select --install` before Unit 5. The course tells you this in Unit 1 rather than letting you discover it at the capstone.",
+      "answer": "A Mac, a Linux machine, or Windows 10 build 19041+ / Windows 11 with WSL set up from the GUI path in Unit 1 (enable Virtual Machine Platform / Windows Subsystem for Linux / Windows Hypervisor Platform, then install Windows Terminal and Ubuntu from the Microsoft Store — WSL is not pre-installed). A phone or second computer on the same Wi-Fi for the capstone. If you're on macOS, note that macOS ships no Python runtime at all — typing `python3` pops a dialog asking to install the command line developer tools, so you'll run `xcode-select --install` before Unit 5. The course tells you this in Unit 1 rather than letting you discover it at the capstone.",
       "orderIndex": 2
     },
     {
@@ -1379,6 +1379,27 @@
       "value": "\"Install a complete Ubuntu terminal environment in minutes with Windows Subsystem for Linux (WSL).\" Store product id `9PDXGNCFSCZV`. MS also lists the Store as a way to choose distros: \"This can include choosing distributions from the Microsoft Store\".",
       "source": "https://apps.microsoft.com/detail/9pdxgncfsczv · https://learn.microsoft.com/en-us/windows/wsl/install",
       "angle": "A1, A3d"
+    },
+    {
+      "id": 184,
+      "claim": "WSL optional features must be on before a distro",
+      "value": "\"You must first enable the \\\"Windows Subsystem for Linux\\\" optional feature before installing any Linux distributions on Windows.\" / \"Before installing WSL 2, you must enable the **Virtual Machine Platform** optional feature.\"",
+      "source": "https://learn.microsoft.com/en-us/windows/wsl/install-manual",
+      "angle": "A1, A3d"
+    },
+    {
+      "id": 185,
+      "claim": "Missing virtualisation features: `0x80370102` and \"Catastrophic failure\"",
+      "value": "MS: \"Error: 0x80370102 The virtual machine could not be started because a required feature is not installed.\" — \"Please enable the Virtual Machine Platform Windows feature and ensure virtualization is enabled in the BIOS.\" Community fix for Store/WSL \"Catastrophic failure\": tick Windows Subsystem for Linux, Virtual Machine Platform, and Windows Hypervisor Platform in *Turn Windows features on or off*.",
+      "source": "https://learn.microsoft.com/en-us/windows/wsl/troubleshooting · https://stackoverflow.com/questions/79157482/",
+      "angle": "A1, A3d, A4"
+    },
+    {
+      "id": 186,
+      "claim": "Windows Terminal from the Microsoft Store",
+      "value": "Store product id `9N0DX20HK701`. Install page: \"Install Windows Terminal\". MS WSL environment guide: \"We recommend using WSL with Windows Terminal, especially if you plan to work with multiple command lines.\"",
+      "source": "https://apps.microsoft.com/detail/9n0dx20hk701 · https://learn.microsoft.com/en-us/windows/terminal/install · https://learn.microsoft.com/en-us/windows/wsl/setup/environment",
+      "angle": "A1, A3d"
     }
   ],
   "ungrounded": [
@@ -1433,7 +1454,7 @@
           "title": "A tablet hides the filesystem; a dev machine hands it to you",
           "description": "`/Users/you`, `/home/you`, WSL and `/mnt/c`",
           "orderIndex": 0,
-          "instructions": "Topic generation prompt: This is the first thing the learner reads. Open on the actual gap, not on encouragement: on a phone\nor tablet, a file has no address — you search for it and it appears. On a dev machine every file sits\nat exactly one path, and the terminal cannot search on your behalf; it must be told where to look.\nUse the ACRLog quotes [src 173] to show this is a documented, widespread gap and not a personal\nfailing — the learner should finish this section feeling *located*, not behind. Then give the\nthree-platform map: `/Users/<you>`, `/home/<you>`, and WSL's split world where the Linux home is\n`/home/<you>` and the Windows drive hangs off `/mnt/c` [src 1, 2, 3]. For WSL learners, quote\nMicrosoft's own recommendation to keep project files on the Linux side [src 4, 5] — this is the one\nsetup decision that will bite them for the rest of the course. Close by having them open a terminal\nand read their own username in the prompt, naming the correct terminal app per platform [src 31, 32,\n33] — note Ptyxis, not GNOME Terminal, is now the Linux default [src 32]. State the platform\nprerequisites plainly here so nobody discovers them in Unit 5: macOS learners will need\n`xcode-select --install` because macOS ships no Python [src 127, 128, 129]; Windows learners need\nWSL, which is not pre-installed — direct non-terminal users to install **Ubuntu from the Microsoft\nStore** (https://apps.microsoft.com/detail/9pdxgncfsczv) rather than `wsl --install` [src 152, 183].\n\nDo NOT teach any command other than opening a terminal and reading the prompt. `pwd`, `ls`, and `cd`\nbelong to Unit 2 and teaching them here wrecks that unit's opening.\n\nRequested activities:\n- READ: 900–1100 words. Open on the search-vs-address gap using [src 173]. Give the three-platform home-directory map and the WSL `/mnt/c` split. State the per-platform setup prerequisites. End with the learner having a terminal open and having read their own username in the prompt. Must NOT introduce `pwd`/`ls`/`cd`. Ends by naming the running example: over this course they will build one folder, `~/projects/first-site/`, containing one file, `index.html`, and carry it all the way to a URL their phone can load.\n- FLASHCARDS: 8 cards. Home directory path per platform (3 confusable cards); `/mnt/c` vs `/home` on WSL; terminal app per platform; what `$` vs `%` at the end of a prompt tells you; one card on why the Desktop is a bad place for project files.\n- QUIZ: 5 questions on choosing the right home path for a stated platform, deciding where a WSL learner should put a project folder and why, identifying which capability is desktop-only, and reading a platform off a prompt string.",
+          "instructions": "Topic generation prompt: This is the first thing the learner reads. Open on the actual gap, not on encouragement: on a phone\nor tablet, a file has no address — you search for it and it appears. On a dev machine every file sits\nat exactly one path, and the terminal cannot search on your behalf; it must be told where to look.\nUse the ACRLog quotes [src 173] to show this is a documented, widespread gap and not a personal\nfailing — the learner should finish this section feeling *located*, not behind. Then give the\nthree-platform map: `/Users/<you>`, `/home/<you>`, and WSL's split world where the Linux home is\n`/home/<you>` and the Windows drive hangs off `/mnt/c` [src 1, 2, 3]. For WSL learners, quote\nMicrosoft's own recommendation to keep project files on the Linux side [src 4, 5] — this is the one\nsetup decision that will bite them for the rest of the course. Close by having them open a terminal\nand read their own username in the prompt, naming the correct terminal app per platform [src 31, 32,\n33] — note Ptyxis, not GNOME Terminal, is now the Linux default [src 32]. State the platform\nprerequisites plainly here so nobody discovers them in Unit 5: macOS learners will need\n`xcode-select --install` because macOS ships no Python [src 127, 128, 129]; Windows learners need\nWSL, which is not pre-installed. Direct non-terminal users through a GUI path in this order: enable\n**Windows Subsystem for Linux**, **Virtual Machine Platform**, and **Windows Hypervisor Platform**\nin *Turn Windows features on or off* and restart [src 184, 185]; install **Windows Terminal** from\nthe Store (not Command Prompt) [src 33, 186]; install **Ubuntu** from the Store\n(https://apps.microsoft.com/detail/9pdxgncfsczv) [src 183]; open Ubuntu once to finish setup.\nExplicitly say not to install Docker Desktop for this course — it still needs the same features and\nis unused here.\n\nDo NOT teach any command other than opening a terminal and reading the prompt. `pwd`, `ls`, and `cd`\nbelong to Unit 2 and teaching them here wrecks that unit's opening.\n\nRequested activities:\n- READ: 900–1100 words. Open on the search-vs-address gap using [src 173]. Give the three-platform home-directory map and the WSL `/mnt/c` split. State the per-platform setup prerequisites. End with the learner having a terminal open and having read their own username in the prompt. Must NOT introduce `pwd`/`ls`/`cd`. Ends by naming the running example: over this course they will build one folder, `~/projects/first-site/`, containing one file, `index.html`, and carry it all the way to a URL their phone can load.\n- FLASHCARDS: 8 cards. Home directory path per platform (3 confusable cards); `/mnt/c` vs `/home` on WSL; terminal app per platform; what `$` vs `%` at the end of a prompt tells you; one card on why the Desktop is a bad place for project files.\n- QUIZ: 5 questions on choosing the right home path for a stated platform, deciding where a WSL learner should put a project folder and why, identifying which capability is desktop-only, and reading a platform off a prompt string.",
           "learningGoals": [
             {
               "title": "Name the folder your own work belongs in on your platform — `/Users/<you>` on macOS, `/home/<you>` on Linux, or `/home/<you>` inside WSL with Windows drives at `/mnt/c` — and state why it is not the Desktop.",
@@ -1491,7 +1512,7 @@
             },
             {
               "front": "Which app do you open to get a terminal, on each of the three platforms?",
-              "back": "macOS — Terminal (\"In the Finder, open the /Applications/Utilities folder, then double-click\nTerminal\"). Linux — **Ptyxis**, the default since Ubuntu 25.04 and Fedora Workstation 41, not GNOME\nTerminal. Windows — Windows Terminal: \"We recommend using WSL with Windows Terminal\".",
+              "back": "macOS — Terminal (\"In the Finder, open the /Applications/Utilities folder, then double-click\nTerminal\"). Linux — **Ptyxis**, the default since Ubuntu 25.04 and Fedora Workstation 41, not GNOME\nTerminal. Windows — **Windows Terminal** from the Microsoft Store (not Command Prompt), then an\nUbuntu tab: \"We recommend using WSL with Windows Terminal\".",
               "orderIndex": 4
             },
             {
@@ -1506,7 +1527,7 @@
             },
             {
               "front": "What do you have to install before Unit 5 can work, on each platform?",
-              "back": "macOS — the command line developer tools, via `xcode-select --install`, because macOS ships\nno Python. Windows — WSL itself (not pre-installed), by installing Ubuntu from the Microsoft Store,\nneeding \"Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11\". Linux/WSL —\nnothing once Ubuntu is installed; `python3`, `curl`, and `nano` are already there.",
+              "back": "macOS — the command line developer tools, via `xcode-select --install`, because macOS ships\nno Python. Windows — WSL itself (not pre-installed): enable Windows Subsystem for Linux, Virtual\nMachine Platform, and Windows Hypervisor Platform in Turn Windows features on or off and restart;\ninstall Windows Terminal and Ubuntu from the Microsoft Store. Linux/WSL — nothing once Ubuntu is\ninstalled; `python3`, `curl`, and `nano` are already there.",
               "orderIndex": 7
             }
           ],

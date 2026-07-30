@@ -21,8 +21,13 @@ and read their own username in the prompt, naming the correct terminal app per p
 33] — note Ptyxis, not GNOME Terminal, is now the Linux default [src 32]. State the platform
 prerequisites plainly here so nobody discovers them in Unit 5: macOS learners will need
 `xcode-select --install` because macOS ships no Python [src 127, 128, 129]; Windows learners need
-WSL, which is not pre-installed — direct non-terminal users to install **Ubuntu from the Microsoft
-Store** (https://apps.microsoft.com/detail/9pdxgncfsczv) rather than `wsl --install` [src 152, 183].
+WSL, which is not pre-installed. Direct non-terminal users through a GUI path in this order: enable
+**Windows Subsystem for Linux**, **Virtual Machine Platform**, and **Windows Hypervisor Platform**
+in *Turn Windows features on or off* and restart [src 184, 185]; install **Windows Terminal** from
+the Store (not Command Prompt) [src 33, 186]; install **Ubuntu** from the Store
+(https://apps.microsoft.com/detail/9pdxgncfsczv) [src 183]; open Ubuntu once to finish setup.
+Explicitly say not to install Docker Desktop for this course — it still needs the same features and
+is unused here.
 
 Do NOT teach any command other than opening a terminal and reading the prompt. `pwd`, `ls`, and `cd`
 belong to Unit 2 and teaching them here wrecks that unit's opening.
@@ -38,7 +43,13 @@ belong to Unit 2 and teaching them here wrecks that unit's opening.
 - WSL: "We recommend using WSL with Windows Terminal" [src 33]
 - Prompt shapes: Linux bash ends `$`; macOS zsh ends `%` [src 28, 30]
 - macOS ships no Python; `python3` opens a dialog: "The \"python3\" command requires the command line developer tools. Would you like to install the tools now?" Fix: `xcode-select --install` [src 127, 128, 129]
-- WSL is not pre-installed. Preferred path for this course: install Ubuntu from the Microsoft Store — "Install a complete Ubuntu terminal environment in minutes with Windows Subsystem for Linux (WSL)." [src 183]. Version requirement: "Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11" [src 152]
+- WSL is not pre-installed. Version requirement: "Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11" [src 152]
+- Enable features before any distro: "You must first enable the \"Windows Subsystem for Linux\" optional feature before installing any Linux distributions on Windows." / "Before installing WSL 2, you must enable the **Virtual Machine Platform** optional feature." [src 184]
+- Missing Virtual Machine Platform: "Error: 0x80370102 The virtual machine could not be started because a required feature is not installed." — enable Virtual Machine Platform and virtualisation in BIOS [src 185]
+- Community fix for Store/WSL "Catastrophic failure": re-check Windows Subsystem for Linux, Virtual Machine Platform, and Windows Hypervisor Platform in *Turn Windows features on or off* [src 185]
+- Preferred distro install: Ubuntu from the Microsoft Store — "Install a complete Ubuntu terminal environment in minutes with Windows Subsystem for Linux (WSL)." [src 183]
+- Windows Terminal from Store (product id `9N0DX20HK701`); "We recommend using WSL with Windows Terminal" [src 33, 186]
+- Do not route Windows setup through Docker Desktop for this course
 - The documented gap: "Unable to use browser (only uses phone applications)"; "The technical understanding of computers, programs, and how they work just isn't there in many young adults" [src 173]
 - Teach from: ACRLog 2024 digital-literacy post [src 173]; Microsoft WSL filesystems page [src 4]
 

@@ -32,7 +32,8 @@ the WSL file system if you are working in a Linux command line".
 
 **Back:** macOS — Terminal ("In the Finder, open the /Applications/Utilities folder, then double-click
 Terminal"). Linux — **Ptyxis**, the default since Ubuntu 25.04 and Fedora Workstation 41, not GNOME
-Terminal. Windows — Windows Terminal: "We recommend using WSL with Windows Terminal".
+Terminal. Windows — **Windows Terminal** from the Microsoft Store (not Command Prompt), then an
+Ubuntu tab: "We recommend using WSL with Windows Terminal".
 
 ---
 
@@ -54,6 +55,7 @@ project's address by hand, so it needs to be a place you chose.
 **Front:** What do you have to install before Unit 5 can work, on each platform?
 
 **Back:** macOS — the command line developer tools, via `xcode-select --install`, because macOS ships
-no Python. Windows — WSL itself (not pre-installed), by installing Ubuntu from the Microsoft Store,
-needing "Windows 10 version 2004 and higher (Build 19041 and higher) or Windows 11". Linux/WSL —
-nothing once Ubuntu is installed; `python3`, `curl`, and `nano` are already there.
+no Python. Windows — WSL itself (not pre-installed): enable Windows Subsystem for Linux, Virtual
+Machine Platform, and Windows Hypervisor Platform in Turn Windows features on or off and restart;
+install Windows Terminal and Ubuntu from the Microsoft Store. Linux/WSL — nothing once Ubuntu is
+installed; `python3`, `curl`, and `nano` are already there.
