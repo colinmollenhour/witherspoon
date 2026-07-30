@@ -35,6 +35,13 @@ function walk(dir, out = []) {
 const allFiles = walk(dist);
 const htmlFiles = allFiles.filter((f) => f.endsWith('.html'));
 const relOf = (f) => path.relative(dist, f);
+/**
+ * `walk` builds paths with `path.join`, so on Windows every separator is a
+ * backslash and any check written against a `/` path silently never matches. S5
+ * looked for a file ending `assets/site.js` and reported the runtime missing on a
+ * build that contained it. Compare through this, never against a raw path.
+ */
+const posix = (f) => f.split(path.sep).join('/');
 const read = (f) => fs.readFileSync(f, 'utf8');
 const pages = new Map(htmlFiles.map((f) => [f, read(f)]));
 
@@ -140,7 +147,7 @@ for (const f of allFiles.filter((x) => x.endsWith('.js'))) {
     fail('S5', `${relOf(f)} calls localStorage.clear() — it must remove only its own key`);
   }
 }
-const runtime = allFiles.find((f) => f.endsWith('assets/site.js'));
+const runtime = allFiles.find((f) => posix(f).endsWith('assets/site.js'));
 if (!runtime) fail('S5', 'assets/site.js is missing');
 else if (!/localStorage/.test(read(runtime))) {
   fail('S5', 'assets/site.js never touches localStorage — progress cannot persist');

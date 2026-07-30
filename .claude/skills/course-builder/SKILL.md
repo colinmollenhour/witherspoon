@@ -65,7 +65,7 @@ Also probe for a JavaScript runtime, silently:
 node --version 2>/dev/null || bun --version 2>/dev/null || echo MISSING
 ```
 
-Node ≥ 20 or Bun ≥ 1.1 is enough; either alone builds the whole site. Record the result and say
+Node 20.19+ (or 22.13+, or 24+) or Bun 1.1+ is enough; either alone builds the whole site, and npm is as well supported as bun. Record the result and say
 nothing about it now. Only the website needs a runtime — the material does not — so this must not
 become a prerequisite. If it is missing you will raise it once, at the Stage 4 gate, where the user
 can install it during the long autonomous stretch that follows. See `references/runtime-setup.md`.

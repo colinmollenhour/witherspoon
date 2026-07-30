@@ -44,7 +44,8 @@ either way; the MCP server serves the same files.
   Or connect the MCP server instead, which needs none of that — see below.
 - **Optional external tools** for visuals: a diagram CLI and an image generator. `course-site` probes
   for them and degrades to a styled text panel if absent — the build never blocks on a picture.
-- **Node ≥ 20 or Bun ≥ 1.1** for the site template. Either one alone runs the whole build, gates and
+- **Node 20.19+ (or 22.13+, or 24+) or Bun 1.1+** for the site template. npm and bun are equally
+  supported; use whichever you already have. Either one alone runs the whole build, gates and
   jsdom tests included. It is needed only for the **website** — the course material is written
   without it, which is why nothing asks you to install anything until the material is done.
 

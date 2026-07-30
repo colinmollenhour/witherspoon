@@ -54,4 +54,5 @@ execute — its `#!/usr/bin/env node` line has nothing to resolve and the shell 
 scripts work because the manager substitutes its own runtime for that shebang, and
 `bunx witherspoon-course-template <command>` works for the same reason.
 
-Node ≥ 20 or Bun ≥ 1.1. Either alone runs the whole build, gates and jsdom tests included.
+Node 20.19+ (or 22.13+, or 24+) or Bun 1.1+. Either alone runs the whole build, gates and jsdom tests
+included — npm and bun are equally supported, so use whichever the machine already has.

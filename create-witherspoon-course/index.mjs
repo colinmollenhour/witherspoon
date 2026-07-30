@@ -20,7 +20,7 @@ import path from 'node:path';
 
 /** Kept in step with the template's major line; the caret allows patch upgrades. */
 const TEMPLATE = 'witherspoon-course-template';
-const TEMPLATE_RANGE = '^1.0.0';
+const TEMPLATE_RANGE = '^1.1.0';
 
 const argv = process.argv.slice(2);
 const has = (flag) => argv.includes(flag);

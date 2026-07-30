@@ -160,10 +160,27 @@ Publish: say the word and I'll put this on a public URL — Vercel by default, o
 host. Nothing is deployed through GitHub.
 ```
 
-**Offer the dev server, not a static file server.** `bun run dev` runs Astro with hot reload, so an
-author fixing a typo sees it on the next save; serving `dist/` means rebuilding by hand after every
-edit, which is the wrong loop for the moment a reviewer is most likely to want changes. Dev also
-rewrites `/unit-1/index.html` so preview URLs match the built ones.
+**Offer the dev server, not a static file server.** `npm run dev` (or `bun run dev` — both are fully
+supported; use whichever the machine already has) runs Astro with hot reload, so an author fixing a
+typo sees it on the next save. Serving `dist/` means rebuilding by hand after every edit, which is
+the wrong loop for the moment a reviewer is most likely to want changes. Dev also rewrites
+`/unit-1/index.html` so preview URLs match the built ones.
+
+**If you start a dev server, verify it before handing over the URL.** A 200 on `/` proves almost
+nothing — the page can render unstyled and inert while its assets 404. Check all four, and read the
+port off the startup log rather than assuming the one you asked for:
+
+```text
+GET /                                    → 200
+GET /unit-1/topic-1.html                 → 200
+GET the CSS URL that HTML actually emits → 200
+GET the JS URL that HTML actually emits  → 200
+```
+
+Also confirm the returned HTML contains no Astro error overlay. If the dev server will not start at
+all — a sandboxed filesystem denies the watcher, most commonly — do not report a broken build: the
+production build does not need a watcher, so build and serve `dist/` instead and say which you did.
+`course-builder/references/runtime-setup.md` has the signatures and the Windows `npm.cmd` caveat.
 
 Serving `dist/` statically is still the right tool for exactly two jobs, and should be offered only
 for them: inspecting the real built output, and the two manual gates — **S12** needs the artifact

@@ -33,6 +33,11 @@ const PROBE = 'node --version 2>/dev/null || bun --version 2>/dev/null || echo M
 
 const text = (value) => ({ content: [{ type: 'text', text: value }] });
 
+/**
+ * Only reached when the probe found nothing. If the machine already has npm, none of
+ * this applies — npm is as well supported as bun, and installing a second runtime
+ * over a working one is pure friction.
+ */
 const PLATFORM_LEAD = {
   macos: `## Install on macOS — give the user this
 
@@ -40,8 +45,8 @@ const PLATFORM_LEAD = {
 curl -fsSL https://bun.sh/install | bash
 \`\`\`
 
-Then open a new terminal so \`bun\` is on \`PATH\`. If they would rather use Node and have Homebrew:
-\`brew install node\`.`,
+Then open a new terminal so \`bun\` is on \`PATH\`. If they would rather have Node and use Homebrew:
+\`brew install node\`. Either is fine; bun is suggested only because it is one download.`,
   linux: `## Install on Linux — give the user this
 
 \`\`\`bash
@@ -49,8 +54,8 @@ curl -fsSL https://bun.sh/install | bash
 \`\`\`
 
 Then open a new terminal, or \`source ~/.bashrc\`. Distribution Node packages are often several major
-versions behind; if they prefer Node, check \`node --version\` reaches 20 and otherwise use the current
-installer from https://nodejs.org/en/download.`,
+versions behind; if they prefer Node, check \`node --version\` reaches **20.19, 22.13 or 24** and
+otherwise use the current installer from https://nodejs.org/en/download.`,
   windows: `## Install on Windows — give the user this
 
 The most reliable path is WSL:
@@ -182,7 +187,8 @@ when its stage calls for it.`,
         'tracking, client-side search and a printable certificate, output to dist/. No backend, no ' +
         'authentication, no external requests. Use after the course material has been generated and ' +
         'the user has reviewed it, or when the user asks to build, render, or preview the course ' +
-        'site. Requires Node 20+ or Bun 1.1+ on the user machine.',
+        'site. Requires Node 20.19+ (or 22.13+, or 24+) or Bun 1.1+ on the user machine; npm and bun ' +
+        'are equally supported.',
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async () =>
@@ -216,7 +222,33 @@ the first build. Afterwards \`bun run build\`, \`bun run verify\`, \`bun run tes
 
 Never tell the user to run \`node_modules/.bin/witherspoon-course\` directly — on a machine with Bun
 and no Node that shim cannot execute, and the shell exits 127. Package scripts and
-\`bunx witherspoon-course-template <command>\` are the forms that work everywhere.`,
+\`bunx witherspoon-course-template <command>\` are the forms that work everywhere.
+
+## Previewing, and when the dev server will not start
+
+\`npm run dev\` (or \`bun run dev\`) is the preview: Astro with hot reload. **Verify it before handing
+over a URL** — a 200 on \`/\` proves almost nothing, because the page can render unstyled and inert
+while its assets 404:
+
+\`\`\`text
+GET /                                    -> 200
+GET /unit-1/topic-1.html                 -> 200
+GET the CSS URL that HTML actually emits -> 200
+GET the JS URL that HTML actually emits  -> 200
+\`\`\`
+
+Read the listening port off the startup log rather than assuming the one you asked for, and confirm
+the HTML carries no Astro error overlay.
+
+**A sandboxed filesystem commonly cannot run the dev server at all.** It keeps esbuild resolving and
+watching dependencies, and a sandbox that allows the first read still denies the traversal that
+watching needs. The signature is an Astro \`UnhandledRejection\` naming *directories*:
+\`Cannot read directory "../../../..": Access is denied\`. Those are permission results, not missing
+packages — reinstalling will not help. The production build needs no watcher, so build and serve
+\`dist/\` statically instead, and say that is what you did rather than reporting a broken template.
+
+On Windows, invoke \`npm.cmd\` rather than \`npm\`, which may resolve to a \`npm.ps1\` blocked by the
+machine's execution policy.`,
           next: `Fetch \`witherspoon_reference\` with \`doc: "widgets"\` then \`"visuals"\` when you reach
 Stage 2, and \`"build-gates"\` at Stage 5.
 

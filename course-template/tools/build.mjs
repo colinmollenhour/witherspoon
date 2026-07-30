@@ -177,6 +177,15 @@ const astroEnv = {
   // This template builds an offline-first site; the build should not phone home
   // either, and telemetry writes to a config dir that may not be writable.
   ASTRO_TELEMETRY_DISABLED: '1',
+  /**
+   * Only when a port was asked for by name. Astro otherwise walks forward to the
+   * next free port, which reads as success while the browser keeps talking to a
+   * server started earlier on the requested one — every fix then appears to do
+   * nothing, because the page under test is stale output from another process.
+   * Asking for a specific port and silently getting a different one is never what
+   * the caller wanted; failing to start says so immediately.
+   */
+  ...(dev && port ? { COURSE_STRICT_PORT: '1' } : {}),
 };
 
 const astroArgs = [dev ? 'dev' : 'build'];

@@ -39,6 +39,11 @@ export default defineConfig({
   // The toolbar injects client-side scripts; nothing in this site needs it.
   devToolbar: { enabled: false },
 
+  // See the note in tools/build.mjs: a requested port that silently becomes a
+  // different port leaves the browser on a stale server, and every subsequent fix
+  // looks like it did nothing.
+  vite: { server: { strictPort: process.env.COURSE_STRICT_PORT === '1' } },
+
   markdown: {
     /**
      * Shiki in **dual-theme** mode. A single baked palette was the reason

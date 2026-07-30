@@ -16,10 +16,19 @@ install costs the website and still leaves a complete, readable course on disk.
 node --version 2>/dev/null || bun --version 2>/dev/null || echo MISSING
 ```
 
-Node **20 or newer**, or Bun **1.1 or newer**, is sufficient. Either one alone is enough — the whole
-build, gates and jsdom runtime tests included, runs under Bun with no Node present. If the probe finds
-a usable runtime, say nothing about any of this, ever. Do not make a user who already has Node 22 read
-an install guide.
+**Node 20.19+, 22.13+ or 24+**, or **Bun 1.1+**, is sufficient. Either alone is enough: the whole
+build, gates and jsdom runtime tests included, runs under Bun with no Node present, and equally under
+Node with no Bun. Those Node versions are not arbitrary — they are what `jsdom` requires, and a
+machine below the floor installs with an `EBADENGINE` warning and may fail the runtime tests.
+
+**If the machine already has Node and npm, use them.** Most machines with any JavaScript tooling do,
+and npm is the universal option — every command in this project has an `npm` form that is equally
+supported and equally tested. Bun is preferred only where it is already present, or when installing
+from scratch, because it is one download and a much faster install. It is not a requirement, and it
+is never worth installing over a working Node.
+
+If the probe finds a usable runtime, say nothing about any of this, ever. Do not make a user who
+already has Node 22 read an install guide.
 
 **2 · Surface it at the approval gate, Stage 4 — not before, not after.** Append the install block for
 the user's platform to the message you are already sending. Two reasons this is the moment:
@@ -46,9 +55,9 @@ generation.
 
 ## Install commands
 
-Bun is the recommendation for anyone installing from scratch: one command, no version manager, and it
-runs this project's build end to end. Node is equally supported and is the better answer for someone
-who already has part of a JavaScript toolchain.
+These are for a machine with **neither** runtime. Bun is the suggestion there — one command, no
+version manager — but Node is equally supported end to end, and anyone who already has npm should
+simply use it rather than install anything.
 
 ### macOS / Linux / WSL
 
@@ -65,7 +74,7 @@ brew install node
 ```
 
 On Debian or Ubuntu, distribution packages are often several major versions behind; check
-`node --version` against the requirement of 20 or newer, and prefer the current installer from
+`node --version` against the floor above, and prefer the current installer from
 <https://nodejs.org/en/download> if it falls short.
 
 ### Windows
@@ -100,6 +109,38 @@ bun --version || node --version
 
 A version number means done. `command not found` in a terminal that was already open usually means
 only that the shell has not picked up the new `PATH` — open a new one before diagnosing anything else.
+
+## When the dev server will not start
+
+The **production build is the resilient path**; the long-running dev server is the fragile one. If
+`build` works and `dev` does not, nothing is wrong with the course.
+
+**A sandboxed filesystem is the usual cause.** A dev server keeps esbuild resolving and watching
+dependencies for as long as it runs, and a sandbox that permits the initial read can still deny the
+directory traversal that watching needs. The signature is an Astro `UnhandledRejection` naming
+directories rather than code:
+
+```text
+Error: Build failed with 10 errors:
+error: Cannot read directory "../../../..": Access is denied.
+../aria-query/lib/index.js:7:51: ERROR: Could not resolve "./ariaPropsMap"
+```
+
+Every one of those is a *permission* result, not a missing package — reinstalling will not fix it.
+Either run the dev server outside the managed sandbox, or skip it: build, then serve `dist/`
+statically, which needs no watcher. Say which you did rather than reporting a broken template.
+
+**On Windows, invoke `npm.cmd`, not `npm`.** A bare `npm` may resolve to `npm.ps1`, which a machine's
+PowerShell execution policy can block outright. The same applies to `npx.cmd`.
+
+**Confirm the port that is actually listening.** Ask for one explicitly — `--port 4321` — and read the
+startup log. A server told to take an occupied port used to walk forward to the next free one, so a
+browser kept talking to an older process and every fix looked like it did nothing; the template now
+fails to start instead, but only when the port was requested by name.
+
+**Check the assets, not just the page.** A dev server can return 200 for `/` while the stylesheet and
+runtime 404, which renders an unstyled, inert page that looks like a broken build. Fetch the CSS and
+JS URLs the HTML actually emits, and confirm the returned HTML carries no Astro error overlay.
 
 ## What gets installed later
 

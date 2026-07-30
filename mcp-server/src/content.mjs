@@ -26,7 +26,7 @@ export const VERSION = JSON.parse(
 ).version;
 
 /** The template version the instructions in this server assume. */
-export const TEMPLATE_VERSION = '1.0.0';
+export const TEMPLATE_VERSION = '1.1.0';
 
 /**
  * Flat names, because they are unique across the three skills and an agent choosing

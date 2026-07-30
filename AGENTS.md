@@ -172,7 +172,7 @@ the two that stay manual: serving from a subpath, and loading with JavaScript di
 
 ## Conventions
 
-- Node ≥ 20, ESM throughout (`"type": "module"`). Tools are `.mjs` with a shebang and a header comment
+- Node 20.19+ / 22.13+ / 24+ (the floor `jsdom` sets), ESM throughout (`"type": "module"`). Tools are `.mjs` with a shebang and a header comment
   explaining *why* they exist, not what they do — match that when adding one.
 - Comments in this codebase document non-obvious decisions and the bug that motivated them. Terse
   where the code is obvious; a paragraph where a future reader would otherwise "simplify" a
