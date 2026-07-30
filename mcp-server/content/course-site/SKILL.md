@@ -154,11 +154,20 @@ Accent: <hex> (<from brandColors.primary | template default, stated here>)
 Rights: <© year holder | no named holder> · <license label>
 
 Preview locally:
-  cd <course-dir>/dist && python3 -m http.server 8000
+  bun run dev        (or: npm run dev) — live reload, edit a reading and the page updates
 
 Publish: say the word and I'll put this on a public URL — Vercel by default, or name another
 host. Nothing is deployed through GitHub.
 ```
+
+**Offer the dev server, not a static file server.** `bun run dev` runs Astro with hot reload, so an
+author fixing a typo sees it on the next save; serving `dist/` means rebuilding by hand after every
+edit, which is the wrong loop for the moment a reviewer is most likely to want changes. Dev also
+rewrites `/unit-1/index.html` so preview URLs match the built ones.
+
+Serving `dist/` statically is still the right tool for exactly two jobs, and should be offered only
+for them: inspecting the real built output, and the two manual gates — **S12** needs the artifact
+served from a subpath, and **S4** needs it loaded with JavaScript disabled. Neither is a preview.
 
 That last line addresses the **user**, so it names no skill and no tool: they cannot invoke either,
 and an instruction they cannot follow reads as a broken handoff. Publishing is a separate stage,

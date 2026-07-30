@@ -111,8 +111,14 @@ nothing to resolve and the shell exits 127.
 **4 · Preview.**
 
 ```bash
-bun run dev                                     # live reload
-# or, against the built output:
+bun run dev                                     # live reload — use this
+```
+
+That runs Astro's dev server, so edits to a reading appear on save. Serving the built output
+statically is for inspecting `dist/` itself, or for the two manual gates (subpath deploy, and loading
+with JavaScript off) — not for reading the course back:
+
+```bash
 cd course-<slug>/dist && python3 -m http.server 8000
 ```
 

@@ -231,9 +231,9 @@ ${built ? `Built: ${rel}/dist` : 'Setup complete.'}
 Next:
 ${pending.length ? `${pending.join('\n')}\n` : ''}  ${pm} run verify     check the build gates
   ${pm} run test       runtime behaviour in jsdom
-  ${pm} run dev        live preview
+  ${pm} run dev        preview with live reload — the best way to read it back
 
-Preview the built site:
+To inspect the built output itself (or to test a subpath deploy):
   cd ${rel}/dist && python3 -m http.server 8000
 
 Always use "${pm} run <script>" rather than calling witherspoon-course directly —
