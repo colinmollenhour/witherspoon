@@ -13,21 +13,17 @@ or tablet, a file has no address — you search for it and it appears. On a dev 
 at exactly one path, and the terminal cannot search on your behalf; it must be told where to look.
 Use the ACRLog quotes [src 173] to show this is a documented, widespread gap and not a personal
 failing — the learner should finish this section feeling *located*, not behind. Then give the
-three-platform map: `/Users/<you>`, `/home/<you>`, and WSL's split world where the Linux home is
-`/home/<you>` and the Windows drive hangs off `/mnt/c` [src 1, 2, 3]. For WSL learners, quote
-Microsoft's own recommendation to keep project files on the Linux side [src 4, 5] — this is the one
-setup decision that will bite them for the rest of the course. Close by having them open a terminal
-and read their own username in the prompt, naming the correct terminal app per platform [src 31, 32,
-33] — note Ptyxis, not GNOME Terminal, is now the Linux default [src 32]. State the platform
-prerequisites plainly here so nobody discovers them in Unit 5: macOS learners will need
-`xcode-select --install` because macOS ships no Python [src 127, 128, 129]; Windows learners need
-WSL, which is not pre-installed. Direct non-terminal users through a GUI path in this order: enable
-**Windows Subsystem for Linux**, **Virtual Machine Platform**, and **Windows Hypervisor Platform**
-in *Turn Windows features on or off* and restart [src 184, 185]; install **Windows Terminal** from
-the Store (not Command Prompt) [src 33, 186]; install **Ubuntu** from the Store
-(https://apps.microsoft.com/detail/9pdxgncfsczv) [src 183]; open Ubuntu once to finish setup.
-Explicitly say not to install Docker Desktop for this course — it still needs the same features and
-is unused here.
+three-platform home map: `/Users/<you>`, `/home/<you>`, and WSL's `/home/<you>` with Windows drives
+at `/mnt/c` [src 1, 2, 3] — flag that the Windows row only exists after install. **Install next,
+before any deeper WSL teaching:** Windows learners need WSL for the rest of this unit (not Unit 5);
+walk non-terminal users through features → Windows Terminal → Ubuntu from the Store
+(https://apps.microsoft.com/detail/9pdxgncfsczv) [src 152, 183, 184, 185, 186]; macOS gets
+`xcode-select --install` now so Unit 5 is not a surprise [src 127, 128, 129]; Linux is already set.
+Only **after** Windows install, teach the two-filesystem seam and Microsoft's recommendation to keep
+project files on the Linux side [src 4, 5]. Close by having them open a terminal and read their own
+username in the prompt, naming the correct terminal app per platform [src 31, 32, 33] — note Ptyxis,
+not GNOME Terminal, is now the Linux default [src 32]. Explicitly say not to install Docker Desktop
+for this course.
 
 Do NOT teach any command other than opening a terminal and reading the prompt. `pwd`, `ls`, and `cd`
 belong to Unit 2 and teaching them here wrecks that unit's opening.
@@ -55,7 +51,7 @@ belong to Unit 2 and teaching them here wrecks that unit's opening.
 
 ## Requested activities
 
-- READ: 900–1100 words. Open on the search-vs-address gap using [src 173]. Give the three-platform home-directory map and the WSL `/mnt/c` split. State the per-platform setup prerequisites. End with the learner having a terminal open and having read their own username in the prompt. Must NOT introduce `pwd`/`ls`/`cd`. Ends by naming the running example: over this course they will build one folder, `~/projects/first-site/`, containing one file, `index.html`, and carry it all the way to a URL their phone can load.
+- READ: 900–1200 words. Open on the search-vs-address gap using [src 173]. Order is load-bearing: home map → **install (Windows first / now)** → WSL two-filesystem seam → open terminal and read username. Must NOT introduce `pwd`/`ls`/`cd`. Ends by naming the running example: over this course they will build one folder, `~/projects/first-site/`, containing one file, `index.html`, and carry it all the way to a URL their phone can load.
 - FLASHCARDS: 8 cards. Home directory path per platform (3 confusable cards); `/mnt/c` vs `/home` on WSL; terminal app per platform; what `$` vs `%` at the end of a prompt tells you; one card on why the Desktop is a bad place for project files.
 - QUIZ: 5 questions on choosing the right home path for a stated platform, deciding where a WSL learner should put a project folder and why, identifying which capability is desktop-only, and reading a platform off a prompt string.
 

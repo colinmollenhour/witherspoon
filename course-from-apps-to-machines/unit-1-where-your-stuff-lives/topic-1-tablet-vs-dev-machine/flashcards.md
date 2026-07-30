@@ -52,10 +52,10 @@ project's address by hand, so it needs to be a place you chose.
 
 ---
 
-**Front:** What do you have to install before Unit 5 can work, on each platform?
+**Front:** What must each platform install so this course can run — and when?
 
-**Back:** macOS — the command line developer tools, via `xcode-select --install`, because macOS ships
-no Python. Windows — WSL itself (not pre-installed): enable Windows Subsystem for Linux, Virtual
-Machine Platform, and Windows Hypervisor Platform in Turn Windows features on or off and restart;
-install Windows Terminal and Ubuntu from the Microsoft Store. Linux/WSL — nothing once Ubuntu is
-installed; `python3`, `curl`, and `nano` are already there.
+**Back:** Windows — WSL now (not pre-installed; needed for the rest of Unit 1): enable Windows
+Subsystem for Linux, Virtual Machine Platform, and Windows Hypervisor Platform, restart, then
+install Windows Terminal and Ubuntu from the Microsoft Store. macOS — command line developer tools
+via `xcode-select --install` (needed by Unit 5; install in Unit 1 while setting up). Linux — nothing
+once the distro is installed; `python3`, `curl`, and `nano` are already there.

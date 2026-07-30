@@ -1,10 +1,10 @@
 # Paths: every file has an address
 
-Your terminal is open and you know your home directory's absolute path. The thing you are going to
-build over this course has a name already: `~/projects/first-site/index.html`. That string is not a
-description of the file — it is the file's address, and it is written in a grammar with about four
-pieces of punctuation in it. Learn the grammar now and you will never again have to guess where
-something lives.
+Your terminal is open and you know your home directory's absolute path. The file this course will
+build does not exist yet — Project 1 creates it — but it already has a name:
+`~/projects/first-site/index.html`. That string is not a description of the file; it is the file's
+address, written in a grammar with about four pieces of punctuation. Learn the grammar now and you
+will never again have to guess where something lives.
 
 ## The one rule that does the most work
 

@@ -1,19 +1,20 @@
 # A file is bytes; the extension is only a hint
 
-You have `~/projects/first-site/index.html` and you can say its address out loud. Double-click it and
-a browser opens a page. The icon on it looks like a browser icon. So the obvious conclusion is that
-the file *is* a web page — that `.html` on the end is what makes it one.
+You can already *say* the address of the file this course will build:
+`~/projects/first-site/index.html`. You have not built it yet — that is Project 1, after this topic.
+Before you create it in the right place, you need one idea that the icon and the filename will both
+try to hide: a file is not its extension.
 
-That conclusion is wrong, and it will cost you an afternoon later. Here is the belief in the wild,
-written by someone who was sure of it:
+The belief in the wild, written by someone who was sure of it:
 
 > "From experience I know that if I save .jpg file with an .png extension (or vice versa) the most
 > programs will open it as normally." [src 166]
 
 ## Rename a file and nothing happens
 
-Make a file called `notes.txt` next to your `index.html`. Type a sentence into it. Now rename it to
-`notes.html` — in your file manager, click the name, edit it, press Enter.
+Make a throwaway file called `notes.txt` somewhere easy — your Desktop is fine for this one
+experiment. Type a sentence into it. Now rename it to `notes.html` — in your file manager, click the
+name, edit it, press Enter.
 
 Three things change: the name, the icon, and the program that opens on a double-click. One thing does
 not change: the **bytes**. A byte is the unit a file is stored in — one byte holds one character of
@@ -26,10 +27,13 @@ program to launch**. Rename a photo to `.txt` and the desktop will dutifully ope
 and show you garbage — because the bytes were never text, and renaming changes the label, not the
 contents.
 
+You can delete `notes.html` when you are done. It is not the running example.
+
 ## The same bytes, two programs
 
-The running example proves this without any extra files. Open `~/projects/first-site/index.html`
-twice.
+Now make a second throwaway file — still not in the permanent project folder — called `index.html`.
+Type one line of HTML into it: an `<h1>` heading with any text you like. Save it, then open that
+**same** file twice.
 
 | Program | What it does with the bytes |
 | --- | --- |
@@ -41,11 +45,13 @@ sequence of bytes: the editor reads them as text, the browser reads them as mark
 describe structure. `index.html` is a plain text file the whole time.
 
 That is the sentence to keep: **a file is bytes, and meaning lives in the program that opens it.**
+Project 1 will put a real `index.html` at `~/projects/first-site/` and ask you to record its address;
+you already know what that file *is*.
 
-*Forward reference, one line:* when this same file is served over a real web server in Unit 5, the
-extension stops being ignorable — the server reads it and sends `Content-type: text/html` alongside
-the bytes [src 114], so the browser is *told* what it received instead of guessing. Note the name and
-move on.
+*Forward reference, one line:* when this same kind of file is served over a real web server in Unit 5,
+the extension stops being ignorable — the server reads it and sends `Content-type: text/html`
+alongside the bytes [src 114], so the browser is *told* what it received instead of guessing. Note the
+name and move on.
 
 ## The folder that looks empty
 
@@ -130,6 +136,6 @@ Two things that will otherwise confuse you:
 
 You can now read any `ls -la` line field by field, you know a dot-prefixed name is hidden rather than
 missing, and you know `index.html` is plain text that a browser chooses to interpret. The extension
-is a hint your desktop takes seriously and the bytes ignore. Next you build the folder by hand, in
-Project 1 — and after that you stop clicking to create files and start typing the commands that make
-them.
+is a hint your desktop takes seriously and the bytes ignore. Next you build the **real** folder by
+hand — `~/projects/first-site/index.html` in the right place on purpose — in Project 1. After that
+you stop clicking to create files and start typing the commands that make them.

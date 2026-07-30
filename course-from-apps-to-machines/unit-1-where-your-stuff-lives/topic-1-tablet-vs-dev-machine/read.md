@@ -72,7 +72,8 @@ Three things, and each one matters later in this course:
 ## Where your own work belongs
 
 Each of these systems gives every person one folder that is theirs: the **home directory**. Your work
-goes there. Find your row:
+goes there. Find your row — on Windows, the row only exists *after* the install steps in the next
+section:
 
 | Your platform | Your home directory | The other operating system's files |
 | --- | --- | --- |
@@ -85,20 +86,65 @@ goes there. Find your row:
 > "`/Users`—This directory contains one or more user home directories. The user home directory is
 > where user-related files are stored."
 
-On Linux it reads `/home/colin` for a user named `colin`.
+On Linux it reads `/home/colin` for a user named `colin`. On Windows you will use the Linux path
+inside Ubuntu — not a `C:\…` path — once WSL is installed.
 
 **Not the Desktop.** The Desktop is where files land when you do not decide where they go — which is
 exactly why the librarians above listed "saving everything to desktop" as a literacy problem. From
 Unit 2 onward you type your project's address by hand, repeatedly. Pick a place on purpose.
 
-## If you are on Windows: you have two filesystems, and it matters
+## Install what this unit needs — now, not later
 
-WSL (Windows Subsystem for Linux) does **not** come pre-installed. If you have not set it up yet,
-install Ubuntu from the Microsoft Store first — the install steps are in the next section — then come
-back here.
+Windows learners need Ubuntu under WSL **before the rest of this unit**, not in Unit 5. Without it
+there is no home path to open, no terminal this course can use, and Project 1 has nowhere to live.
+macOS learners can finish this unit without extra software, but Unit 5 needs the command line
+developer tools — install them now while you are already setting things up.
 
-WSL runs a real Ubuntu inside Windows, so you get two worlds. Microsoft shows the seam directly —
-your Windows `C:\Users\<user name>\Project` folder
+### If you are on Windows
+
+WSL (Windows Subsystem for Linux) is **not** pre-installed. Do this in order — still no terminal
+command required. Microsoft's version requirement: "You must be running Windows 10 version 2004 and
+higher (Build 19041 and higher) or Windows 11".
+
+1. **Turn on three Windows features first.** Search the Start menu for **Turn Windows features on or
+   off**. Tick **Windows Subsystem for Linux**, **Virtual Machine Platform**, and **Windows
+   Hypervisor Platform**. Click OK and **restart** when Windows asks. Skipping this is the usual
+   reason a later Store install dies with a vague *"Catastrophic failure"* (or a virtual-machine
+   error such as `0x80370102`). Microsoft's manual install says you must enable the Windows Subsystem
+   for Linux feature "before installing any Linux distributions on Windows", and enable Virtual
+   Machine Platform before WSL 2.
+2. **Install Windows Terminal from the Microsoft Store** — not the old blue **Command Prompt**
+   window. Search the Store for **Windows Terminal**, or open
+   [Windows Terminal on the Microsoft Store](https://apps.microsoft.com/detail/9n0dx20hk701).
+   Microsoft: "We recommend using WSL with Windows Terminal".
+3. **Install Ubuntu from the Microsoft Store** — search for **Ubuntu**, or open
+   [Ubuntu on the Microsoft Store](https://apps.microsoft.com/detail/9pdxgncfsczv). That is the Linux
+   distribution this course uses under WSL.
+4. **Open Ubuntu once** from the Start menu (or from the dropdown in Windows Terminal) so setup can
+   finish and ask you for a Linux username and password.
+
+Do **not** install Docker Desktop for this course. It still needs the same virtualisation features
+underneath, is a much larger install, and this course never uses containers.
+
+Once Ubuntu is installed, the packages this course needs later — `python3`, `curl`, and `nano` — are
+already present in Ubuntu's WSL image. You do not install those separately.
+
+### If you are on macOS
+
+macOS ships no Python. Type `python3` and you get a dialog box: *"The "python3" command requires the
+command line developer tools. Would you like to install the tools now?"* Say yes, or run
+`xcode-select --install`, which "opens a user interface dialog to request automatic installation of
+the command line developer tools." You will not need Python until Unit 5; doing this now means you
+are not hunting for installers when the server is the only thing left.
+
+### If you are on Linux
+
+You are already set. Ubuntu's standard install includes `python3`, `curl`, and `nano`.
+
+## If you are on Windows: you now have two filesystems
+
+With Ubuntu running inside WSL, you have two worlds on one machine. Microsoft shows the seam
+directly — your Windows `C:\Users\<user name>\Project` folder
 
 > "will look like this when mounted in a WSL command line: `/mnt/c/Users/<user name>/Project$`."
 
@@ -164,39 +210,8 @@ and gives the contrast as two paths:
 }
 ```
 
-Decide this now. It is the one setup choice that nags you for the rest of the course.
-
-## Install this before Unit 5, not during it
-
-- **macOS ships no Python.** Type `python3` and you get a dialog box: *"The "python3" command
-  requires the command line developer tools. Would you like to install the tools now?"* Say yes, or
-  run `xcode-select --install`, which "opens a user interface dialog to request automatic installation
-  of the command line developer tools."
-- **Windows needs WSL, and it is not pre-installed.** Do this in order — still no terminal command
-  required. Microsoft's version requirement: "You must be running Windows 10 version 2004 and
-  higher (Build 19041 and higher) or Windows 11".
-
-  1. **Turn on three Windows features first.** Search the Start menu for **Turn Windows features
-     on or off**. Tick **Windows Subsystem for Linux**, **Virtual Machine Platform**, and
-     **Windows Hypervisor Platform**. Click OK and **restart** when Windows asks. Skipping this
-     is the usual reason a later Store install dies with a vague *"Catastrophic failure"* (or a
-     virtual-machine error such as `0x80370102`). Microsoft's manual install says you must enable
-     the Windows Subsystem for Linux feature "before installing any Linux distributions on
-     Windows", and enable Virtual Machine Platform before WSL 2.
-  2. **Install Windows Terminal from the Microsoft Store** — not the old blue **Command Prompt**
-     window. Search the Store for **Windows Terminal**, or open
-     [Windows Terminal on the Microsoft Store](https://apps.microsoft.com/detail/9n0dx20hk701).
-     Microsoft: "We recommend using WSL with Windows Terminal".
-  3. **Install Ubuntu from the Microsoft Store** — search for **Ubuntu**, or open
-     [Ubuntu on the Microsoft Store](https://apps.microsoft.com/detail/9pdxgncfsczv). That is the
-     Linux distribution this course uses under WSL.
-  4. **Open Ubuntu once** from the Start menu (or from the dropdown in Windows Terminal) so setup
-     can finish and ask you for a Linux username and password.
-
-  Do **not** install Docker Desktop for this course. It still needs the same virtualisation
-  features underneath, is a much larger install, and this course never uses containers.
-- **Linux and WSL are already set** once Ubuntu is installed. Ubuntu's WSL package manifest lists
-  `python3`, `curl`, and `nano` as present.
+Decide this now. It is the one setup choice that nags you for the rest of the course. Put every file
+this course builds under `/home/<you>/…`, not under `/mnt/c/…`.
 
 ## Open a terminal and find your name in it
 

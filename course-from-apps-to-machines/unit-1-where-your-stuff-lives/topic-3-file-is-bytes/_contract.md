@@ -10,11 +10,13 @@
 
 Kill the belief that the extension *is* the file type. Use the real evidence that this belief is
 widespread [src 166] rather than asserting that learners hold it. The demonstration is the running
-example itself: `index.html` is a plain text file — open it in a text editor and you see the tags;
-open it in a browser and you see a page. Same bytes, two programs, two behaviours [src 166]. Then
-seed the idea the course collects in Unit 5: on a real HTTP server the extension is not ignored — the
-server maps it to a `Content-Type` header, which is how the browser is *told* what it received rather
-than guessing [src 114]. Name that as a forward reference; do not explain headers here. Next, dotfiles:
+example: a throwaway `index.html` (the permanent `~/projects/first-site/` path is Project 1 — do not
+require it yet) is a plain text file — open it in a text editor and you see the tags; open it in a
+browser and you see a page. Same bytes, two programs, two behaviours [src 166]. Rename demo uses a
+throwaway `notes.txt` → `notes.html`, not a file next to the running example. Then seed the idea the
+course collects in Unit 5: on a real HTTP server the extension is not ignored — the server maps it to
+a `Content-Type` header, which is how the browser is *told* what it received rather than guessing
+[src 114]. Name that as a forward reference; do not explain headers here. Next, dotfiles:
 use the real evidence that hidden files read as "my folder is empty" [src 162], then show the actual
 captured `ls -la` block [src 10] and walk it field by field, including the dotfile row. Explain the
 permission string as three triples, and flag honestly that some systems print an extra character after
@@ -38,7 +40,7 @@ output is being *read*, not *driven*.
 
 ## Requested activities
 
-- READ: 900–1100 words. Rename demonstration first, then the file-vs-app distinction using the running example's `index.html`, then dotfiles and the annotated real `ls -la` block [src 10]. Must include the SELinux-dot caveat [src 11] so cross-platform learners are not confused. Ends with the learner able to read any `ls -la` line.
+- READ: 900–1100 words. Rename demonstration first (throwaway `notes.txt`, not next to a project that does not exist yet), then the file-vs-app distinction on a throwaway `index.html` — Project 1 still owns creating `~/projects/first-site/`. Then dotfiles and the annotated real `ls -la` block [src 10]. Must include the SELinux-dot caveat [src 11] so cross-platform learners are not confused. Ends with the learner able to read any `ls -la` line.
 - FLASHCARDS: 10 cards. The `d` vs `-` type character; the three permission triples; `r`, `w`, `x` (one card each); what `-a` reveals; why a dotfile is hidden; extension vs content as a discriminating pair; owner vs group.
 - QUIZ: 5 questions on reading a supplied `ls -la` line for a specific field, predicting what happens to the bytes when a file is renamed, deciding why a folder looks empty, and identifying which of four statements about extensions is true.
 
