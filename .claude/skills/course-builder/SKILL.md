@@ -237,6 +237,14 @@ the ambiguity this direction retires.
 
 If a topic agent fails, re-run that one topic. Never leave a contract without content.
 
+**Workspace provenance README (non-negotiable).** After the course tree is on disk, if the working
+directory that **contains** `course-<slug>/` has no `README.md`, write a short provenance README
+there: who created it, when (UTC `YYYY-MM-DD`), why, and that it was made with
+[Witherspoon](https://github.com/colinmollenhour/witherspoon). Pull who from the interview /
+`license.holder` (fallback `unknown`) and why from the course title + subtitle. Never overwrite an
+existing workspace README. Never put this *inside* `course-<slug>/` in place of the course README
+(about / syllabus) that Stage 7 already writes.
+
 ### Stage 8 — Verify
 
 **Read `references/quality-gates.md` and run every check.** Fix what fails, then report:
@@ -248,6 +256,13 @@ If a topic agent fails, re-run that one topic. Never leave a contract without co
 - any gate that needed a fix
 
 Report honestly. If a gate still fails, say so plainly rather than declaring completion.
+
+After the gates, if the working directory that **contains** `course-<slug>/` has no `README.md`,
+write a short **workspace provenance** README there (who created it, the UTC date, why — from the
+interview / `license.holder` / title and subtitle — and that
+[Witherspoon](https://github.com/colinmollenhour/witherspoon) built it via
+`course-builder` → `course-site` → `course-publish`). Never overwrite an existing workspace README.
+Never put this inside `course-<slug>/` in place of the learner-facing course README.
 
 Then offer the handoff, once, in one line:
 

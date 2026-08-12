@@ -33,7 +33,14 @@ A `package.json` in the workspace, carrying a dependency on `witherspoon-course-
 
 An existing `package.json` is preserved: unrelated scripts and dependencies are kept, and a `deploy`
 script written by `course-publish` survives. A `.gitignore` is written only if there is not one
-already.
+already. A workspace-root `README.md` is written only when missing, naming who created the
+course, when, why, and that [Witherspoon](https://github.com/colinmollenhour/witherspoon) built
+it — it never overwrites an existing README, and it is separate from the learner-facing
+`README.md` inside `course-<slug>/`.
+
+A workspace-root `README.md` (who / when / why / Witherspoon) is written only when missing. It is
+never overwritten, and it is not the learner-facing `course-<slug>/README.md` (about / syllabus) that
+`course-builder` already writes inside the course tree.
 
 ## Options
 
