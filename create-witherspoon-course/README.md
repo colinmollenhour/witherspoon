@@ -38,9 +38,6 @@ course, when, why, and that [Witherspoon](https://github.com/colinmollenhour/wit
 it — it never overwrites an existing README, and it is separate from the learner-facing
 `README.md` inside `course-<slug>/`.
 
-A workspace-root `README.md` (who / when / why / Witherspoon) is written only when missing. It is
-never overwritten, and it is not the learner-facing `course-<slug>/README.md` (about / syllabus) that
-`course-builder` already writes inside the course tree.
 
 ## Options
 

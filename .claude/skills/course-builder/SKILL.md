@@ -257,13 +257,6 @@ existing workspace README. Never put this *inside* `course-<slug>/` in place of 
 
 Report honestly. If a gate still fails, say so plainly rather than declaring completion.
 
-After the gates, if the working directory that **contains** `course-<slug>/` has no `README.md`,
-write a short **workspace provenance** README there (who created it, the UTC date, why — from the
-interview / `license.holder` / title and subtitle — and that
-[Witherspoon](https://github.com/colinmollenhour/witherspoon) built it via
-`course-builder` → `course-site` → `course-publish`). Never overwrite an existing workspace README.
-Never put this inside `course-<slug>/` in place of the learner-facing course README.
-
 Then offer the handoff, once, in one line:
 
 > Review the markdown and `course.json`. When you're happy with them, say so and I'll build the
