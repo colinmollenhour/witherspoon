@@ -162,6 +162,41 @@ if (!fs.existsSync(gitignore)) {
   say('Wrote .gitignore');
 }
 
+// Workspace provenance only — never the learner-facing course-<slug>/README.md that
+// course-builder already writes. Skip when a README is already present.
+const workspaceReadme = path.join(cwd, 'README.md');
+if (!fs.existsSync(workspaceReadme)) {
+  const createdBy = course.license?.holder || 'unknown';
+  const created = new Date().toISOString().slice(0, 10);
+  const why = (course.subtitle || 'A Witherspoon course workspace.').replace(/\|/g, '\\|');
+  const title = course.title || path.basename(courseDir);
+  fs.writeFileSync(
+    workspaceReadme,
+    `# ${title}
+
+| | |
+| --- | --- |
+| **Created by** | ${createdBy} |
+| **Created** | ${created} |
+| **Why** | ${why} |
+
+Course materials live in [\`${rel}\`](${rel}).
+
+This workspace was set up with [Witherspoon](https://github.com/colinmollenhour/witherspoon)
+(\`course-builder\` → \`course-site\` → \`course-publish\`).
+
+## Commands
+
+\`\`\`bash
+bun run dev
+bun run build
+bun run verify
+\`\`\`
+`,
+  );
+  say('Wrote README.md (provenance)');
+}
+
 // ---- 4. install and build ----------------------------------------------------
 /**
  * `npm create` reaches us through `npm exec`, which exports its whole resolved config

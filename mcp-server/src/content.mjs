@@ -85,9 +85,13 @@ export const REFERENCES = {
     path: 'course-site/references/visuals.md',
     blurb: 'composing diagram and image tools, wiring heroes, and the fallbacks',
   },
+  'here-now': {
+    path: 'course-publish/references/here-now.md',
+    blurb: 'here.now (default): API/publish.sh, anonymous 24h vs permanent, republish',
+  },
   vercel: {
     path: 'course-publish/references/vercel.md',
-    blurb: 'Vercel: the browser drop walkthrough, the CLI route, custom hostnames',
+    blurb: 'Vercel (advanced alternative): browser drop, CLI route, custom hostnames',
   },
 };
 

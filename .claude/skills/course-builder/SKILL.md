@@ -237,6 +237,14 @@ the ambiguity this direction retires.
 
 If a topic agent fails, re-run that one topic. Never leave a contract without content.
 
+**Workspace provenance README (non-negotiable).** After the course tree is on disk, if the working
+directory that **contains** `course-<slug>/` has no `README.md`, write a short provenance README
+there: who created it, when (UTC `YYYY-MM-DD`), why, and that it was made with
+[Witherspoon](https://github.com/colinmollenhour/witherspoon). Pull who from the interview /
+`license.holder` (fallback `unknown`) and why from the course title + subtitle. Never overwrite an
+existing workspace README. Never put this *inside* `course-<slug>/` in place of the course README
+(about / syllabus) that Stage 7 already writes.
+
 ### Stage 8 — Verify
 
 **Read `references/quality-gates.md` and run every check.** Fix what fails, then report:

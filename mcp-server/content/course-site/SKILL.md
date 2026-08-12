@@ -107,7 +107,11 @@ bun create witherspoon-course        # or: npm create witherspoon-course
 ```
 
 That is the whole build, first time and every time. It finds the course directory, writes a
-`package.json` carrying the build scripts, installs the template, and runs the build. Afterwards:
+`package.json` carrying the build scripts, installs the template, and runs the build. The scaffolder
+also writes a workspace-root provenance `README.md` when that file is missing (who / when / why /
+Witherspoon); it never overwrites an existing one and never replaces the learner-facing
+`course-<slug>/README.md`. If you build without that path for some reason and the workspace README is
+still missing, write the same provenance README before reporting. Afterwards:
 
 ```bash
 bun run build          # or: npm run build

@@ -1,28 +1,25 @@
 ---
 name: course-publish
-description: Publish a built course site's dist/ to a public URL using the user's preferred static host. Defaults to Vercel, recommending the browser upload at vercel.com/drop for a first publish — no CLI, no install — with the Vercel CLI for repeatable one-command updates. Handles authentication, optional custom domains, and end-to-end verification. Use when the user asks to publish, deploy, host, upload, or share a course website. Never uses GitHub.
+description: Publish a built course site's dist/ to a public URL using the user's preferred static host. Defaults to here.now — agent-friendly create, upload, finalize to a {slug}.here.now URL, with optional anonymous 24h Sites or permanent Sites via saved login. Vercel Drop and the Vercel CLI remain available as advanced alternatives. Handles authentication, optional custom domains, and end-to-end verification. Use when the user asks to publish, deploy, host, upload, or share a course website. Never uses GitHub.
 ---
 
 # Course Publish
 
 Publish a built course and return a link that has been opened and verified. The user chooses the
-provider; Vercel is the default because it serves `index.html` at the root — so the shared link is a
-bare hostname with no `/index.html` suffix — because it takes a built directory straight from the
-machine with no repository or CI, and because a custom domain can stay at the user's current DNS
-provider.
+provider; **here.now is the default** because an agent can publish `dist/` straight to a live
+`https://{slug}.here.now` URL by API — create → upload → finalize — with no repository, no CI, and
+no browser drag-and-drop. It serves `index.html` at the root, so the shared link is a bare hostname.
+Anonymous publishes need no account and expire in 24 hours; a saved account login makes Sites permanent.
 
-Vercel offers two routes to the same production URL, and the easiest one is not the terminal:
+- **here.now (Recommended)** — run the official `publish.sh` helper (or the same API by hand). Works
+  from the agent's shell; first publish can be anonymous for a quick preview, or authenticated for a
+  permanent learner link. **Recommend this first** for first-time and typical users.
+- **Vercel Drop / Vercel CLI (advanced alternatives)** — keep these when the user asks for Vercel, or
+  when the harness cannot run shell commands at all and a browser drop is the only workable route.
+  Details live in [references/vercel.md](references/vercel.md).
 
-- **Vercel Drop** — the user drags `dist/` onto `vercel.com/drop`, names the project, and it is live.
-  Nothing to install, nothing to authenticate from a terminal, no command to mistype. **Recommend
-  this first**, and use it whenever the user is publishing for the first time, has no CLI installed,
-  or is working in a harness that cannot run commands on their machine at all.
-- **Vercel CLI** — one command that redeploys into the *same* project, so the URL never changes.
-  Recommend it once the course is being updated regularly, since a drop cannot redeploy into an
-  existing project.
-
-The trade is who does the work and what the update loop costs, not how advanced anyone is. Both land
-the same artifact on the same kind of URL, and both are verified here before anything is reported.
+Every route lands the same kind of static artifact on a bare hostname, and every route is verified
+here before anything is reported.
 
 This skill publishes build artifacts. It does not create repositories, pull requests, or CI
 pipelines, and it never publishes through a Git remote. Committing the course source locally is a
@@ -33,22 +30,27 @@ separate matter — see [Stage 7](#stage-7--iterate-after-publishing) — and is
 - **No GitHub.** Never use GitHub Pages, Actions, Releases, repository deployment, or a Git remote.
 - Upload only the **contents** of `<course-dir>/dist/`, never the course source and never `dist/` as
   an extra path segment.
-- Never request an access key or secret in chat. Use the provider's browser login, OAuth connector,
-  OS credential prompt, or documented local credential command.
+- Never request an access key or long-lived secret in chat. Use the provider's browser login, OAuth
+  connector, OS credential prompt, documented local credential command, or here.now's email one-time
+  code flow (save the returned key to the documented local credentials file yourself; never ask the
+  user to paste the key).
 - Never report success from an upload command alone. Open the public site and exercise it.
 - Never report a browser upload as something you performed, and never state its URL before the user
   has come back with one. That upload runs in their session; until they report it, nothing happened.
 - Never overwrite an existing destination unless `.course-publish.json` identifies it as belonging
   to this course or the user explicitly identifies it as the destination.
 - Never delete unknown remote objects. A stale-file cleanup is allowed only for a destination that
-  the manifest marks as dedicated to this course — and on Vercel there are no stale files to clean,
-  because each production deployment is a complete immutable snapshot rather than a mutable directory.
+  the manifest marks as dedicated to this course — and on here.now and Vercel there are no stale
+  files to clean, because each production deployment/version is a complete immutable snapshot rather
+  than a mutable directory.
 - Never tell the user to delete or rename a Vercel project unless the manifest records it as this
   course's, or they identify it as theirs and confirm it. Freeing a project name is the one
-  destructive step the drop route needs; it is theirs to authorise, and a rename with the old name
-  kept until the new upload verifies is the safer of the two.
-- Do not hide provider limitations or costs. In particular, Vercel's free Hobby plan is for
-  non-commercial use; say so before the user authenticates, not after they publish.
+  destructive step the Vercel drop route needs; it is theirs to authorise, and a rename with the old
+  name kept until the new upload verifies is the safer of the two.
+- Do not hide provider limitations or costs. For here.now, say before publishing that anonymous Sites
+  expire in 24 hours and authenticated Sites are permanent (see https://here.now/pricing.md). For
+  Vercel, the free Hobby plan is for non-commercial use; say so before the user authenticates.
+- Never commit here.now local state (`.herenow/`), claim tokens, or credentials files.
 
 ## Pipeline
 
@@ -67,13 +69,15 @@ separate matter — see [Stage 7](#stage-7--iterate-after-publishing) — and is
    commands — and ask the user to install it or provide the built `dist/`; never upload course source
    as a substitute. If there is neither a build nor buildable course source, stop with the exact
    missing path.
-5. Inspect available provider tools without triggering authentication. Note whether the provider's
-   official CLI is installed, and whether any connected MCP server can perform a *complete*
-   deployment — recursive upload preserving bytes, relative keys and MIME types, plus a returned
-   public URL. Merely having a connector for a provider is not enough.
+5. Inspect available provider tools without triggering authentication. Note whether `curl`/`jq` (and
+   optionally here.now's `publish.sh`) are available, whether a provider's official CLI is installed,
+   and whether any connected MCP server can perform a *complete* deployment — recursive upload
+   preserving bytes, relative keys and MIME types, plus a returned public URL. Merely having a
+   connector for a provider is not enough.
 6. Note what this harness can and cannot do on the user's machine. If you cannot run commands there,
-   a browser upload is not a fallback, it is the only route — carry that into Stage 1 rather than
-   recommending a CLI the user would have to drive themselves.
+   here.now's API route is unavailable from this harness — present Vercel Drop (or another browser
+   upload) as the workable route rather than offering a shell publish the user would have to drive
+   themselves.
 
 Do not ask the user for facts the workspace or provider manifest already establishes.
 
@@ -87,19 +91,21 @@ has a recommended choice so accepting defaults is one interaction.
 
 | Option | Meaning |
 | --- | --- |
-| **Vercel Drop — drag the folder into your browser (Recommended)** | You open `vercel.com/drop`, drag `dist/` on, name the project, and it is live. Nothing installed, no terminal. I walk you through it and verify the result. Best for a first publish or an occasional update. |
-| Vercel CLI — one command, repeatable | `vercel deploy <dist> --prod` from this machine, into the same project every time, so the URL never changes. Needs the Vercel CLI and a terminal login. Best once the course is updated regularly. |
+| **here.now — agent publish (Recommended)** | I publish `dist/` to `https://{slug}.here.now` via the here.now API / `publish.sh`. Nothing goes through GitHub. Anonymous Sites expire in 24 hours; a saved account login makes them permanent. Best for first-time and typical users. |
+| Vercel Drop — drag the folder into your browser (advanced) | You open `vercel.com/drop`, drag `dist/` on, name the project, and it is live. Nothing installed. Use when you want Vercel, or when this harness cannot run shell commands. |
+| Vercel CLI — one command, repeatable (advanced) | `vercel deploy <dist> --prod` from this machine, into the same project every time, so the URL never changes. Needs the Vercel CLI and a terminal login. |
 | Netlify direct deploy | Upload `dist/` with Netlify's CLI/API/drop flow; no Git integration. |
 | Cloudflare Pages direct upload | Upload `dist/` with Wrangler/direct upload; no Git integration. |
 
-Either Vercel route gives a bare hostname, because Vercel serves `index.html` at the root. Say in the
-same breath that the free Hobby plan is non-commercial, before the user signs in rather than after
-they publish.
+here.now and either Vercel route give a bare hostname, because each serves `index.html` at the root.
+For here.now, say in the same breath that anonymous Sites expire in 24 hours and authenticated Sites
+are permanent (link https://here.now/pricing.md). For Vercel, say the free Hobby plan is
+non-commercial before the user signs in.
 
-Recommend the drop unless something specific argues for the CLI: a course already on a stable URL
-that must not change, an update loop the user expects to run often, or an explicit preference for the
-terminal. If this harness cannot run commands on the user's machine, present the drop as the method
-rather than as a choice — offering a CLI you cannot drive wastes the user's turn.
+**Recommend here.now** unless the user asks for Vercel/Netlify/Cloudflare/Other, or this harness
+cannot run shell commands — in that case present Vercel Drop as the method rather than as a choice.
+If the user wants a permanent here.now link, use the email one-time-code flow in
+[references/here-now.md](references/here-now.md) before or right after the first publish.
 
 To use any other static host, the user enters its exact provider plus destination/upload mechanism
 under **Other** on this same question (for example, “SFTP to `learn.example.com:/var/www/course`”).
@@ -149,9 +155,13 @@ Before authenticating or creating remote resources:
 
 ### Stage 3 — Publish
 
+For here.now (the default), read and follow [references/here-now.md](references/here-now.md). That
+reference is the command and provider-behaviour contract; do not invent URLs, skip finalize, or hide
+the anonymous 24-hour expiry.
+
 For Vercel, read and follow [references/vercel.md](references/vercel.md). That reference is the
-command and provider-behaviour contract for both routes; do not improvise around its project-naming,
-`--prod`, MIME, or custom-domain constraints.
+command and provider-behaviour contract for both Vercel routes; do not improvise around its
+project-naming, `--prod`, MIME, or custom-domain constraints.
 
 **When the method is a browser upload, the publish stage is a hand-off, not a command.** You prepare
 and the user acts, so:
@@ -227,7 +237,8 @@ not obscure whether the upload itself worked.
 - If the user chose “later,” return the exact future DNS target and provider settings path without
   treating the optional domain as unfinished publication.
 
-Vercel-specific custom-domain steps are in [references/vercel.md](references/vercel.md).
+here.now custom-domain steps are in [references/here-now.md](references/here-now.md) and the live
+docs. Vercel-specific custom-domain steps are in [references/vercel.md](references/vercel.md).
 
 ### Stage 5 — Verify from the public internet
 
@@ -262,28 +273,33 @@ After verification, create or update `<course-dir>/.course-publish.json`:
 ```json
 {
   "version": 1,
-  "provider": "vercel",
-  "method": "drop",
+  "provider": "here.now",
+  "method": "api",
   "accountScope": null,
   "destination": "course-slug",
-  "entryUrl": "https://course-slug.vercel.app",
+  "entryUrl": "https://course-slug.here.now",
   "customHostname": null
 }
 ```
 
-Use the actual provider and destination. `method` records how the files got there — `"drop"` for a
-browser upload, `"cli"` for a command — because the repeat-publish loop differs between them and the
-next session should not have to ask. Set `accountScope` to the provider's non-secret team, account,
-or organization identifier when destination names are account-scoped; leave it `null` when the
-destination ID is globally unambiguous. Store no token, access key, secret, or DNS credential. This
-file makes repeat publication safe and stable.
+Use the actual provider and destination. `provider` is `"here.now"` for the default host, or
+`"vercel"` / another host when chosen. `method` records how the files got there — `"api"` for
+here.now's publish helper/API, `"drop"` for a browser upload, `"cli"` for a provider CLI — because
+the repeat-publish loop differs between them and the next session should not have to ask. Set
+`accountScope` to the provider's non-secret team, account, or organization identifier when
+destination names are account-scoped; leave it `null` when the destination ID is globally
+unambiguous. Store no token, access key, secret, claim token, or DNS credential. This file makes
+repeat publication safe and stable.
 
 **After a browser upload, the workspace step is the build, not a deploy script.** There is no command
 to persist: the upload happened in a browser, and writing a `deploy` script for a CLI that has never
 run here would be a command you have not proven. Confirm `bun run build` (or `npm run build`) works
 from the workspace so the next update is one command plus one drag, note the project name in the
-manifest, and stop there. Add a `deploy` script only if the user later chooses the CLI route and it
+manifest, and stop there. Add a `deploy` script only if the user later chooses an agent/CLI route and it
 succeeds.
+
+**After a here.now API publish, write `scripts.deploy`** to the proven `publish.sh … --slug …`
+command (see [references/here-now.md](references/here-now.md)) and run it once before reporting.
 
 For a CLI publish, the final workspace step is to make the build and verified deployment repeatable
 from the course directory:
@@ -324,11 +340,12 @@ from the course directory:
    ```json
    {
      "scripts": {
-       "deploy": "vercel deploy ./course-slug/dist --prod --yes --project course-slug"
+       "deploy": "/absolute/path/to/publish.sh ./course-slug/dist --slug course-slug --client witherspoon"
      }
    }
    ```
 
+   - here.now: `publish.sh <dist> --slug <slug> --client witherspoon` (path to the installed helper)
    - Vercel: `vercel deploy <dist> --prod --yes --project <project-name>`
    - Netlify: `netlify deploy --site <site-id> --dir <dist> --prod --no-build`
    - Cloudflare Pages: `wrangler pages deploy <dist> --project-name <project-name>`
@@ -364,15 +381,17 @@ Republish: <cd <workspace> && bun run deploy | say the word and I'll rebuild, th
            <dist> as <project-name> — I'll walk you through freeing the name so the link stays>
 ```
 
-For Vercel, print the bare production URL as the primary link — no `/index.html` suffix, since Vercel
-serves the index at the root. A preview URL carrying a generated hash is not the link to report: if
-what came back looks like one, `--prod` was missing and the deploy must be repeated.
+For here.now and Vercel, print the bare production URL as the primary link — no `/index.html` suffix,
+since both serve the index at the root. Never invent a `{slug}.here.now` URL; use the `siteUrl` from
+the current publish. On Vercel, a preview URL carrying a generated hash is not the link to report: if
+what came back looks like one, `--prod` was missing and the deploy must be repeated. For anonymous
+here.now publishes, state the 24-hour expiry and share any claim URL.
 
 ### Stage 7 — Iterate after publishing
 
 Publishing is rarely the last thing that happens. The user reads the live site, wants a wording
-change, and the loop from here has to be cheap — especially for a course published by dragging a
-folder, where every re-upload costs the user a browser trip.
+change, and the loop from here has to be cheap — especially on a browser-drop route, where every
+re-upload costs the user a trip; here.now and CLI routes should stay one-command republishes.
 
 Run edits against the dev server, not against repeated production uploads:
 
@@ -391,13 +410,14 @@ saw — do these in order, without asking again:
 1. **Commit the course source**, when the workspace is a git repository. Stage the course files you
    actually changed, write a message naming the change, and stop there. Never `git push`, never
    `git init` a workspace that is not already a repository, and never commit `dist/`,
-   `node_modules/`, or `.vercel/` — if `dist/` is untracked and unignored, leave it untracked and say
+   `node_modules/`, `.vercel/`, or `.herenow/` — if `dist/` is untracked and unignored, leave it untracked and say
    so once. Outside a repository, skip this step silently; it is a convenience, not a gate.
 2. **Rebuild and re-run the gates** — `bun run build`, then `bun run verify` and `bun run test`. The
    dev server proves nothing about the artifact that gets uploaded.
 3. **Hand back the absolute `dist/` path** with the re-upload instruction for the recorded method:
-   `bun run deploy` for a CLI publish, or the drop walkthrough plus the name-reclaiming step from
-   [references/vercel.md](references/vercel.md) for a browser upload.
+   `bun run deploy` for here.now/API or a CLI publish; the drop walkthrough plus the name-reclaiming
+   step from [references/vercel.md](references/vercel.md) for a Vercel browser upload; see
+   [references/here-now.md](references/here-now.md) for `--slug` updates on here.now.
 
 An approval of a change is not an instruction to publish it. Build, commit, and offer — then wait.
 The user decides when learners see the new version, and on the drop route they are the only one who
