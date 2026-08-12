@@ -159,7 +159,7 @@ When the material is written and the user has approved it, call \`witherspoon_bu
         'the per-stage contracts behind the pipeline: how to pick the running example, the topic ' +
         'generation contract, the grounding expedition, activity and project specs, the quality ' +
         'gates, the course.json schema, the site build gates, the widget catalogue, the visuals ' +
-        'pipeline, the localStorage contract, and the Vercel publishing reference. Fetch one at a ' +
+        'pipeline, the localStorage contract, and the here.now / Vercel publishing references. Fetch one at a ' +
         'time, when you need it.',
       inputSchema: {
         doc: z.enum(referenceNames).describe('Which reference document to fetch.'),
@@ -262,13 +262,13 @@ When the gates pass, call \`witherspoon_publish\`.`,
     {
       title: 'Publish the course website',
       description:
-        'Publish a built Witherspoon course site to a public URL by direct artifact upload — Vercel ' +
-        'by default, or Netlify, Cloudflare Pages, or any host the user names. Recommends the ' +
-        'browser upload at vercel.com/drop first, which needs no CLI and works even when the ' +
-        'harness cannot run commands on the user’s machine, with the Vercel CLI for repeatable ' +
-        'one-command updates. Handles authentication, optional custom domains, and verifies the ' +
-        'live site from the public internet before reporting. Never deploys through GitHub. Use ' +
-        'when the user asks to publish, deploy, host, upload, or share the course website.',
+        'Publish a built Witherspoon course site to a public URL by direct artifact upload — ' +
+        'here.now by default (agent API / publish.sh to https://{slug}.here.now; anonymous 24h or ' +
+        'permanent with an API key), with Vercel Drop/CLI as advanced alternatives, or Netlify, ' +
+        'Cloudflare Pages, or any host the user names. Handles authentication, optional custom ' +
+        'domains, and verifies the live site from the public internet before reporting. Never ' +
+        'deploys through GitHub. Use when the user asks to publish, deploy, host, upload, or share ' +
+        'the course website.',
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async () =>
@@ -276,11 +276,11 @@ When the gates pass, call \`witherspoon_publish\`.`,
         envelope({
           title: 'Witherspoon — course-publish',
           body: skill.publish(),
-          next: `Fetch \`witherspoon_reference\` with \`doc: "vercel"\` at Stage 3 if the user chose Vercel,
-which is the default. That reference carries both routes: the browser drop to recommend first, and
-the CLI for repeatable updates.
+          next: `Fetch \`witherspoon_reference\` with \`doc: "here-now"\` at Stage 3 for the default host.
+That reference covers publish.sh / API, anonymous 24h vs permanent Sites, and republish with --slug.
+If the user chose Vercel instead, fetch \`doc: "vercel"\` — Drop and CLI remain advanced alternatives.
 
-On the drop route the upload happens in the user's browser, so Stage 3 ends by handing over the
+On a browser-drop route the upload happens in the user's browser, so Stage 3 ends by handing over the
 folder path and project name and waiting for them to return a URL — never report that step as done.
 
 Publication is not complete until the public browser check in Stage 5 passes.`,

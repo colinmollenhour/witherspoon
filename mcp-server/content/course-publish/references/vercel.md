@@ -1,6 +1,6 @@
 # Vercel publishing contract
 
-Use Vercel as a direct static host. Current official references:
+Use Vercel as an **advanced / alternative** direct static host when the user chooses it over the default here.now path. Current official references:
 
 - Vercel Drop (browser upload): <https://vercel.com/docs/drop>
 - CLI overview: <https://vercel.com/docs/cli>
@@ -8,19 +8,21 @@ Use Vercel as a direct static host. Current official references:
 - Custom domains: <https://vercel.com/docs/domains/working-with-domains>
 - Plan limits: <https://vercel.com/docs/limits>
 
-Vercel is the default because it serves `index.html` at the root of a directory, so the shareable URL
-is the bare hostname with no `/index.html` suffix, and because it takes a built directory straight
-from the machine with no repository, no CI, and no Git connection.
+Vercel remains available because it serves `index.html` at the root of a directory, so the shareable
+URL is the bare hostname with no `/index.html` suffix, and because it takes a built directory straight
+from the machine with no repository, no CI, and no Git connection. Prefer here.now for first-time and
+typical publishes ([here-now.md](here-now.md)); use this reference when the user explicitly wants
+Vercel, or when the harness cannot run shell commands and a browser drop is the only workable route.
 
-There are two ways to get `dist/` there, and they are not ranked by sophistication:
+There are two ways to get `dist/` there:
 
 - **[Method A — Vercel Drop](#method-a--vercel-drop-drag-the-folder-into-the-browser).** The user
   drags the `dist` folder onto a web page. Nothing to install, nothing to log into from a terminal,
-  no command to mistype. **This is the default for a first publish**, and the only one that works
-  when the user's harness cannot run commands on their machine at all.
+  no command to mistype. Use this when the user chose Vercel Drop, or when the harness cannot run
+  commands on their machine at all.
 - **[Method B — Vercel CLI](#method-b--vercel-cli-one-command-repeatable).** One command, repeatable,
-  redeploys into the *same* project so the URL never changes. This is the better loop for a course
-  that gets updated often — and the fallback whenever Method A's project naming gets in the way.
+  redeploys into the *same* project so the URL never changes. Better for a course that gets updated
+  often on Vercel — and the fallback whenever Method A's project naming gets in the way.
 
 Both publish to production and both produce the same kind of URL. Choose on who is doing the work:
 Method A is the user's browser, Method B is your terminal.

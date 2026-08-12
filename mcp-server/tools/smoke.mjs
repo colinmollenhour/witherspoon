@@ -95,7 +95,8 @@ check(
 
 const publish = await callText('witherspoon_publish');
 check(publish.includes('No GitHub'), 'publish keeps the no-GitHub rule');
-check(publish.includes('Vercel'), 'publish defaults to Vercel');
+check(publish.includes('here.now'), 'publish defaults to here.now');
+check(publish.includes('Vercel'), 'publish still documents Vercel as an alternative');
 check(!/tigris/i.test(publish), 'publish no longer references Tigris');
 check(!/tigris/i.test(site), 'build_site no longer references Tigris');
 

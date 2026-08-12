@@ -16,3 +16,6 @@ course-template/.mcp.json
 
 # Vercel CLI project linkage — local state, and a stale one silently redeploys elsewhere.
 .vercel/
+
+# here.now local publish state — claim tokens and slug cache; never commit.
+.herenow/

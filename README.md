@@ -141,32 +141,28 @@ with JavaScript off) — not for reading the course back:
 cd course-<slug>/dist && python3 -m http.server 8000
 ```
 
-**5 · Publish — free.** Ask your agent to publish the course. The route it recommends first needs no
-terminal at all: drag `course-<slug>/dist` onto [vercel.com/drop](https://vercel.com/drop), type a
-project name, and the site is live. Your agent builds the folder, gives you the exact path and name,
-walks you through the four steps, and then opens the resulting URL from the public internet to check
-it before calling it published. Nothing is installed, and nothing goes through GitHub — signing in to
-Vercel with a GitHub account creates no repository and connects nothing.
+**5 · Publish — free.** Ask your agent to publish the course. The default is
+[here.now](https://here.now/docs): the agent uploads `course-<slug>/dist` via API (create → upload →
+finalize, or the official `publish.sh` helper) and you get a live `https://{slug}.here.now` link. No
+GitHub, no CI, no browser drag-and-drop. Anonymous publishes need no account and expire in 24 hours;
+a free account API key makes Sites permanent — see [pricing](https://here.now/pricing.md). The agent
+opens the resulting URL from the public internet to check it before calling it published.
 
-If you would rather it did the whole thing, or you expect to update the course often, the same skill
-uses the Vercel CLI instead: one command, redeployed into the same project, so the link never
-changes. A drop always creates a *new* project, so keeping one stable link across re-uploads means
-freeing the old project's name first — the skill walks you through that too, and it is the main
-reason to graduate to the CLI.
+Vercel remains available as an **advanced alternative**: drag `dist/` onto
+[vercel.com/drop](https://vercel.com/drop), or use the Vercel CLI for one-command republishes into the
+same project. Prefer those when you specifically want Vercel, or when the agent cannot run shell
+commands on your machine and a browser drop is the only workable route.
 
-A course site is static files with no backend, which makes it essentially free to host. Vercel is the
-default for one specific reason: it serves `index.html` at the root, so the link you share is a bare
-`https://your-course.vercel.app` rather than something ending in `/index.html`. Its free **Hobby**
-plan covers personal and educational publishing; commercial use needs a paid plan, and the skill says
-so before you log in rather than after you publish.
+A course site is static files with no backend, which makes it essentially free to host. here.now is
+the default because an agent can publish the built folder directly and the shareable link is a bare
+hostname (`https://your-course.here.now`) with `index.html` at the root. Netlify and Cloudflare Pages
+are built in too, and naming any other provider and upload mechanism will use that instead. Every
+route is direct artifact upload; nothing goes through a repository or CI.
 
 **Then keep editing.** `bun run dev` for small changes — a reworded paragraph appears on save. When
-you say it looks good, the agent commits the course source and re-cuts the build, and hands you back
-the `dist/` folder to upload again. It does not publish on its own; that stays your call.
-
-Any other static host works too — Netlify and Cloudflare Pages are built in, and naming any other
-provider and upload mechanism will use that instead. Every route is direct artifact upload; nothing
-goes through a repository or CI.
+you say it looks good, the agent commits the course source and re-cuts the build, then republishes
+(or hands you back the `dist/` folder on a browser-drop route). It does not publish on its own; that
+stays your call.
 
 ## Output layout
 
@@ -420,9 +416,9 @@ sequenceDiagram
     U->>A: publish it
 
     A->>W: witherspoon_publish
-    A->>W: witherspoon_reference [vercel]
-    A-->>U: drag course-slug/dist onto vercel.com/drop as <name>
-    U->>A: the live URL
+    A->>W: witherspoon_reference [here-now]
+    A->>M: publish.sh course-slug/dist
+    M-->>A: https://slug.here.now
     A->>M: open the live URL and exercise it
     A-->>U: verified public link
 ```
@@ -433,9 +429,8 @@ runtime install is raised *there*, to be done in parallel with a fan-out that ta
 more. And **references are fetched at the stage that needs them**, not up front; that is the whole
 reason the pipeline fits in a context window alongside the course being written.
 
-The one step at the end that is genuinely yours is the drop, because it happens in your browser
-rather than on your machine. Choosing the CLI route instead moves it back to the agent, at the cost
-of an install and a terminal login.
+The default publish runs on the agent via here.now. Choosing Vercel Drop instead is the step that is
+genuinely yours in the browser; the Vercel CLI route keeps republishes with the agent.
 
 `content/` in the server is generated from `.claude/skills/` by `tools/sync-content.mjs`, and
 `npm run check` fails if it has drifted — editing a `SKILL.md` and forgetting to sync would quietly
@@ -458,7 +453,8 @@ serve last month's pipeline. The server is stateless, so it replicates and resta
 | `course-site/references/build-gates.md` | what each of S1–S15 means |
 | `course-site/references/widgets.md` | the widget catalogue, for authors |
 | `course-site/references/visuals.md` | composing diagram and infographic skills; fallbacks |
-| `course-publish/references/vercel.md` | the browser drop walkthrough, the CLI route, custom hostnames |
+| `course-publish/references/here-now.md` | default host: API/`publish.sh`, anonymous vs permanent, republish |
+| `course-publish/references/vercel.md` | advanced alternative: browser drop, CLI route, custom hostnames |
 
 ## The name
 
