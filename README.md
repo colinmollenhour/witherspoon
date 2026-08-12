@@ -143,10 +143,11 @@ cd course-<slug>/dist && python3 -m http.server 8000
 
 **5 · Publish — free.** Ask your agent to publish the course. The default is
 [here.now](https://here.now/docs): the agent uploads `course-<slug>/dist` via API (create → upload →
-finalize, or the official `publish.sh` helper) and you get a live `https://{slug}.here.now` link. No
+finalize, or the official `publish.sh` helper) and returns the live URL from that publish result. No
 GitHub, no CI, no browser drag-and-drop. Anonymous publishes need no account and expire in 24 hours;
-a free account API key makes Sites permanent — see [pricing](https://here.now/pricing.md). The agent
-opens the resulting URL from the public internet to check it before calling it published.
+a free account makes Sites permanent once the agent saves an API key locally (credentials file or
+env var — never paste a key into chat) — see [pricing](https://here.now/pricing.md). The agent opens
+the resulting URL from the public internet to check it before calling it published.
 
 Vercel remains available as an **advanced alternative**: drag `dist/` onto
 [vercel.com/drop](https://vercel.com/drop), or use the Vercel CLI for one-command republishes into the
@@ -418,7 +419,7 @@ sequenceDiagram
     A->>W: witherspoon_publish
     A->>W: witherspoon_reference [here-now]
     A->>M: publish.sh course-slug/dist
-    M-->>A: https://slug.here.now
+    M-->>A: publish_result.site_url
     A->>M: open the live URL and exercise it
     A-->>U: verified public link
 ```

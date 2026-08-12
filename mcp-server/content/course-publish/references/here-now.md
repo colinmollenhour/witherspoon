@@ -35,15 +35,11 @@ hearing it before the upload.
 - Optional: `$HERENOW_API_KEY`, or `~/.herenow/credentials` (mode `0600`).
 - Optional: the here.now skill / `publish.sh` helper.
 
-Install the helper when it is missing:
+Install the helper when it is missing (use your harness’s skill installer; for example):
 
-```bash
-npx skills add heredotnow/skill --skill here-now
-```
+    npx skills add heredotnow/skill --skill here-now
 
-Locate `scripts/publish.sh` under the installed skill directory (the exact parent path is
-harness-dependent). If the helper cannot be installed, follow the create → upload → finalize API in
-<https://here.now/docs> / <https://here.now/skill.md> — same contract, more typing.
+Locate `scripts/publish.sh` under the installed skill directory (the exact parent path is harness-dependent). If the helper cannot be installed, follow the create → upload → finalize API in <https://here.now/docs> / <https://here.now/skill.md> — same contract, more typing.
 
 Required binaries only. Never ask the user to paste an API key into chat. For permanence, use the
 agent email-code flow below and write the returned key to `~/.herenow/credentials` yourself.
