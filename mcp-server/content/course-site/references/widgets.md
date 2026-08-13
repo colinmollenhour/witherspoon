@@ -178,6 +178,30 @@ whose order is arbitrary.
 `from`/`to` are indices into `actors`. A message to its own sender fails the build. Two to four
 actors; beyond that the exchange is too big for one widget. The runtime adds a step-through control.
 
+**Order `actors` caller first, callee last.** A message renders as a *return* — muted number, tinted
+arrow — whenever `to` is less than `from`. Nothing declares that; it is derived from the indices
+alone. With two actors the order is forced and this never comes up. With three it decides whether
+each row reads as a call or a reply, so put whatever the others call (the server, the API, the
+database) last, and the human or external trigger first:
+
+```json
+{
+  "type": "sequence",
+  "actors": ["Operator", "App", "Vault"],
+  "messages": [
+    { "from": 1, "to": 2, "label": "Read the credential" },
+    { "from": 2, "to": 1, "label": "Return it with a lease" },
+    { "from": 0, "to": 2, "label": "Revoke the lease early" }
+  ]
+}
+```
+
+Listing those as `["Operator", "Vault", "App"]` instead would build, verify, and render — with the
+app's read drawn as a reply and Vault's answer drawn as an outbound call. This is the one widget
+mistake the build cannot catch, because a backwards message is indistinguishable from a deliberate
+one. Read the diagram back before shipping it: every row drawn as a return must be an actual
+response to the row above it.
+
 ### `tree` — an annotated hierarchy
 
 ```json
