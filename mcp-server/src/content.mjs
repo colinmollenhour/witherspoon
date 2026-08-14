@@ -29,7 +29,7 @@ export const VERSION = JSON.parse(
 export const TEMPLATE_VERSION = '1.1.0';
 
 /**
- * Flat names, because they are unique across the three skills and an agent choosing
+ * Flat names, because they are unique across the skills and an agent choosing
  * from an enum should not have to know which skill owns which document.
  */
 export const REFERENCES = {
@@ -40,6 +40,14 @@ export const REFERENCES = {
   'outline-contract': {
     path: 'course-builder/references/outline-contract.md',
     blurb: 'the per-topic generation contract format (Stage 3)',
+  },
+  'outline-critic': {
+    path: 'course-builder/references/outline-critic.md',
+    blurb: 'the Stage 3 critic: cut satellites before the user sees the syllabus',
+  },
+  'learner-pass': {
+    path: 'course-builder/references/learner-pass.md',
+    blurb: 'read the course as a first-hour learner; in-pipeline editor and invoked review',
   },
   grounding: {
     path: 'course-builder/references/grounding.md',
@@ -119,7 +127,12 @@ export function loadAll() {
       missing.push(`${name} → ${rel}`);
     }
   }
-  for (const rel of ['course-builder/SKILL.md', 'course-site/SKILL.md', 'course-publish/SKILL.md']) {
+  for (const rel of [
+    'course-builder/SKILL.md',
+    'course-site/SKILL.md',
+    'course-publish/SKILL.md',
+    'course-review/SKILL.md',
+  ]) {
     try {
       read(rel);
     } catch {
@@ -163,6 +176,7 @@ export const skill = {
   builder: () => read('course-builder/SKILL.md'),
   site: () => read('course-site/SKILL.md'),
   publish: () => read('course-publish/SKILL.md'),
+  review: () => read('course-review/SKILL.md'),
 };
 
 export function reference(name) {

@@ -26,12 +26,34 @@ assessment bureaucracy on hero, about, unit intros, project goals, skills, or CT
 | How this works / evidence from your screen / checks | How this runs / captured evidence / grading scripts |
 
 **Metrics stay** where the learner acts on them: command budgets, pass %, ports, sizes, weights, field
-rules in `completionCriteria`. Put cohort studies, librarian quotes, and competitor surveys **inside
-a reading** when they teach — not on the homepage about.
+rules in `completionCriteria`. Cohort studies, librarian surveys, and competitor audits belong in
+an FAQ or not at all — never on the homepage, and never as the personality of a reading.
 
-**Sentence craft:** short and direct. One concrete payoff per paragraph. British spelling in prose.
-Cut educational jargon (*mastery threshold*, *observable behaviors*, *blank playbook*, *cohort*)
-unless the domain itself uses the term (e.g. a real privileged-port threshold of 1024).
+**The page teaches; the ledger proves.** `SOURCES.md` holds verbatim quotes. Contracts hold claims,
+numbers, and `[src N]` ids. Learner-facing files (`read.md`, `brief.md`, `README.md`, homepage
+about, unit copy) do **not** carry `[src N]`, view-count rhetoric ("56,565 views"), or blockquotes
+from researchers, librarians, or RFC preambles. Allowed on the page: an error message, a command's
+own output, or a single sentence that *is* the object of study. A generation prompt that says "use
+the ACRLog quotes" will put those quotes on the page — do not write that prompt.
+
+**Sentence craft:** short and direct. One idea per sentence. One concrete payoff per paragraph.
+A sentence over ~25 words is a candidate to split. A 50-word clause-stack is a defect, even when
+every clause is true. British spelling in prose. Cut educational jargon (*mastery threshold*,
+*observable behaviors*, *blank playbook*, *cohort*) unless the domain itself uses the term (e.g. a
+real privileged-port threshold of 1024).
+
+**Define on first use.** The first time a domain term appears, give it one short sentence. Do not
+open a topic — especially Unit 1 — with a paragraph that assumes the unit's whole vocabulary. A
+first-hour glossary (a small table, one sentence each) belongs in the first topic, not in the last
+unit's reference card.
+
+**Honesty has a place.** Docs-vs-code discrepancies, ungrounded published numbers, and "the page is
+wrong" findings belong in an FAQ, a version appendix, or a later topic that has earned them. They
+are not the personality of the first hour.
+
+**One default dialect.** The spine names it. Topic 1 (or a short setup appendix on it) owns install
+and the platform map. Every later topic writes the default only. Variants are an "On a Mac / On
+Windows" box of a few lines. Restating the full three-platform table after setup is a defect.
 
 ## Course-level fields
 
@@ -114,6 +136,16 @@ the description only if you need a second emphasis — not as the lead.
 
 2–4 per unit. Each has a title, a description, **three learning objectives**, and a contract.
 
+**Title** names the thing they will do or hold, not a thesis. *Where your files actually live*
+beats *A tablet hides the filesystem; a dev machine hands it to you*.
+
+**Unit 1 order** is in `spine.md` → First hour. Follow it; do not restate it here.
+
+**Handoff is a state change.** `Leaves` must differ from `Inherits`. Equal states mean the topic
+is a sidebar — fold it into the page that needs it, do not give it a quiz. The outline critic
+(`outline-critic.md`) walks this before the user sees the syllabus. The interview picked a size
+*band*, not a quota; do not fill 21 slots because a large option existed.
+
 ### Learning objectives — the hard part
 
 Three per topic. Each is an **observable action with the real API, term, number, or artifact
@@ -153,14 +185,16 @@ One per topic. This exact shape:
 ## Topic generation prompt
 
 <3–6 sentences. What to teach, in what order, anchored to the running example. Name the
-specific numbers, listings, API calls, or source passages to use. State explicitly what NOT
-to cover because a later topic owns it.>
+specific numbers, listings, API calls, or figures to use — not "paste this quote". State
+explicitly what NOT to cover because a later topic owns it. Write the default dialect;
+variants are a short box, not a second outline.>
 
 ## Grounded facts
 
 <Added in Stage 6, after the expedition. Every figure, API signature, and misconception this
-topic may use, each with its ledger reference. The topic agent may not introduce a number
-that is not listed here — see references/grounding.md.>
+topic may use, each with its ledger reference. Claims and numbers — not verbatim quotes to
+paste. The topic agent may not introduce a number that is not listed here — see
+references/grounding.md.>
 
 - <fact> [src N]
 - Teach from: <primary source>, <the specific listing / figure / table>
@@ -168,7 +202,10 @@ that is not listed here — see references/grounding.md.>
 ## Requested activities
 
 - READ: <what it must cover, the artifact state it starts from, and what it must end by
-  setting up. Length target.>
+  setting up. Length target. Name the widget type if one is earned, and any spatial
+  figure. The opening is a thing they type, click, or open — not a lecture. First
+  topic of the course: they touch the running example, and it ends with a first-hour
+  glossary.>
 - FLASHCARDS: <what to card>. <N> cards.
 - QUIZ: <N> questions on <specific decisions/discriminations>.
 - LECTURE: <slide count, what must be fully worked on screen>.
@@ -184,14 +221,16 @@ that is not listed here — see references/grounding.md.>
 
 Model it on the real thing:
 
-> Explain how to scale to multiple thread blocks. Cover `gridDim.x` and `blockIdx.x`, compute
-> `numBlocks = (N + blockSize - 1) / blockSize`, and present the grid-stride loop pattern. Reference
-> Figure 1 from the article. Mention that, surprisingly, this doesn't speed things up yet — that's
-> the cliffhanger for Unit 3.
+> The learner already has `add.cu` compiling. Open on that file, not on a lecture about occupancy.
+> Define `gridDim` and `blockIdx` in one sentence each the first time they appear. Cover
+> `numBlocks = (N + blockSize - 1) / blockSize` and the grid-stride loop. One idea per sentence.
+> Reference Figure 1 from the article. Use a `flow` widget for the launch config, not a five-column
+> table. Mention that, surprisingly, this doesn't speed things up yet — that's the cliffhanger for
+> Unit 3. Do NOT recap why GPUs exist; topic 1 already did.
 
 Note what it does: names the exact identifiers, names the exact formula, points at a specific source
-figure, and states the emotional beat the topic must land. That last clause is what makes the
-independently-written topic connect to Unit 3.
+figure, states the emotional beat, **says what they already have in their hands**, and forbids a
+recap the previous topic already taught. A prompt that only lists facts to cover produces an essay.
 
 ### Writing good activity requests
 

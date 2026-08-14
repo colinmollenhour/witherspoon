@@ -143,6 +143,21 @@ counts as synthesis rather than summary.
 
 ## Project brief (`brief.md`)
 
+The learner reads this. The grader does not live here.
+
 Assemble as: title → `goal` → `config.instructions` → steps as a checklist → a pointer to
-`rubric.md`. The rubric is written to `rubric.md` as a weights table plus criterion descriptions,
-and the tests to `tests/`.
+`rubric.md`. Target **~800 words**. **Hard cap 1,200.** Past that, you have written a grading
+manual; move the extra into `rubric.md` or `tests/`.
+
+`config.instructions` keeps five sections — How this works, Your tasks, What the scaffolding is
+for (one short spine paragraph, not a lecture), Expected output, Rules — and nothing else.
+
+**Stays out of the brief** (author-side only):
+
+- adversarial rationale and "what shortcut this catches" (that is `testCases[].description`)
+- environment image tags, pinned Python versions, distro codenames
+- how the test scripts parse a file
+- rubric philosophy
+
+The rubric is written to `rubric.md` as a weights table plus criterion descriptions, and the tests
+to `tests/`. Gate G18 fails a brief over the cap.

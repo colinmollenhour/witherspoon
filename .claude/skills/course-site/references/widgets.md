@@ -47,9 +47,10 @@ Eight types. Pick by the shape of the thing being taught, not by variety.
 
 ### `anatomy` — dissect one literal string
 
-**The highest-value widget in a technical course.** A path, a URL, a command line, an HTTP request
-line, an `ls -la` row and a log line are all *grammars*. A learner who can point at each piece and
-name it has learned the topic.
+**The highest-value widget for a string that is a grammar** — a path, a URL, a command line, an HTTP
+request line, an `ls -la` row, a log line. A learner who can point at each piece and name it has
+learned that string. It is the wrong widget for a system, a topology, or a decision table; those
+need a `flow`, a `match`, a `sequence`, or a figure.
 
 ```json
 {
@@ -91,6 +92,10 @@ For "A hands off to B hands off to C". Each step can carry the detail behind it.
 Details render below the chain, one at a time.
 
 ### `compare` — the same aspects across two or three things
+
+**Two or three columns. Never four or five.** A five-column compare is a wall of text wearing a
+widget chrome. Four or more shapes is a `match` (symptom → response) or a figure (which link broke).
+Keep each cell to a sentence, not a paragraph.
 
 ```json
 {

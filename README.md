@@ -3,7 +3,7 @@
 Generate a complete, grounded course — readings, flashcards, quizzes, unit tests, and graded
 hands-on projects — then build it into a self-contained static website.
 
-Three agent skills plus one shared [Astro](https://astro.build) template. The skills are plain
+Four agent skills plus one shared [Astro](https://astro.build) template. The skills are plain
 directories of Markdown, so any agent harness that loads skills can run them. The site builder is
 ordinary Node and runs on its own.
 
@@ -13,11 +13,12 @@ printable certificate. Built from `course-from-apps-to-machines/` in this repo, 
 
 ```
 .claude/skills/course-builder/   subject → course-<slug>/          (material)
+.claude/skills/course-review/    existing course → a first-hour pass (refine)
 .claude/skills/course-site/      course-<slug>/ → dist/            (website)
 .claude/skills/course-publish/   dist/ → a public URL              (hosting)
 course-template/                 the shared Astro builder — every course uses it
 create-witherspoon-course/       `bun create witherspoon-course` — sets the builder up
-mcp-server/                      serves the three skills over MCP — nothing to install
+mcp-server/                      serves the four skills over MCP — nothing to install
 course-from-apps-to-machines/    a worked example: 6 units, 21 topics, 6 projects
 ```
 
@@ -221,6 +222,14 @@ nothing. What separated them was structural.
    read the official docs?"* — and the answer has to be specific about what the official treatment
    leaves out.
 
+7. **Every topic changes the running example's state.** Mentioning the artifact is not enough.
+   `Leaves` must differ from `Inherits`. A tool-skill that does not move the spine is a sidebar,
+   not a topic with its own quiz.
+
+8. **The page teaches; the ledger proves.** Verbatim quotes and `[src N]` live in `SOURCES.md`.
+   The reading teaches the claim in the teacher's voice. Isolated writers will paste the ledger
+   unless the contract forbids it and a later pass strips what leaked through.
+
 ## `course.json`
 
 The course graph, abridged to the fields that carry pedagogical weight. Full schema in
@@ -258,24 +267,29 @@ is correct; the model that wrote the question already knew.
 
 ## Pipeline
 
-`course-builder` runs nine stages, with exactly one human gate:
+`course-builder` runs nine stages, with exactly one human gate on the syllabus:
 
 1. **Scan** *(silent)* — orient over the working directory and any attached sources.
-2. **Interview** — four questions in one turn, each with a recommended default.
-3. **Spine** *(provisional)* — pick the running example and the measurable transformation *before*
-   outlining. Unconfirmed numbers are marked `?`.
-4. **Outline** *(provisional)* — units, topics, objectives, and a `_contract.md` per topic, with at
-   least one designed failure moment.
-5. **Approve** — **the only gate.** Approving opts into both fan-outs; after it, work runs
-   autonomously.
+2. **Interview** — six questions in one turn, each with a recommended default. Size is a band,
+   not a quota; the default is ~3 units / 6–10 topics.
+3. **Spine** *(provisional)* — pick the running example, the measurable transformation, and the
+   default dialect *before* outlining. Unconfirmed numbers are marked `?`.
+4. **Outline** *(provisional), then criticise it* — units, topics, objectives, and a `_contract.md`
+   per topic. A critic that did not write the contracts cuts satellites (`Leaves` must differ from
+   `Inherits`) before anyone sees the syllabus.
+5. **Approve** — **the only gate on the outline.** The user approves the criticised syllabus.
+   Approving opts into both fan-outs; after it, work runs autonomously.
 6. **Ground** — parallel research across five angles: primary source · authoritative numbers ·
    current-state check · misconception harvest · prior-art gap. Produces `SOURCES.md`.
 7. **Refine** — corrected numbers propagate to the spine, subtitle, and every contract; harvested
    misconceptions become quiz distractors; the prior-art gap becomes the "why this over the docs"
    FAQ. An invalidated premise is the one finding that reopens the gate.
 8. **Generate** — one subagent per topic and per project, each handed only its own contract and its
-   ledger rows. **No agent may introduce a number absent from its grounded facts.**
-9. **Verify** — the gates below.
+   ledger rows. **No agent may introduce a number absent from its grounded facts.** The page
+   teaches; the ledger stays in `SOURCES.md`.
+9. **Verify, then the learner pass** — structural gates, then one editor that did not write the
+   topics reads the course as a first-hour learner and applies cuts (no new facts, no syllabus
+   change). Re-check anything it touched.
 
 ### Quality gates — the build fails on any
 
@@ -284,7 +298,10 @@ is correct; the model that wrote the question already knew.
 - rubric weights that do not sum to 100
 - a `completionCriteria` no machine can check
 - a project with no adversarial test case
-- a topic that drops the running example
+- a topic that does not change the running example's state (`Leaves` equals `Inherits`)
+- `[src N]` or view-count rhetoric in a file the learner reads
+- a project brief over 1,200 words
+- a first topic that is only a lecture
 - an unpinned project environment
 - **a number that traces to no ledger row** — fabrication, not a placeholder
 - a `SOURCES.md` row without a resolvable source, a paraphrased "quote", or a surviving `?`
@@ -330,19 +347,21 @@ that browser. The architecture can verify nothing, so the page never implies it 
 
 ## The MCP server
 
-`mcp-server/` serves the same three skills over MCP, so a course can be authored with nothing
+`mcp-server/` serves the same four skills over MCP, so a course can be authored with nothing
 installed. It ships **instructions only**. A server reached over a URL has no filesystem and no shell
 on your machine, so every tool returns a document and your agent does the work with its own tools —
 which means it needs file and shell access. A chat-only client can run the interview and nothing
 else, and the server says so rather than half-building a course.
 
-Five tools. The descriptions carry the routing vocabulary, so *"help me build a course for my 3rd
-grade science class"* reaches the right one without anybody naming a tool:
+Six tools. The descriptions carry the routing vocabulary, so *"help me build a course for my 3rd
+grade science class"* reaches the builder, and *"this course is hard to follow"* reaches the
+reviewer, without anybody naming a tool:
 
 | Tool | Returns | Called |
 | --- | --- | --- |
-| `witherspoon_start_course` | the nine-stage authoring pipeline | once, at the start |
-| `witherspoon_reference` | one of 14 reference documents | at each stage that names one |
+| `witherspoon_start_course` | the nine-stage authoring pipeline | once, at the start of a new course |
+| `witherspoon_review_course` | the first-hour review pipeline | when a course already exists and is hard to follow |
+| `witherspoon_reference` | one of 17 reference documents | at each stage that names one |
 | `witherspoon_build_site` | the site-build pipeline | after you approve the material |
 | `witherspoon_publish` | the publishing pipeline | when you ask for a public URL |
 | `witherspoon_prereqs` | Node/Bun install commands per platform | only if the runtime probe fails |
@@ -374,6 +393,8 @@ sequenceDiagram
     W-->>A: running example, transformation, failure moment
     A->>W: witherspoon_reference [outline-contract]
     W-->>A: the per-topic generation contract
+    A->>W: witherspoon_reference [outline-critic]
+    A->>A: one critic cuts satellites
     end
 
     opt no runtime found
@@ -393,6 +414,8 @@ sequenceDiagram
     A->>W: witherspoon_reference [activity-specs, project-types]
     A->>M: fan out one agent per topic and project
     A->>W: witherspoon_reference [quality-gates]
+    A->>W: witherspoon_reference [learner-pass]
+    A->>A: one editor, first-hour pass
     A->>M: course-slug/ — markdown + course.json
     end
 
@@ -424,7 +447,12 @@ sequenceDiagram
     A-->>U: verified public link
 ```
 
-Two things that diagram is meant to make obvious. **There is exactly one gate on the material** —
+A course that already exists and is hard to follow is a different door. Say so in a new chat —
+*"this is too dense"*, *"review this course"* — and the agent calls `witherspoon_review_course`
+instead of starting over. It reads the lessons as a first-hour learner, tells you what to change,
+and waits. It does not rebuild the syllabus unless you ask.
+
+Two things that diagram is meant to make obvious. **There is exactly one gate on the outline** —
 once you approve the syllabus, the writing runs to completion without stopping, which is why the
 runtime install is raised *there*, to be done in parallel with a fan-out that takes twenty minutes or
 more. And **references are fetched at the stage that needs them**, not up front; that is the whole
@@ -443,6 +471,9 @@ serve last month's pipeline. The server is stateless, so it replicates and resta
 | --- | --- |
 | `course-builder/references/spine.md` | picking the running example and the transformation |
 | `course-builder/references/outline-contract.md` | the per-topic generation contract format |
+| `course-builder/references/outline-critic.md` | cut satellite topics before the approval gate |
+| `course-builder/references/learner-pass.md` | first-hour review rubric (in-pipeline editor and invoked review) |
+| `course-review/SKILL.md` | review an existing course; diagnose, wait, then apply |
 | `course-builder/references/grounding.md` | the five-angle expedition and the `SOURCES.md` ledger |
 | `course-builder/references/activity-specs.md` | per-type rules: length, structure, counts |
 | `course-builder/references/project-types.md` | the 8 project types, environments, rubrics |

@@ -78,7 +78,7 @@ running problem, and `LECTURE` replaces projects as the second activity.
 
       "topics": [
         {
-          "title": "string",
+          "title": "string — the thing they will do or hold, not a thesis",
           "description": "string",
           "orderIndex": 0,
           "instructions": "Topic generation prompt: …\nRequested activities:\n- READ: …",

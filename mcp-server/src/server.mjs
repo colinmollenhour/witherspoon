@@ -34,6 +34,68 @@ const PROBE = 'node --version 2>/dev/null || bun --version 2>/dev/null || echo M
 const text = (value) => ({ content: [{ type: 'text', text: value }] });
 
 /**
+ * User-supplied framing (subject, concern) is interpolated into a markdown
+ * envelope. Collapse whitespace, drop fence/emphasis characters, and cap length
+ * so a caller cannot break the surrounding instructions or smuggle a second
+ * heading. The words still get through; the markup does not.
+ */
+function framingPlain(value) {
+  return String(value)
+    .replace(/[`*_#<>[\]\\]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 240);
+}
+
+/**
+ * Returned by witherspoon_review_course. Written for an agent whose user only knows
+ * how to add an MCP server. The coding-agent skill (course-review) is more terse;
+ * this is the same pipeline in ordinary words. The checklist itself is `learner-pass`.
+ */
+const REVIEW_FOR_NOVICES = `The user already has a course. They find it hard to follow, too long,
+too dense, or they asked you to review or refine it.
+
+**Do not build a new course.** Do not interview them for a subject. Do not start the nine-stage
+authoring pipeline.
+
+## How to talk to them
+
+They connected a plugin and they have a folder of lessons. They do not know what a contract or a
+gate is. Tell them what you found in ordinary sentences. Never ask them to run a named tool.
+
+> I have not changed any files. Tell me what to apply — all of it, only the first item, or
+> something else — and I will make those edits.
+
+That is the only pause. Wait for a real yes.
+
+## Find the course
+
+Look for a file named \`course.json\`. That file is the course. Search the folder you are in and
+one folder down.
+
+- One match: use it. Tell them the course title you found, in one sentence.
+- Several matches: show the titles in plain language and ask which one.
+- No match: ask where their course folder is. Stop until they point at one.
+
+## What to do
+
+1. Fetch the review checklist — one document, named \`learner-pass\`.
+2. Follow it. Two phases:
+   - **Look first.** Read the home copy, every Unit 1 lesson in order, every project brief, and
+     the start-and-end state of every topic. Sample one later lesson. Do not edit.
+   - **Tell them.** What is already strong, what to change first, what to leave alone. Then
+     **stop and wait** (the quoted line above). End the turn by printing the
+     "Second pair of eyes" prompt from that checklist — a block they can paste into a
+     new chat with a different assistant. Do not answer that prompt yourself.
+   - **Fix only after they say to go.** You may cut, move, or rephrase. You may not invent new
+     facts. You may not add or delete a lesson unless they asked to change the outline.
+3. After edits, if they already have a website built from this course, offer to rebuild it so
+   the pages match. Do not rebuild unless they ask.
+
+If something in the checklist and something on the page disagree, believe the page in front of
+the learner and say so.`;
+
+/**
  * Only reached when the probe found nothing. If the machine already has npm, none of
  * this applies — npm is as well supported as bun, and installing a second runtime
  * over a working one is pure friction.
@@ -85,9 +147,12 @@ export function createServer() {
       instructions:
         'Witherspoon builds complete, source-grounded courses and turns them into self-contained ' +
         'static websites. Call witherspoon_start_course when the user wants a course, curriculum, ' +
-        'syllabus, training program, or lesson sequence built. The server returns instructions; you ' +
-        'carry them out with your own file, shell, and subagent tools, so you need a working ' +
-        'filesystem and shell. Fetch one document per stage rather than all of them up front.',
+        'syllabus, training program, or lesson sequence built. Call witherspoon_review_course when ' +
+        'they already have a course and it is hard to follow, too long, too dense, or they want it ' +
+        'reviewed or refined — do not start a new course in that case. The server returns ' +
+        'instructions; you carry them out with your own file, shell, and subagent tools, so you ' +
+        'need a working filesystem and shell. Fetch one document per stage rather than all of them ' +
+        'up front.',
     },
   );
 
@@ -112,8 +177,9 @@ export function createServer() {
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async ({ subject }) => {
-      const framing = subject
-        ? `The user wants a course on: **${subject}**. Hold that through the interview — do not ask ` +
+      const subjectPlain = subject ? framingPlain(subject) : '';
+      const framing = subjectPlain
+        ? `The user wants a course on: **${subjectPlain}**. Hold that through the interview — do not ask ` +
           `again for anything they have already told you.\n\n`
         : '';
       return text(
@@ -151,16 +217,59 @@ When the material is written and the user has approved it, call \`witherspoon_bu
   );
 
   server.registerTool(
+    'witherspoon_review_course',
+    {
+      title: 'Review an existing course',
+      description:
+        'Review and refine a course the user already has, so a first-hour learner can finish it. ' +
+        'Use when they say the course is hard to follow, hard to grok, too long, too dense, too ' +
+        'much like a lecture, or they ask to review, refine, clean up, or improve existing ' +
+        'lessons. Also use when they have a course.json folder and want a first-hour pass, not a ' +
+        'rebuild. Do NOT use this to generate a new course — that is witherspoon_start_course. ' +
+        'Returns a two-phase pipeline: look first, tell them, wait, then edit only after they say go.',
+      inputSchema: {
+        concern: z
+          .string()
+          .optional()
+          .describe(
+            'What they said is hard, if they said it. Free text; used only for framing. Do not invent a concern.',
+          ),
+      },
+      annotations: { readOnlyHint: true, openWorldHint: false },
+    },
+    async ({ concern }) => {
+      const concernPlain = concern ? framingPlain(concern) : '';
+      const framing = concernPlain
+        ? `The user said this is hard: **${concernPlain}**. Hold that. Do not ask them to restate it.\n\n`
+        : '';
+      return text(
+        envelope({
+          title: 'Witherspoon — review an existing course',
+          body: `${framing}${REVIEW_FOR_NOVICES}`,
+          next: `Find the course folder first (a file named \`course.json\`). Then fetch
+\`witherspoon_reference\` with \`doc: "learner-pass"\` and follow it as an **invoked review**:
+diagnose, tell the user, **stop and wait**. Apply only after they say to go.
+
+Do not call \`witherspoon_start_course\`. Do not interview them for a new subject.
+
+If they later want the website rebuilt so the pages match the edits, call \`witherspoon_build_site\`
+— only when they ask.`,
+        }),
+      );
+    },
+  );
+
+  server.registerTool(
     'witherspoon_reference',
     {
       title: 'Fetch a Witherspoon reference document',
       description:
         'Fetch one Witherspoon reference document by name, at the stage that calls for it. These are ' +
         'the per-stage contracts behind the pipeline: how to pick the running example, the topic ' +
-        'generation contract, the grounding expedition, activity and project specs, the quality ' +
-        'gates, the course.json schema, the site build gates, the widget catalogue, the visuals ' +
-        'pipeline, the localStorage contract, and the here.now / Vercel publishing references. Fetch one at a ' +
-        'time, when you need it.',
+        'generation contract, the outline critic, the learner-pass review rubric, the grounding ' +
+        'expedition, activity and project specs, the quality gates, the course.json schema, the ' +
+        'site build gates, the widget catalogue, the visuals pipeline, the localStorage contract, ' +
+        'and the here.now / Vercel publishing references. Fetch one at a time, when you need it.',
       inputSchema: {
         doc: z.enum(referenceNames).describe('Which reference document to fetch.'),
       },

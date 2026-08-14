@@ -27,6 +27,23 @@ whose "improvement" cannot be measured.
 **Test:** can you write the same artifact's state at the end of every unit, in one line each? If not,
 it is not a spine.
 
+**Every topic changes that state.** The one-line state a topic inherits and the one-line state it
+leaves behind must differ. A topic that only *mentions* the artifact is a sidebar on the page that
+needs it — not a topic with its own quiz. This is the compression rule; the outline critic enforces
+it before the user ever sees the syllabus.
+
+**First hour.** The first topic of the course must put this artifact in the learner's hands. They
+run it, open it, click it, or read a real status dump from it. A topic that explains *why the tool
+exists*, lists non-goals, or contrasts it with a competitor is not a first topic — it comes after
+they have touched the thing. **Do → name the parts → then the bet** is the default Unit 1 order.
+The reverse is how a course opens with a 1,200-word essay and a live cluster in topic 3.
+
+**Default dialect.** Name the path, OS, or tool the running example is written in — one, not all of
+them. Exactly one setup topic (or a short appendix on topic 1) owns install and the platform map.
+Every later page writes the default. Variants are an "On a Mac / On Windows" box of a few lines,
+never a restated three-column table. A course that forks every paragraph into three operating
+systems is three courses interleaved; nobody finishes the one they are on.
+
 ### 2. The measurable transformation
 
 A before number and an after number, both real.
@@ -63,7 +80,8 @@ Rules:
 
 ### 4. Title and subtitle
 
-- **Title** — plain, says what it is. Not clever.
+- **Title** — names the artifact or the transformation. Plain, not clever, not a catalogue of
+  subjects. *Same file, three addresses* beats *Files, the Terminal, and the Web Under the Hood*.
 - **Subtitle** — states the transformation with the numbers in it.
 
 > "Learn how to write GPU programs in CUDA from scratch, starting with why GPUs exist and ending with
@@ -81,9 +99,11 @@ SPINE
   Transformation:    <before number> → <after number>
   Per-unit state:    U1 <state> · U2 <state> · U3 <state> …
   Failure moment:    Unit <N> — <the wall> → resolved in Unit <M>
+  Default dialect:   <the path / OS / tool the example is written in>
+  Setup owns:        <the one topic or appendix that holds the platform map>
   Title:             <title>
   Subtitle:          <subtitle>
 ```
 
-Every topic must touch the running example. A topic that does not is either mis-scoped or belongs in
-a different course — cut it or re-aim it.
+Every topic must change the running example's state. A topic that does not is either mis-scoped or
+belongs in a different course — cut it or fold it into a sidebar.

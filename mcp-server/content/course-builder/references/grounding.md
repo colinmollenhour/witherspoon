@@ -87,7 +87,8 @@ Return: what the existing treatments cover, what they consistently omit, and the
 
 ## `SOURCES.md`
 
-The ledger. Written before generation, shipped with the course, and quoted by topic agents.
+The ledger. Written before generation and shipped with the course. Topic agents teach from its
+*claims and numbers*. They do not paste its quotes onto the page.
 
 ```markdown
 # Sources
@@ -144,5 +145,6 @@ After refinement, each `_contract.md` gains a section before its activity list:
 - Teach from: <primary source>, Figure 1 and the timing table
 ```
 
-This is what the topic agent quotes from. It is also the constraint: **a topic agent may not
-introduce a number that is not in its grounded facts.** Gate G11 enforces it.
+Claims, numbers, and a pointer at the figure to teach from — **not** "paste quote 173 onto the
+page." The topic agent may not introduce a number that is not in this block (gate G11). It also
+may not dump the ledger into the reading (gate G16). The verbatim quotes stay in `SOURCES.md`.

@@ -34,6 +34,10 @@ check(
   (client.getInstructions() ?? '').includes('witherspoon_start_course'),
   'server instructions point at the entry tool',
 );
+check(
+  (client.getInstructions() ?? '').includes('witherspoon_review_course'),
+  'server instructions point at the review tool',
+);
 
 const { tools } = await client.listTools();
 const names = tools.map((t) => t.name).sort();
@@ -42,6 +46,7 @@ const expected = [
   'witherspoon_prereqs',
   'witherspoon_publish',
   'witherspoon_reference',
+  'witherspoon_review_course',
   'witherspoon_start_course',
 ].sort();
 check(
@@ -55,6 +60,11 @@ check(
 const start = tools.find((t) => t.name === 'witherspoon_start_course');
 for (const word of ['course', 'curriculum', 'syllabus', 'lesson', 'training']) {
   check(start?.description?.toLowerCase().includes(word), `entry description mentions "${word}"`);
+}
+
+const review = tools.find((t) => t.name === 'witherspoon_review_course');
+for (const word of ['review', 'refine', 'dense', 'follow', 'existing']) {
+  check(review?.description?.toLowerCase().includes(word), `review description mentions "${word}"`);
 }
 
 async function callText(name, args = {}) {
@@ -104,8 +114,35 @@ const prereqs = await callText('witherspoon_prereqs', { platform: 'windows' });
 check(prereqs.includes('Microsoft Store'), 'prereqs leads with the platform block');
 check(prereqs.includes('bun.sh/install'), 'prereqs includes the install command');
 
+const reviewed = await callText('witherspoon_review_course', { concern: 'too dense' });
+check(reviewed.includes('too dense'), 'review_course threads the concern through');
+const injected = await callText('witherspoon_review_course', {
+  concern: 'too dense\n```\n# smuggled\n`code`',
+});
+check(injected.includes('too dense'), 'review_course keeps the concern words after sanitise');
+check(!injected.includes('```'), 'review_course strips fences from concern');
+check(!injected.includes('# smuggled'), 'review_course strips a smuggled heading from concern');
+check(reviewed.includes('Do not build a new course'), 'review_course refuses a rebuild');
+check(reviewed.includes('operating instructions'), 'review_course carries the imperative framing');
+check(reviewed.includes('## Next call'), 'review_course ends with a next-call pointer');
+check(reviewed.includes('learner-pass'), 'review_course points at the rubric');
+const reviewQuoted = reviewed
+  .split('\n')
+  .filter((line) => line.trimStart().startsWith('> '))
+  .join('\n');
+const reviewLeaked = reviewQuoted.match(/course-site|course-publish|course-builder|course-review|witherspoon_\w+/)?.[0];
+check(
+  reviewQuoted.length > 0 && !reviewLeaked,
+  'review user-facing handoff names no skill or tool',
+  reviewLeaked ?? `${reviewQuoted.split('\n').length} quoted lines clean`,
+);
+
 const spine = await callText('witherspoon_reference', { doc: 'spine' });
 check(spine.includes('running example'), 'reference: spine');
+const pass = await callText('witherspoon_reference', { doc: 'learner-pass' });
+check(pass.includes('first-hour learner'), 'reference: learner-pass');
+const critic = await callText('witherspoon_reference', { doc: 'outline-critic' });
+check(critic.includes('Leaves'), 'reference: outline-critic');
 
 const listed = start ? tools.find((t) => t.name === 'witherspoon_reference') : null;
 const enumValues = listed?.inputSchema?.properties?.doc?.enum ?? [];

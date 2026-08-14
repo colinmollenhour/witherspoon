@@ -1,8 +1,9 @@
 # Witherspoon MCP server
 
-Serves the three Witherspoon skills to any agent that can connect to an MCP URL. The user installs
+Serves the four Witherspoon skills to any agent that can connect to an MCP URL. The user installs
 nothing: they add the server, say *"build me a course on photosynthesis for my 3rd grade class"*, and
-their agent fetches the pipeline one stage at a time.
+their agent fetches the pipeline one stage at a time. If they already have a course and say it is
+hard to follow, that is a different tool — review, not a rebuild.
 
 ```bash
 npm install
@@ -27,7 +28,8 @@ The site builder is not served from here. It is a separate npm package,
 | Tool | Returns |
 | --- | --- |
 | `witherspoon_start_course` | the entry point — course-builder's nine stages, plus the reference index |
-| `witherspoon_reference` | one of 14 reference documents, by name |
+| `witherspoon_review_course` | first-hour review of an existing course — look, tell, wait, then edit |
+| `witherspoon_reference` | one of 17 reference documents, by name |
 | `witherspoon_build_site` | course-site, plus the runtime gate and the scaffold command |
 | `witherspoon_publish` | course-publish |
 | `witherspoon_prereqs` | Node/Bun install commands for a given platform |
