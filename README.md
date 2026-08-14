@@ -1,26 +1,26 @@
-# witherspoon
+# Witherspoon
 
 Generate a complete, grounded course — readings, flashcards, quizzes, unit tests, and graded
-hands-on projects — then build it into a self-contained static website.
+hands-on projects — then build it into a self-contained static website and host it for free — *zero
+programming knowledge needed*.
 
-Four agent skills plus one shared [Astro](https://astro.build) template. The skills are plain
+**→ [See a finished course](https://course-from-apps-to-machines.vercel.app)** — *Same File, Three Addresses*: 4 units, 12 topics, quizzes and tests, interactive widgets, and a
+printable certificate.
+
+**Connect to MCP**
+```
+https://witherspoon.up.railway.app/mcp
+```
+or **Install the Skill**
+```
+npx skills add colinmollenhour/witherspoon
+```
+
+----
+
+What is it, technically? Four agent skills plus one shared [Astro](https://astro.build) template. The skills are plain
 directories of Markdown, so any agent harness that loads skills can run them. The site builder is
 ordinary Node and runs on its own.
-
-**→ [See a finished course](https://course-from-apps-to-machines.vercel.app)** —
-*Same File, Three Addresses*: 4 units, 12 topics, quizzes and tests, interactive widgets, and a
-printable certificate. Built from `course-from-apps-to-machines/` in this repo, and hosted free.
-
-```
-.claude/skills/course-builder/   subject → course-<slug>/          (material)
-.claude/skills/course-review/    existing course → a first-hour pass (refine)
-.claude/skills/course-site/      course-<slug>/ → dist/            (website)
-.claude/skills/course-publish/   dist/ → a public URL              (hosting)
-course-template/                 the shared Astro builder — every course uses it
-create-witherspoon-course/       `bun create witherspoon-course` — sets the builder up
-mcp-server/                      serves the four skills over MCP — nothing to install
-course-from-apps-to-machines/    a worked example: 4 units, 12 topics, 6 projects
-```
 
 Two ways in. **Connect the MCP server** and ask your agent for a course — it fetches each stage as it
 needs it, and the only thing that ever lands on your machine is the course itself plus the site
