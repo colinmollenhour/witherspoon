@@ -116,6 +116,12 @@ check(prereqs.includes('bun.sh/install'), 'prereqs includes the install command'
 
 const reviewed = await callText('witherspoon_review_course', { concern: 'too dense' });
 check(reviewed.includes('too dense'), 'review_course threads the concern through');
+const injected = await callText('witherspoon_review_course', {
+  concern: 'too dense\n```\n# smuggled\n`code`',
+});
+check(injected.includes('too dense'), 'review_course keeps the concern words after sanitise');
+check(!injected.includes('```'), 'review_course strips fences from concern');
+check(!injected.includes('# smuggled'), 'review_course strips a smuggled heading from concern');
 check(reviewed.includes('Do not build a new course'), 'review_course refuses a rebuild');
 check(reviewed.includes('operating instructions'), 'review_course carries the imperative framing');
 check(reviewed.includes('## Next call'), 'review_course ends with a next-call pointer');

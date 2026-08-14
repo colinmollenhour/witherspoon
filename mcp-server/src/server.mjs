@@ -34,6 +34,20 @@ const PROBE = 'node --version 2>/dev/null || bun --version 2>/dev/null || echo M
 const text = (value) => ({ content: [{ type: 'text', text: value }] });
 
 /**
+ * User-supplied framing (subject, concern) is interpolated into a markdown
+ * envelope. Collapse whitespace, drop fence/emphasis characters, and cap length
+ * so a caller cannot break the surrounding instructions or smuggle a second
+ * heading. The words still get through; the markup does not.
+ */
+function framingPlain(value) {
+  return String(value)
+    .replace(/[`*_#<>[\]\\]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 240);
+}
+
+/**
  * Returned by witherspoon_review_course. Written for an agent whose user only knows
  * how to add an MCP server. The coding-agent skill (course-review) is more terse;
  * this is the same pipeline in ordinary words. The checklist itself is `learner-pass`.
@@ -163,8 +177,9 @@ export function createServer() {
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async ({ subject }) => {
-      const framing = subject
-        ? `The user wants a course on: **${subject}**. Hold that through the interview — do not ask ` +
+      const subjectPlain = subject ? framingPlain(subject) : '';
+      const framing = subjectPlain
+        ? `The user wants a course on: **${subjectPlain}**. Hold that through the interview — do not ask ` +
           `again for anything they have already told you.\n\n`
         : '';
       return text(
@@ -223,8 +238,9 @@ When the material is written and the user has approved it, call \`witherspoon_bu
       annotations: { readOnlyHint: true, openWorldHint: false },
     },
     async ({ concern }) => {
-      const framing = concern
-        ? `The user said this is hard: **${concern}**. Hold that. Do not ask them to restate it.\n\n`
+      const concernPlain = concern ? framingPlain(concern) : '';
+      const framing = concernPlain
+        ? `The user said this is hard: **${concernPlain}**. Hold that. Do not ask them to restate it.\n\n`
         : '';
       return text(
         envelope({

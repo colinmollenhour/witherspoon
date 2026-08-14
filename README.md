@@ -8,7 +8,7 @@ directories of Markdown, so any agent harness that loads skills can run them. Th
 ordinary Node and runs on its own.
 
 **→ [See a finished course](https://course-from-apps-to-machines.vercel.app)** —
-*Same File, Three Addresses*: 4 units, 12 topics, quizzes and tests, interactive widgets, and a
+*From Apps to Machines*: 6 units, 21 topics, 27 quizzes and tests, interactive widgets, and a
 printable certificate. Built from `course-from-apps-to-machines/` in this repo, and hosted free.
 
 ```
@@ -19,7 +19,7 @@ printable certificate. Built from `course-from-apps-to-machines/` in this repo, 
 course-template/                 the shared Astro builder — every course uses it
 create-witherspoon-course/       `bun create witherspoon-course` — sets the builder up
 mcp-server/                      serves the four skills over MCP — nothing to install
-course-from-apps-to-machines/    a worked example: 4 units, 12 topics, 6 projects
+course-from-apps-to-machines/    a worked example: 6 units, 21 topics, 6 projects
 ```
 
 Two ways in. **Connect the MCP server** and ask your agent for a course — it fetches each stage as it
@@ -452,7 +452,7 @@ A course that already exists and is hard to follow is a different door. Say so i
 instead of starting over. It reads the lessons as a first-hour learner, tells you what to change,
 and waits. It does not rebuild the syllabus unless you ask.
 
-Two things that build diagram is meant to make obvious. **There is exactly one gate on the outline** —
+Two things that diagram is meant to make obvious. **There is exactly one gate on the outline** —
 once you approve the syllabus, the writing runs to completion without stopping, which is why the
 runtime install is raised *there*, to be done in parallel with a fan-out that takes twenty minutes or
 more. And **references are fetched at the stage that needs them**, not up front; that is the whole
