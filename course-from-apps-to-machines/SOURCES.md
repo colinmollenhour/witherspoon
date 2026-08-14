@@ -4,9 +4,16 @@ Every load-bearing number, command, error string, and claim in this course trace
 Quotes are verbatim. Where a fact could not be verified, it appears under **Ungrounded** and the
 course either cuts it, teaches the method for finding it, or flags it in the topic.
 
-Research date: **29 July 2026**. Angles: A1 primary source · A2 authoritative numbers ·
-A3 current-state check (a=Python, b=macOS, c=Linux, d=WSL) · A4 misconception harvest ·
-A5 prior-art gap.
+Research date: **29 July 2026**, confirmed **13 August 2026**. Angles: A1 primary source ·
+A2 authoritative numbers · A3 current-state check (a=Python, b=macOS, c=Linux, d=WSL) ·
+A4 misconception harvest · A5 prior-art gap.
+
+**13 August confirmation.** Python docs are now 3.14.7 (page footer "Last updated on Aug 13, 2026").
+The `http.server` CLI contract is unchanged: default port 8000, bind-all, HTTP/1.0, `index.html`
+index pages, production warning, CGI removed in 3.15. Captured teaching output remains the
+3.14.6 run from 29 July (`Server: SimpleHTTP/0.6 Python/3.14.6`). WSL mirrored-mode LAN path
+is still documented on Microsoft Learn as Win 11 22H2+, not the default. RFC 1918 and the
+IANA port table are unchanged. No spine number moved.
 
 ---
 
@@ -282,22 +289,22 @@ Claims that could not be verified, and what was done about them.
   Microsoft, but the *combination* — mirrored mode + `New-NetFirewallHyperVRule` on port 8000 + a phone
   on Wi-Fi — is not shown as a worked example anywhere in MS docs, and microsoft/WSL issue #10769 is
   still open on precisely this friction. No Windows machine was available to test it.
-  **Resolution: flagged in Topic 21**, which tells WSL learners plainly that this path is documented but
+  **Resolution: flagged in Topic 12**, which tells WSL learners plainly that this path is documented but
   not verified end to end by the course, and gives the diagnostic sequence rather than promising success.
 - **Whether the macOS Application Firewall is off by default.** Apple documents the configuration UI and
-  the alert dialog but makes no statement of default state. **Resolution: taught as method** — Topic 20
+  the alert dialog but makes no statement of default state. **Resolution: taught as method** — Topic 12
   has learners check their own firewall state rather than asserting a default.
 - **Whether `nano` and `less` still ship on current macOS.** `nano.1` and `less.1` return 404 on the
   current Xcode man-page mirror, while `pico.1` is present; the mirror's coverage is demonstrably
-  incomplete. **Resolution: taught as method** — Topic 8 has learners run `which nano` before relying on
+  incomplete. **Resolution: taught as method** — Topic 6 has learners run `which nano` before relying on
   it, and teaches `vi`'s escape hatch regardless.
 - **A real LAN IPv4 address, default gateway, `ping` round-trip output, and a live `dig` answer.** The
   research container had only a loopback interface, and raw sockets and DNS were blocked. No fabricated
-  output was substituted. **Resolution: taught as method** — Topics 11, 12, and 14 teach the commands and
+  output was substituted. **Resolution: taught as method** — Topics 7 and 8 teach the commands and
   how to read their output shape, and every worked example uses either the real loopback capture (row 51)
-  or a documented-example address, never an invented one.
+  or a documented-example address, never an invented one. DNS / `dig` is no longer a topic.
 - **macOS/BSD privileged-port behaviour.** Row 55 grounds the rule on Linux only. macOS has no
-  `net.ipv4.ip_unprivileged_port_start`. **Resolution: flagged** — Topic 20 states the rule as a
+  `net.ipv4.ip_unprivileged_port_start`. **Resolution: flagged** — Topic 12 states the rule as a
   Unix convention and cites the Linux source, without claiming the sysctl is cross-platform.
 - **Exact `curl` version shipped with current macOS.** Apple does not publish component versions.
   **Resolution: cut** — no curl version number appears in the course.

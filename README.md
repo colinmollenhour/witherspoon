@@ -8,7 +8,7 @@ directories of Markdown, so any agent harness that loads skills can run them. Th
 ordinary Node and runs on its own.
 
 **→ [See a finished course](https://course-from-apps-to-machines.vercel.app)** —
-*From Apps to Machines*: 6 units, 21 topics, 27 quizzes and tests, interactive widgets, and a
+*Same File, Three Addresses*: 4 units, 12 topics, quizzes and tests, interactive widgets, and a
 printable certificate. Built from `course-from-apps-to-machines/` in this repo, and hosted free.
 
 ```
@@ -19,7 +19,7 @@ printable certificate. Built from `course-from-apps-to-machines/` in this repo, 
 course-template/                 the shared Astro builder — every course uses it
 create-witherspoon-course/       `bun create witherspoon-course` — sets the builder up
 mcp-server/                      serves the four skills over MCP — nothing to install
-course-from-apps-to-machines/    a worked example: 6 units, 21 topics, 6 projects
+course-from-apps-to-machines/    a worked example: 4 units, 12 topics, 6 projects
 ```
 
 Two ways in. **Connect the MCP server** and ask your agent for a course — it fetches each stage as it
@@ -522,7 +522,7 @@ licenses the course under the GPL than writing an essay in a GPL editor does.
 
 ## Sources
 
-*From Apps to Machines* is grounded in **186 ledger rows across 41 distinct sources**, recorded in
+*Same File, Three Addresses* is grounded in **186 ledger rows across 41 distinct sources**, recorded in
 its [`SOURCES.md`](course-from-apps-to-machines/SOURCES.md) with a verbatim quote against each claim.
 The bulk are primary and normative: Microsoft Learn for the WSL and Windows paths, the RFC Editor for
 HTTP and IP behaviour, Ubuntu man pages and the Open Group base specifications for shell commands,

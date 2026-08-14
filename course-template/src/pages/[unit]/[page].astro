@@ -299,16 +299,53 @@ const longRead = props.kind === 'topic' || props.kind === 'project';
           </section>
         )}
 
-        {props.project.data.rubric.length > 0 && (
-          <section id="project-rubric">
-            <h2>How it is graded</h2>
-            <Rubric rubric={props.project.data.rubric} />
+        {
+          /* Starter files are the next action. Rubric, test cases, and grader
+             source stay on the page (S4) but behind <details> so the assignment
+             is not a grading spec. */
+        }
+        {props.project.data.starterFiles.length > 0 && (
+          <section id="project-starter">
+            <h2>Your files</h2>
+            <p>
+              Download these onto your machine and fill them in. The brief says which, and what
+              “done” looks like.
+            </p>
+            {props.project.data.starterFiles.map((f) => {
+              const name = f.name.split('/').pop() || f.name;
+              const href = `data:text/plain;charset=utf-8,${encodeURIComponent(f.content)}`;
+              return (
+                <div class="card filelist" style="margin:1rem 0">
+                  <p style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;margin:0 0 .6rem">
+                    <strong>{name}</strong>
+                    <a class="btn btn--quiet" href={href} download={name}>
+                      Download
+                    </a>
+                  </p>
+                  <pre>
+                    <code>{f.content}</code>
+                  </pre>
+                </div>
+              );
+            })}
           </section>
         )}
 
+        <p class="card">
+          On your machine, run the tests in this project’s <code>tests/</code> folder. Each one
+          prints <code>PASS</code> or a <code>FAIL:</code> line that names what is wrong.
+        </p>
+
+        {props.project.data.rubric.length > 0 && (
+          <details class="filelist card" id="project-rubric">
+            <summary>How it is graded</summary>
+            <Rubric rubric={props.project.data.rubric} />
+          </details>
+        )}
+
         {props.project.data.testCases.length > 0 && (
-          <section id="project-test-cases">
-            <h2>Test cases</h2>
+          <details class="filelist card" id="project-test-cases" style="margin-top:1rem">
+            <summary>Test cases and grader source</summary>
             <div class="scroll-x">
               <table>
                 <thead>
@@ -336,8 +373,7 @@ const longRead = props.kind === 'topic' || props.kind === 'project';
               </table>
             </div>
             {props.project.data.testCases.some((tc) => tc.source) && (
-              <details class="filelist card" style="margin-top:1rem">
-                <summary>Grader source</summary>
+              <div style="margin-top:1rem">
                 {props.project.data.testCases
                   .filter((tc) => tc.source)
                   .map((tc) => (
@@ -348,32 +384,10 @@ const longRead = props.kind === 'topic' || props.kind === 'project';
                       </pre>
                     </>
                   ))}
-              </details>
+              </div>
             )}
-          </section>
+          </details>
         )}
-
-        {props.project.data.starterFiles.length > 0 && (
-          <section id="project-starter">
-            <h2>Starter files</h2>
-            <details class="filelist card">
-              <summary>{props.project.data.starterFiles.length} files</summary>
-              {props.project.data.starterFiles.map((f) => (
-                <>
-                  <h3>{f.name}</h3>
-                  <pre>
-                    <code>{f.content}</code>
-                  </pre>
-                </>
-              ))}
-            </details>
-          </section>
-        )}
-
-        <p class="card">
-          Projects are not auto-graded here. The rubric and the test cases above are the grading
-          contract — run them yourself on your own machine.
-        </p>
       </>
     )
   }
