@@ -45,6 +45,8 @@ Budget, and hold to it:
 - **At most one unit hero per unit.** It illustrates that unit's slice of the spine.
 - **Diagrams only where a widget will not do.** Most of what used to justify a diagram is now a
   `flow`, a `sequence`, or a `tree`, all of which theme and reflow and cost nothing to produce.
+  Spatial ideas a widget cannot carry — a three-site topology, five partition cuts, two timelines
+  on one axis — still need a figure. Prefer a hand SVG with real labels over a generated raster.
 - **Never decorative.** If the alt text would be "illustration of the topic", do not generate it.
 - **No exact text, numbers, or labeled charts in generated rasters.** Image models garble them.
   Put labels in a widget, an SVG, or the caption. Unit heroes should be metaphors, not screenshots

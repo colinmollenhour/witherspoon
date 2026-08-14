@@ -1,6 +1,6 @@
 ---
 name: course-builder
-description: Generate complete course material — units, topics, learning objectives, readings, flashcards, quizzes, unit tests, and graded hands-on projects — from a topic description or from source documents. Researches and grounds the material against real sources before writing. Use when the user asks to build, create, or generate a course, curriculum, training program, syllabus, onboarding track, or lesson sequence. Outputs a reviewable markdown tree plus an importable course.json.
+description: Generate complete course material — units, topics, learning objectives, readings, flashcards, quizzes, unit tests, and graded hands-on projects — from a topic description or from source documents. Researches and grounds the material against real sources before writing. Use when the user asks to build, create, or generate a course, curriculum, training program, syllabus, onboarding track, or lesson sequence. Do not use when they already have a course directory and want it reviewed, refined, or made easier to follow — that is course-review. Outputs a reviewable markdown tree plus an importable course.json.
 ---
 
 # Course Builder
@@ -27,16 +27,23 @@ course-<slug>/
 
 Write into the user's working directory unless they name a path.
 
+If the user already has a course directory and wants it reviewed, refined, or made easier to
+follow, **stop this pipeline**. That is the review path — a skill named `course-review`, or the
+`witherspoon_review_course` tool — not a new build.
+
 ## Non-negotiables
 
 These are the quality bar. Do not proceed past a stage that violates one.
 
 1. **One running example threads the whole course.** The same artifact is carried, modified, and
-   re-measured in every unit. Pick it in Stage 2, before outlining.
+   re-measured in every unit. Pick it in Stage 2, before outlining. A topic that only *mentions*
+   the artifact has failed — its leaving state must differ from the one it inherited.
 2. **The transformation is measurable.** The subtitle states a concrete before→after with real
    numbers. If you cannot name the numbers, you do not understand the course yet.
 3. **Every load-bearing number, API, and claim traces to `SOURCES.md`.** Nothing is written from
-   recall alone. An ungrounded figure is a defect, not a placeholder.
+   recall alone. An ungrounded figure is a defect, not a placeholder. The ledger stays in
+   `SOURCES.md`; the page teaches the claim. `[src N]` and researcher quotes do not ship in
+   learner-facing files.
 4. **Objectives are observable actions with the real API, term, or artifact embedded.** Three per
    topic. "Understand X" is a defect; "Use `X` to do Y" is an objective. The string that ships to the
    learner is that action in natural language — not checklist-speak (see learner-facing voice below).
@@ -47,10 +54,13 @@ These are the quality bar. Do not proceed past a stage that violates one.
 7. **Project grading is machine-checkable.** `completionCriteria` a script can evaluate, rubric
    weights summing to 100, at least one adversarial test case, a pinned environment.
 8. **Learner-facing voice is energetic, direct, and credible.** Hero copy, about, unit descriptions,
-   project goals, skills, and readings lead with capability and real situations — not compliance
-   metrics, literacy surveys, or assessment bureaucracy. Short sentences. Age-appropriate without
-   sounding childish, slangy, or patronizing. Exact numbers stay where the learner needs them for
-   instructions, scoring, or transparency.
+    project goals, skills, and readings lead with capability and real situations — not compliance
+    metrics, literacy surveys, or assessment bureaucracy. Short sentences. Age-appropriate without
+    sounding childish, slangy, or patronizing. Exact numbers stay where the learner needs them for
+    instructions, scoring, or transparency.
+9. **The first hour is a thing they do, not a lecture they survive.** Topic 1 puts the running
+   example in the learner's hands before any design-rationale or "why this tool" topic. Details:
+   `references/spine.md` → First hour.
 
 **References.** Each stage below names a reference document. Load it at the moment that stage calls
 for it — from `references/<name>.md` beside this file, or by fetching `<name>` through a reference
@@ -90,7 +100,7 @@ already told you; drop that question and keep the rest.
 | --- | --- | --- |
 | Audience | Who is this for, and at what level? | Inferred band `(Recommended)` · two other plausible bands |
 | Feel | How should the course feel? | Hands-on projects · Reading + assessment · Mixed |
-| Size | How big? | ~3 units / 6 topics · ~6 units / 21 topics · Compact single unit |
+| Size | How big? | ~3 units / 6–10 topics `(Recommended)` · ~6 units / 12–16 topics · Compact single unit |
 | Template | Structure? | `project-based` · `academic` |
 | Rights | How may other people use this course? | All rights reserved · CC BY-NC-ND 4.0 · CC BY 4.0 · CC0 1.0 |
 | Holder | Who should the copyright notice name? | Reliably inferred person/organization `(Recommended)` · No named holder · exact name under Other |
@@ -113,6 +123,11 @@ legal advice; describe what each standardized choice permits.
 `project-based` = every unit ends in built work. `academic` = lecture-and-assessment led, projects
 optional. See `references/schema.md`.
 
+The size question is a **band**, not a quota. Recommend 6–10 topics unless the running example
+clearly has more state-changes than that. The large band is allowed only when every topic can
+write a different one-line artifact state; the outline critic will cut down to that. Do not offer
+21 topics as a target.
+
 Never ask a second interview round. If something is still ambiguous after this, decide it, state the
 assumption in one line at the approval gate, and move on. Licensing and holder are never assumptions:
 the interview answer is copied exactly into `course.json`.
@@ -124,15 +139,16 @@ the interview answer is copied exactly into `course.json`.
 - the running example (one concrete artifact)
 - the measurable transformation (before number → after number)
 - the designed failure moment (which unit, what wall, what cliffhanger)
+- the default dialect and which topic owns the platform map
 - the title and the subtitle stating the transformation
 
 Numbers here are provisional — best-effort from what you know, to be confirmed or corrected in
 Stage 5. Mark any figure you are not certain of with `?`.
 
-If you cannot fill all four slots even provisionally, the course concept is not ready. Reshape it
-until you can.
+If you cannot fill the running example, the transformation, the failure moment, and the default
+dialect even provisionally, the course concept is not ready. Reshape it until you can.
 
-### Stage 3 — Outline (provisional)
+### Stage 3 — Outline (provisional), then criticise it
 
 **Read `references/outline-contract.md`.** Produce the full outline in context — do not write files
 yet: `about`, `skills[]`, `faqs[]`, units, topics with three objectives each and a full
@@ -141,11 +157,18 @@ yet: `about`, `skills[]`, `faqs[]`, units, topics with three objectives each and
 Every topic's contract must be self-sufficient: a writer who sees only that contract must produce
 something that interlocks with its neighbours.
 
+**Then read `references/outline-critic.md` and run the critic before Stage 4.** Spawn one agent that
+did not write the contracts. It may only cut, merge, reorder, and rewrite contracts — it may not
+add topics or change the spine. Replace your outline with its result. Do not present the first
+draft. If you cannot spawn, do a distinct critic pass yourself: list the satellites, cut them,
+then continue.
+
 ### Stage 4 — Approve
 
-Present the outline as a compact syllabus: title, subtitle, the transformation numbers (marked where
-provisional), the failure moment, the selected license and copyright holder, and the unit/topic tree.
-Then state exactly:
+Present the **criticised** outline as a compact syllabus: title, subtitle, the transformation
+numbers (marked where provisional), the failure moment, the default dialect, the selected license
+and copyright holder, and the unit/topic tree. In one line, say what the critic cut and why. Then
+state exactly:
 
 > Approve and I'll ground this against real sources — **M** research agents confirming the numbers,
 > APIs, and misconceptions — then build with **N** topic and project agents. Tell me what to change
@@ -214,7 +237,8 @@ is what matters, the concurrency is only speed.
 
 Agents do not talk to each other and do not read sibling topics. The contract is the interface. Tell
 each agent its final message is a one-line status, not a summary of what it wrote, and that it must
-not introduce a number absent from its grounded facts.
+not introduce a number absent from its grounded facts, must write the default dialect only, and
+must not put `[src N]` or ledger quotes on the page.
 
 A topic agent writes `read.md` as prose — including any ```` ```widget ```` blocks its reading earns,
 per `references/activity-specs.md` — and returns its **quiz and flashcards as structured data**,
@@ -245,12 +269,20 @@ there: who created it, when (UTC `YYYY-MM-DD`), why, and that it was made with
 existing workspace README. Never put this *inside* `course-<slug>/` in place of the course README
 (about / syllabus) that Stage 7 already writes.
 
-### Stage 8 — Verify
+### Stage 8 — Verify, then the learner pass
 
-**Read `references/quality-gates.md` and run every check.** Fix what fails, then report:
+**Read `references/quality-gates.md` and run every blocking check.** Fix what fails.
+
+**Then read `references/learner-pass.md` and run the learner pass.** Spawn one editor that did not
+write the topics. This is the in-pipeline caller: diagnose, then apply — no second user gate. The
+user approved the syllabus, not the essays. The editor may cut, move, or rephrase; it may not add
+facts or change the syllabus. Re-run every gate whose files it touched.
+
+Then report:
 
 - what was built (units, topics, projects, question count)
 - the transformation numbers, and what grounding changed
+- what the outline critic cut, and what the learner pass changed
 - the selected license, copyright year, and named holder (or explicitly no named holder)
 - anything you assumed
 - any gate that needed a fix
@@ -268,6 +300,9 @@ has no way to run either, and telling them to "run `course-site`" is an instruct
 follow. Whether the next stage arrives as a skill named `course-site` or as a `witherspoon_build_site`
 tool call is yours to know and theirs to be spared.
 
+Then end the turn with the **Second pair of eyes** prompt from `learner-pass.md`. Print it for them
+to copy. Do not answer it yourself.
+
 Do not start it yourself. It is a separate stage that runs only after the user has approved the
 material. **Do not generate site artwork here** either: images live under `assets/`, are wiped out of
 `dist/` on every rebuild, and only become part of the product when the site stage wires them through
@@ -277,6 +312,7 @@ pipeline is how visuals get orphaned.
 ## Notes
 
 - Prefer fewer, deeper topics over more, thinner ones. Three real objectives beat eight vague ones.
+  The critic and G6 (`Leaves` ≠ `Inherits`) are how that preference becomes a check, not a wish.
 - Non-technical subjects get the identical treatment: the running example becomes a running scenario
   (one prospect, one patient, one case file), the measurable transformation becomes a rubric score or
   a rate, and grounding targets published rates, standards, and case material.

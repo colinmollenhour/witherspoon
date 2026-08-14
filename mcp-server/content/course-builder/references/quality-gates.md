@@ -1,7 +1,8 @@
 # Quality gates
 
-Read at Stage 6. Run every check. A failing gate blocks completion — fix it, or report it plainly as
-unfixed. Do not declare the course done with a gate outstanding.
+Read at Stage 8. Run every check. A failing gate blocks completion — fix it, or report it plainly as
+unfixed. Do not declare the course done with a gate outstanding. The learner pass (`learner-pass.md`)
+runs after these gates and must re-run any gate whose files it touched.
 
 ## Blocking gates
 
@@ -49,16 +50,20 @@ hard-coded bounds, a magic constant, an ignored input, a construct the learner s
 
 ### G6 — Spine continuity
 
-Every topic touches the running example. For each topic, its written content must arrive at the state
-its contract's `Leaves` declares, and the next topic's `Inherits` must match it.
+Every topic **changes** the running example's state. For each topic, `Leaves` must differ from
+`Inherits`, the written content must arrive at the state `Leaves` declares, and the next topic's
+`Inherits` must match it.
 
 ```
 for i in topics[0..n-1]:
+  FAIL if topics[i].inherits == topics[i].leaves     # mentioned, not moved
   FAIL if topics[i].leaves != topics[i+1].inherits
   FAIL if running example absent from topics[i] content
 ```
 
-A topic that genuinely does not touch the spine is mis-scoped: re-aim it or cut it.
+The first topic may inherit "nothing" only if it leaves a real state (the artifact now exists, runs,
+or is open). A topic that genuinely does not change the spine is mis-scoped: fold it into a sidebar
+on the page that needs it.
 
 ### G7 — Environment pinned
 
@@ -164,6 +169,34 @@ Do not silently replace a restrictive choice with an open one, or the reverse. T
 gate confirms that the resulting copyright/license notice appears on every generated page and that
 Creative Commons choices carry machine-readable `rel=\"license\"` links.
 
+### G16 — Ledger stays off the page
+
+Learner-facing files do not perform grounding. Check `README.md`, every `read.md`, every `brief.md`,
+and the homepage/unit/topic/project strings in `course.json` (`about`, `subtitle`, `skills`, `faqs`,
+unit and topic titles and descriptions, project `goal`, test `description`).
+
+```
+FAIL if the file contains `[src N]` / `[src 12]`
+FAIL if the file matches /\d{1,3}(,\d{3})+ views/
+```
+
+Allowed: an error message, a command's own output, a single sentence that is the object of study.
+The verbatim quotes and the `[src N]` ids belong in `SOURCES.md` and in the contract's Grounded
+facts block — not in what the learner reads first.
+
+### G17 — First hour is a thing they do
+
+The first topic's `read.md` puts the running example in the learner's hands in the opening — they
+run it, open it, click it, or type a command — before any design-bet, non-goals list, or competitor
+contrast. A first topic that is only a lecture fails. The usual fix is to swap it with the
+stand-it-up topic, not to add a paragraph of encouragement. See `spine.md` → First hour.
+
+### G18 — Project briefs are briefs
+
+Every `brief.md` is at most **1,200 words** (`wc -w`). Target ~800. A brief over the cap has
+swallowed grader material; move adversarial rationale, environment pins, and parse rules into
+`rubric.md` / `tests/` and cut. See `project-types.md` → Project brief.
+
 ## Advisory checks
 
 Report these; do not block on them.
@@ -183,6 +216,9 @@ Report these; do not block on them.
   threshold*, *observable behaviors*, *exactly… exactly… exactly…* in goals, one-sentence unit
   descriptions with no next-unit hook, about paragraphs that open on literacy surveys rather than
   the learner's situation. Fix by rewriting the surface copy; do not weaken assessment contracts.
+- **Feel** — the rest of the first-hour and density checks (stacked openings, fat compares, glossary
+  timing, platform restatement, honesty too early) live in `learner-pass.md`. Stage 8 runs that
+  pass after these gates; do not re-implement it here.
 
 ## Completion report
 
@@ -193,6 +229,8 @@ Built: <N> units · <N> topics · <N> projects · <N> assessment items
 Spine: <running example> — <before> → <after>
 Grounding: <N> sources · <N> ledger rows · <N> ungrounded claims cut
   Corrected by research: <what the expedition changed>
+Critic: <what was cut from the first-draft outline>
+Learner pass: <what the editor cut or moved>
 Failure moment: Unit <N> (<the wall>), resolved Unit <M>
 Assumed: <anything decided without asking>
 Gates: <all passed | list of what needed fixing | list of what still fails>

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-**witherspoon** — a course-authoring system made of three agent skills plus one shared Astro site
+**witherspoon** — a course-authoring system made of four agent skills plus one shared Astro site
 builder. It is not an app; it is a pipeline that produces course directories and static sites from
 them. (Named for John Witherspoon, the educator — README.md explains why.)
 
@@ -13,11 +13,12 @@ tool name, it states the capability first and gives the name as an example. Keep
 
 ```
 .claude/skills/course-builder/   generates course material  → course-<slug>/
+.claude/skills/course-review/    first-hour pass on an existing course
 .claude/skills/course-site/      builds the static site     → course-<slug>/dist/
 .claude/skills/course-publish/   uploads dist/ to here.now  → public URL
 course-template/                 the shared Astro builder (every course uses it)
 create-witherspoon-course/       npm `create-` package that installs and runs the builder
-mcp-server/                      serves the three skills over MCP, so nothing is installed
+mcp-server/                      serves the four skills over MCP, so nothing is installed
 course-from-apps-to-machines/    the one course that exists today
 README.md                        the design rationale behind all of the above — read it
 ```
@@ -28,8 +29,10 @@ fetched per stage from `mcp-server/`, whose `content/` is a generated copy synce
 name published packages, not repo paths. Do not reintroduce a `cd course-template` into a skill, and
 run `npm run check` in `mcp-server/` after editing one.
 
-Skills are invoked in that order: **build → site → publish**. Each skill's `SKILL.md` holds its
-pipeline; its `references/` files are loaded per-stage, not up front, so `SKILL.md` stays small.
+Skills are invoked in that order: **build → site → publish**. **Review** is a side door for a
+course that already exists — it is not a fourth stage of a new build. Each skill's `SKILL.md`
+holds its pipeline; its `references/` files are loaded per-stage, not up front, so `SKILL.md`
+stays small.
 
 ## Commands
 

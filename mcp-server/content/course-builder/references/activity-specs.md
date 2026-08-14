@@ -9,12 +9,15 @@ Universal rules:
   Introducing a number of your own is fabrication, and it fails gate G11. If you need a fact you do
   not have, say so in your status line rather than inventing it — arithmetic derived from grounded
   figures is fine if you show the derivation.
-- Quote the primary source where the contract points you at it. Specific beats paraphrased.
+- **Do not paste the ledger.** Teach the claim in your own voice. Allowed quotes: an error message,
+  a command's own output, or a single sentence that *is* the object of study. Banned: `[src N]`,
+  view-count rhetoric, researcher / librarian / RFC-preamble blockquotes. The verbatim quotes live
+  in `SOURCES.md`.
 - Second person, present tense, no throat-clearing. Never open with "In this lesson, we will…".
-- **Voice:** energetic, direct, credible for a motivated pre-teen/teen by default. Short sentences.
-  Lead with a real situation, not with how far behind a cohort is. Cohort studies and competitor
-  surveys belong mid-reading when they prove a point — never as the first paragraph. See
-  `outline-contract.md` → Learner-facing voice.
+- **Voice, sentence craft, define-on-first-use, first-hour glossary:** see `outline-contract.md` →
+  Learner-facing voice. Do not restate those rules here.
+- Write the **default dialect** the spine named. Variants are an "On a Mac / On Windows" box of a
+  few lines, not a restated platform table.
 - Respect the contract's **Do not cover** list. Overlap is a defect, not thoroughness.
 
 ---
@@ -26,8 +29,11 @@ Universal rules:
 **Structure**
 
 1. **The concrete situation** — where the running example stands, and the problem now visible. Two to
-   four sentences. No preamble.
-2. **The idea** — the smallest correct explanation. Define terms at first use, inline.
+   four sentences. No preamble. No sentence over ~25 words. **A typed, clicked, or opened action in
+   the first ~150 words of every reading**, not only topic 1. "The file does not exist yet — the
+   project creates it" is a defect: they do it here, and the project is where they *prove* it.
+2. **The idea** — the smallest correct explanation. Define terms at first use, inline. One idea per
+   sentence.
 3. **The artifact** — the code listing, script, transcript, or worked example, with the change from
    the previous topic marked.
 4. **The measurement** — what it produces now, with real numbers, compared to the previous state.
@@ -52,22 +58,30 @@ the reason they live in the markdown and not in `course.json`.
 ```
 ````
 
-**Budget: at most two per topic**, and only where one of these shapes is actually present:
+**Budget: at most two per topic**, and only where one of these shapes is actually present. Pick by
+what the learner must *do*, not by variety.
 
 | The reading contains | Use |
 | --- | --- |
 | A literal string with named parts — a path, a URL, a command, a log line, an `ls` row | `anatomy` |
 | Stages handing off to each other | `flow` |
-| Two or three things with the same questions asked of each | `compare` |
+| Two or three things with the same questions asked of each | `compare` — **two or three columns, never four or five** |
 | Commands whose output is worth predicting before revealing | `terminal` |
-| Vocabulary or numbers worth drilling | `match` |
+| A taxonomy of four or more shapes, or vocabulary worth pairing | `match` |
 | An order that is itself the lesson | `order` |
 | Messages between two or more parties | `sequence` |
 | A nested structure | `tree` |
+| A spatial layout a widget cannot carry — topology, a cut link, a state machine with cycles, two timelines on one axis | a `figure` (hand SVG), not a five-column `compare` |
 
-An `anatomy` on the topic's central string is the single highest-value one in a technical course —
-reach for it first. If none of the shapes fit, write none; a widget that is merely *about* the topic
-is decoration, and the site's gates warn on inflation.
+`anatomy` is the highest-value widget **for a string that is a grammar**. It is the wrong widget for
+a system, a topology, or a decision table. A `compare` with five fat cells is still a wall of text;
+use `match` or a figure. If none of the shapes fit, write none; a widget that is merely *about* the
+topic is decoration, and the site's gates warn on inflation.
+
+**Figures.** When the idea is spatial, author a ```` ```figure ```` fence pointing at
+`assets/img/…`, with `alt`, `caption`, and explicit `width` / `height`. Prefer a hand SVG with
+selectable labels over a generated raster — image models garble text. Do not spend both widget
+slots on string dissection and then skip the picture the topic actually needed.
 
 **Everything inside a widget obeys the Grounded facts block**, exactly like prose. An invented `ls`
 output or a plausible-looking IP inside a `terminal` widget is the same fabrication as inventing it
