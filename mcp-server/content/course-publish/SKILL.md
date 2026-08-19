@@ -1,6 +1,6 @@
 ---
 name: course-publish
-description: Publish a built course site's dist/ to a public URL using the user's preferred static host. Defaults to here.now — agent-friendly create, upload, finalize to a {slug}.here.now URL, with optional anonymous 24h Sites or permanent Sites via saved login. Vercel Drop and the Vercel CLI remain available as advanced alternatives. Handles authentication, optional custom domains, and end-to-end verification. Use when the user asks to publish, deploy, host, upload, or share a course website. Never uses GitHub.
+description: Publish a built course site's dist/ to a public URL using the user's preferred static host. Defaults to here.now — witherspoon-course publish (create → upload → finalize) to a {slug}.here.now URL, with optional anonymous 24h Sites or permanent Sites via saved login. Vercel Drop and the Vercel CLI remain available as advanced alternatives. Handles authentication, optional custom domains, and end-to-end verification. Use when the user asks to publish, deploy, host, upload, or share a course website. Never uses GitHub.
 ---
 
 # Course Publish
@@ -11,7 +11,7 @@ provider; **here.now is the default** because an agent can publish `dist/` strai
 no browser drag-and-drop. It serves `index.html` at the root, so the shared link is a bare hostname.
 Anonymous publishes need no account and expire in 24 hours; a saved account login makes Sites permanent.
 
-- **here.now (Recommended)** — run the official `publish.sh` helper (or the same API by hand). Works
+- **here.now (Recommended)** — run `witherspoon-course publish` from the published template. Works
   from the agent's shell; first publish can be anonymous for a quick preview, or authenticated for a
   permanent learner link. **Recommend this first** for first-time and typical users.
 - **Vercel Drop / Vercel CLI (advanced alternatives)** — keep these when the user asks for Vercel, or
@@ -69,11 +69,12 @@ separate matter — see [Stage 7](#stage-7--iterate-after-publishing) — and is
    commands — and ask the user to install it or provide the built `dist/`; never upload course source
    as a substitute. If there is neither a build nor buildable course source, stop with the exact
    missing path.
-5. Inspect available provider tools without triggering authentication. Note whether `curl`/`jq` (and
-   optionally here.now's `publish.sh`) are available, whether a provider's official CLI is installed,
-   and whether any connected MCP server can perform a *complete* deployment — recursive upload
-   preserving bytes, relative keys and MIME types, plus a returned public URL. Merely having a
-   connector for a provider is not enough.
+5. Inspect available provider tools without triggering authentication. The here.now route is the
+   template command `witherspoon-course publish` — it needs the same JavaScript runtime as the site
+   build, not `curl`/`jq`/`file` and not the here.now skill. Note whether a provider's official CLI
+   is installed for a non-default host, and whether any connected MCP server can perform a *complete*
+   deployment — recursive upload preserving bytes, relative keys and MIME types, plus a returned
+   public URL. Merely having a connector for a provider is not enough.
 6. Note what this harness can and cannot do on the user's machine. If you cannot run commands there,
    here.now's API route is unavailable from this harness — present Vercel Drop (or another browser
    upload) as the workable route rather than offering a shell publish the user would have to drive
@@ -91,7 +92,7 @@ has a recommended choice so accepting defaults is one interaction.
 
 | Option | Meaning |
 | --- | --- |
-| **here.now — agent publish (Recommended)** | I publish `dist/` to `https://{slug}.here.now` via the here.now API / `publish.sh`. Nothing goes through GitHub. Anonymous Sites expire in 24 hours; a saved account login makes them permanent. Best for first-time and typical users. |
+| **here.now — agent publish (Recommended)** | I publish `dist/` to `https://{slug}.here.now` with `witherspoon-course publish`. Nothing goes through GitHub. Anonymous Sites expire in 24 hours; a saved account login makes them permanent. Best for first-time and typical users. |
 | Vercel Drop — drag the folder into your browser (advanced) | You open `vercel.com/drop`, drag `dist/` on, name the project, and it is live. Nothing installed. Use when you want Vercel, or when this harness cannot run shell commands. |
 | Vercel CLI — one command, repeatable (advanced) | `vercel deploy <dist> --prod` from this machine, into the same project every time, so the URL never changes. Needs the Vercel CLI and a terminal login. |
 | Netlify direct deploy | Upload `dist/` with Netlify's CLI/API/drop flow; no Git integration. |
@@ -284,7 +285,7 @@ After verification, create or update `<course-dir>/.course-publish.json`:
 
 Use the actual provider and destination. `provider` is `"here.now"` for the default host, or
 `"vercel"` / another host when chosen. `method` records how the files got there — `"api"` for
-here.now's publish helper/API, `"drop"` for a browser upload, `"cli"` for a provider CLI — because
+here.now's template publish command, `"drop"` for a browser upload, `"cli"` for a provider CLI — because
 the repeat-publish loop differs between them and the next session should not have to ask. Set
 `accountScope` to the provider's non-secret team, account, or organization identifier when
 destination names are account-scoped; leave it `null` when the destination ID is globally
@@ -298,8 +299,9 @@ from the workspace so the next update is one command plus one drag, note the pro
 manifest, and stop there. Add a `deploy` script only if the user later chooses an agent/CLI route and it
 succeeds.
 
-**After a here.now API publish, write `scripts.deploy`** to the proven `publish.sh … --slug …`
-command (see [references/here-now.md](references/here-now.md)) and run it once before reporting.
+**After a here.now API publish, write `scripts.deploy`** to the proven
+`witherspoon-course publish --course … --slug …` command (see
+[references/here-now.md](references/here-now.md)) and run it once before reporting.
 
 For a CLI publish, the final workspace step is to make the build and verified deployment repeatable
 from the course directory:
@@ -333,19 +335,20 @@ from the course directory:
    the only forms that work everywhere.
 
 3. Set `scripts.deploy` to the exact non-interactive form of the method that just succeeded, with the
-   manifest-owned destination explicit. **Write the `dist/` path relative to the package.json you are
-   editing** — from a scaffolded workspace that is `./course-slug/dist/`, not `./dist/`, and getting
-   this wrong uploads nothing or uploads the wrong tree. Examples, shown from a workspace:
+   manifest-owned destination explicit. For hosts that take a folder, write the `dist/` path relative
+   to the package.json you are editing — from a scaffolded workspace that is `./course-slug/dist/`,
+   not `./dist/`. For here.now, pass `--course ./course-slug` (the command appends `/dist`). Getting
+   either path wrong uploads nothing or uploads the wrong tree. Examples, shown from a workspace:
 
    ```json
    {
      "scripts": {
-       "deploy": "/absolute/path/to/publish.sh ./course-slug/dist --slug course-slug --client witherspoon"
+       "deploy": "witherspoon-course publish --course ./course-slug --slug course-slug"
      }
    }
    ```
 
-   - here.now: `publish.sh <dist> --slug <slug> --client witherspoon` (path to the installed helper)
+   - here.now: `witherspoon-course publish --course <course-dir> --slug <slug>`
    - Vercel: `vercel deploy <dist> --prod --yes --project <project-name>`
    - Netlify: `netlify deploy --site <site-id> --dir <dist> --prod --no-build`
    - Cloudflare Pages: `wrangler pages deploy <dist> --project-name <project-name>`

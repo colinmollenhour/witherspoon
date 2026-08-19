@@ -26,7 +26,7 @@ export const VERSION = JSON.parse(
 ).version;
 
 /** The template version the instructions in this server assume. */
-export const TEMPLATE_VERSION = '1.1.0';
+export const TEMPLATE_VERSION = '1.2.0';
 
 /**
  * Flat names, because they are unique across the skills and an agent choosing
@@ -95,7 +95,7 @@ export const REFERENCES = {
   },
   'here-now': {
     path: 'course-publish/references/here-now.md',
-    blurb: 'here.now (default): API/publish.sh, anonymous 24h vs permanent, republish',
+    blurb: 'here.now (default): witherspoon-course publish, anonymous 24h vs permanent, republish',
   },
   vercel: {
     path: 'course-publish/references/vercel.md',
