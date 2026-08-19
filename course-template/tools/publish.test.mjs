@@ -403,6 +403,7 @@ test('main publishes --course/<dist> and prints publish_result lines on stderr',
     const code = await main(['--course', course, '--base-url', mock.baseUrl, '--allow-nonherenow-base-url'], {
       log: (m) => logs.push(m),
       env: {},
+      credentialsPath: path.join(tmpDir(), 'credentials'),
     });
     assert.equal(code, 0);
     assert.equal(prints[0], 'https://bright-canvas-a7k2.here.now');

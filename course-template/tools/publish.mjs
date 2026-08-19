@@ -120,8 +120,12 @@ export function collectFiles(target) {
   const files = [];
   const secrets = [];
   const escaped = [];
+  const visited = new Set();
 
   function walk(dir) {
+    const realDir = fs.realpathSync(dir);
+    if (visited.has(realDir)) return;
+    visited.add(realDir);
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
       const abs = path.join(dir, entry.name);
       const rel = posixRel(root, abs);
@@ -235,8 +239,9 @@ export function savePublishState(statePath, slug, entry) {
   }
   const prev = state.publishes[slug] && typeof state.publishes[slug] === 'object' ? state.publishes[slug] : {};
   state.publishes[slug] = { ...prev, ...entry };
-  fs.mkdirSync(path.dirname(statePath), { recursive: true });
-  fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`);
+  fs.mkdirSync(path.dirname(statePath), { recursive: true, mode: 0o700 });
+  fs.writeFileSync(statePath, `${JSON.stringify(state, null, 2)}\n`, { mode: 0o600 });
+  fs.chmodSync(statePath, 0o600);
 }
 
 export function saveCredentials(apiKey, credentialsPath = CREDENTIALS_FILE) {
@@ -551,6 +556,7 @@ export async function publishSite({
   });
 
   const siteUrl = finalized.siteUrl || created.siteUrl;
+  if (!siteUrl) throw new Error('create/finalize responses missing siteUrl');
   const claimFromCreate = created.claimToken || '';
   const claimUrl = created.claimUrl || '';
   const expiresAt = created.expiresAt || finalized.publishStatus?.expiresAt || '';
