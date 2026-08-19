@@ -40,6 +40,7 @@ const COMMANDS = {
   test: { tool: 'test-runtime.mjs', takesDist: true, blurb: 'runtime behaviour in jsdom' },
   'check-widgets': { tool: 'check-widgets.mjs', blurb: 'validate widget JSON, no build' },
   'render-views': { tool: 'render-views.mjs', blurb: 'regenerate markdown views [--check]' },
+  publish: { tool: 'publish.mjs', takesDist: true, blurb: 'upload dist/ to here.now' },
 };
 
 function help() {
@@ -58,12 +59,14 @@ Commands:
 ${lines.join('\n')}
 
 Examples:
-  witherspoon-course build  --course ./course-my-slug
-  witherspoon-course verify --course ./course-my-slug
-  witherspoon-course dev    --course ./course-my-slug --port 4321
+  witherspoon-course build   --course ./course-my-slug
+  witherspoon-course verify  --course ./course-my-slug
+  witherspoon-course dev     --course ./course-my-slug --port 4321
+  witherspoon-course publish --course ./course-my-slug
 
-Every command accepts --course <course-dir>. verify and test also accept a built
-dist/ path directly. A course directory is one containing course.json.`);
+Every command accepts --course <course-dir>. verify, test and publish also accept
+a built dist/ path directly. A course directory is one containing course.json.
+publish uploads to here.now; it is not npm publish.`);
 }
 
 const argv = process.argv.slice(2);

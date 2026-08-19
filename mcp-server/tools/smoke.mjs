@@ -106,9 +106,15 @@ check(
 const publish = await callText('witherspoon_publish');
 check(publish.includes('No GitHub'), 'publish keeps the no-GitHub rule');
 check(publish.includes('here.now'), 'publish defaults to here.now');
+check(publish.includes('witherspoon-course publish'), 'publish names the template command');
+check(!publish.includes('publish.sh'), 'publish no longer shells out to publish.sh');
 check(publish.includes('Vercel'), 'publish still documents Vercel as an alternative');
 check(!/tigris/i.test(publish), 'publish no longer references Tigris');
 check(!/tigris/i.test(site), 'build_site no longer references Tigris');
+
+const herenow = await callText('witherspoon_reference', { doc: 'here-now' });
+check(herenow.includes('witherspoon-course-template publish'), 'here-now reference names the template command');
+check(!herenow.includes('/absolute/path/to/publish.sh'), 'here-now reference has no harness-absolute helper path');
 
 const prereqs = await callText('witherspoon_prereqs', { platform: 'windows' });
 check(prereqs.includes('Microsoft Store'), 'prereqs leads with the platform block');

@@ -158,7 +158,7 @@ say(`Wrote ${path.relative(cwd, pkgPath) || 'package.json'}`);
 
 const gitignore = path.join(cwd, '.gitignore');
 if (!fs.existsSync(gitignore)) {
-  fs.writeFileSync(gitignore, 'node_modules/\ndist/\n');
+  fs.writeFileSync(gitignore, 'node_modules/\ndist/\n.herenow/\n');
   say('Wrote .gitignore');
 }
 

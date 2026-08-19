@@ -15,7 +15,7 @@ tool name, it states the capability first and gives the name as an example. Keep
 .claude/skills/course-builder/   generates course material  → course-<slug>/
 .claude/skills/course-review/    first-hour pass on an existing course
 .claude/skills/course-site/      builds the static site     → course-<slug>/dist/
-.claude/skills/course-publish/   uploads dist/ to here.now  → public URL
+.claude/skills/course-publish/   uploads dist/ to here.now via witherspoon-course publish → public URL
 course-template/                 the shared Astro builder (every course uses it)
 create-witherspoon-course/       npm `create-` package that installs and runs the builder
 mcp-server/                      serves the four skills over MCP, so nothing is installed
@@ -47,13 +47,17 @@ npm run verify -- ../course-<slug>/dist            # gates S1–S15, static
 npm run test   -- ../course-<slug>/dist            # runtime behaviour in jsdom (needs a build first)
 npm run check-widgets -- --course ../course-<slug> # widget JSON only, no build
 npm run typecheck                                  # tsc --noEmit
+npm run test:tools                                 # node:test for tools/*.test.mjs
 node tools/render-views.mjs --course ../course-<slug> [--check]   # regenerate the markdown views
+node tools/publish.mjs --course ../course-<slug>   # upload dist/ to here.now
 ```
 
 **Outside this repo** — the form the skills document — the same operations come from the published
 package via `bun create witherspoon-course`, which writes `build`/`dev`/`verify`/`test`/
-`check-widgets`/`render-views` scripts into a workspace `package.json`. `tools/cli.mjs` is the `bin`
-that backs them, and it just re-execs the same tools.
+`check-widgets`/`render-views` scripts into a workspace `package.json`. `course-publish` adds
+`deploy`, which is `witherspoon-course publish`. `tools/cli.mjs` is the `bin` that backs them, and it
+just re-execs the same tools. Do not add an npm `publish` lifecycle script — `npm publish` must still
+mean the registry.
 
 The MCP server:
 

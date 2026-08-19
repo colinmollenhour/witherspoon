@@ -1,6 +1,6 @@
 {
   "name": "witherspoon-course-template",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "type": "module",
   "description": "Shared Astro template that builds a self-contained static site from any approved course directory.",
   "keywords": [
@@ -39,7 +39,8 @@
     "check-widgets": "node tools/check-widgets.mjs",
     "render-views": "node tools/render-views.mjs",
     "typecheck": "tsc --noEmit",
-    "test": "node tools/test-runtime.mjs"
+    "test": "node tools/test-runtime.mjs",
+    "test:tools": "node --test tools/dev-listen.test.mjs tools/publish.test.mjs"
   },
   "dependencies": {
     "astro": "^5.14.1",

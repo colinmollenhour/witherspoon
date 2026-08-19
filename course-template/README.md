@@ -12,12 +12,15 @@ npm run verify -- ../course-<slug>/dist            # gates S1–S15
 npm run test   -- ../course-<slug>/dist            # runtime behaviour in jsdom
 npm run check-widgets -- --course ../course-<slug> # widget JSON, without a build
 npm run typecheck
+node tools/publish.mjs --course ../course-<slug>   # upload dist/ to here.now
 ```
 
 `course-publish` adds thin wrappers to the course's `package.json`. After that, stay in the course
 directory and run `npm run build`, `npm run dev`, `npm run verify`, `npm run check-widgets`,
-`npm run typecheck`, `npm run test`, or `npm run deploy`. The wrappers reuse this template and its
-`node_modules`; dependencies are not copied into every course.
+`npm run typecheck`, `npm run test`, or `npm run deploy`. `deploy` is
+`witherspoon-course publish` (here.now); there is no npm `publish` script in this package, so
+`npm publish` still means the registry. The wrappers reuse this template and its `node_modules`;
+dependencies are not copied into every course.
 
 Course directories hold their content, publication manifest, and command wrappers. Updating a course
 means editing `course.json` and its markdown; improving the site means editing this template, once,
@@ -80,6 +83,7 @@ tools/
   test-runtime.mjs      jsdom behaviour tests
   check-widgets.mjs     widget JSON validation without a build
   render-views.mjs      renders quiz.md / flashcards.md / unit-test.md from course.json
+  publish.mjs           upload dist/ to here.now (witherspoon-course publish)
 ```
 
 `src/pages/[unit]/[page].astro` is one dynamic route dispatching on a `kind` prop — unit overview,

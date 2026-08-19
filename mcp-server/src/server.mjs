@@ -372,8 +372,8 @@ When the gates pass, call \`witherspoon_publish\`.`,
       title: 'Publish the course website',
       description:
         'Publish a built Witherspoon course site to a public URL by direct artifact upload — ' +
-        'here.now by default (agent API / publish.sh to https://{slug}.here.now; anonymous 24h or ' +
-        'permanent with an API key), with Vercel Drop/CLI as advanced alternatives, or Netlify, ' +
+        'here.now by default (witherspoon-course publish to https://{slug}.here.now; anonymous 24h ' +
+        'or permanent with an API key), with Vercel Drop/CLI as advanced alternatives, or Netlify, ' +
         'Cloudflare Pages, or any host the user names. Handles authentication, optional custom ' +
         'domains, and verifies the live site from the public internet before reporting. Never ' +
         'deploys through GitHub. Use when the user asks to publish, deploy, host, upload, or share ' +
@@ -386,7 +386,7 @@ When the gates pass, call \`witherspoon_publish\`.`,
           title: 'Witherspoon — course-publish',
           body: skill.publish(),
           next: `Fetch \`witherspoon_reference\` with \`doc: "here-now"\` at Stage 3 for the default host.
-That reference covers publish.sh / API, anonymous 24h vs permanent Sites, and republish with --slug.
+That reference covers \`witherspoon-course publish\`, anonymous 24h vs permanent Sites, and republish with --slug.
 If the user chose Vercel instead, fetch \`doc: "vercel"\` — Drop and CLI remain advanced alternatives.
 
 On a browser-drop route the upload happens in the user's browser, so Stage 3 ends by handing over the

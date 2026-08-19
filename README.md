@@ -143,9 +143,10 @@ cd course-<slug>/dist && python3 -m http.server 8000
 ```
 
 **5 · Publish — free.** Ask your agent to publish the course. The default is
-[here.now](https://here.now/docs): the agent uploads `course-<slug>/dist` via API (create → upload →
-finalize, or the official `publish.sh` helper) and returns the live URL from that publish result. No
-GitHub, no CI, no browser drag-and-drop. Anonymous publishes need no account and expire in 24 hours;
+[here.now](https://here.now/docs): the agent uploads `course-<slug>/dist` with
+`witherspoon-course publish` (create → upload → finalize) and returns the live URL from that publish
+result. No GitHub, no CI, no browser drag-and-drop. Anonymous publishes need no account and expire
+in 24 hours;
 a free account makes Sites permanent once the agent saves an API key locally (credentials file or
 env var — never paste a key into chat) — see [pricing](https://here.now/pricing.md). The agent opens
 the resulting URL from the public internet to check it before calling it published.
@@ -441,7 +442,7 @@ sequenceDiagram
 
     A->>W: witherspoon_publish
     A->>W: witherspoon_reference [here-now]
-    A->>M: publish.sh course-slug/dist
+    A->>M: witherspoon-course publish --course course-slug
     M-->>A: publish_result.site_url
     A->>M: open the live URL and exercise it
     A-->>U: verified public link
@@ -485,7 +486,7 @@ serve last month's pipeline. The server is stateless, so it replicates and resta
 | `course-site/references/build-gates.md` | what each of S1–S15 means |
 | `course-site/references/widgets.md` | the widget catalogue, for authors |
 | `course-site/references/visuals.md` | composing diagram and infographic skills; fallbacks |
-| `course-publish/references/here-now.md` | default host: API/`publish.sh`, anonymous vs permanent, republish |
+| `course-publish/references/here-now.md` | default host: `witherspoon-course publish`, anonymous vs permanent, republish |
 | `course-publish/references/vercel.md` | advanced alternative: browser drop, CLI route, custom hostnames |
 
 ## The name
