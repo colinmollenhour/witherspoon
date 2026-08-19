@@ -11,11 +11,12 @@ Universal rules:
   figures is fine if you show the derivation.
 - **Do not paste the ledger.** Teach the claim in your own voice. Allowed quotes: an error message,
   a command's own output, or a single sentence that *is* the object of study. Banned: `[src N]`,
-  view-count rhetoric, researcher / librarian / RFC-preamble blockquotes. The verbatim quotes live
-  in `SOURCES.md`.
+  view-count rhetoric, researcher / librarian / RFC-preamble blockquotes, journal volume and page,
+  and literature combat ("the canonical textbook has a hole", a vendor course-catalogue count).
+  Year-of-origin and the name of a theorem may stay. The verbatim quotes live in `SOURCES.md`.
 - Second person, present tense, no throat-clearing. Never open with "In this lesson, we will…".
-- **Voice, sentence craft, define-on-first-use, first-hour glossary:** see `outline-contract.md` →
-  Learner-facing voice. Do not restate those rules here.
+- **Voice, sentence craft, define-on-first-use, first-hour glossary, trainer-not-seminar:** see
+  `outline-contract.md` → Learner-facing voice. Do not restate those rules here.
 - Write the **default dialect** the spine named. Variants are an "On a Mac / On Windows" box of a
   few lines, not a restated platform table.
 - Respect the contract's **Do not cover** list. Overlap is a defect, not thoroughness.

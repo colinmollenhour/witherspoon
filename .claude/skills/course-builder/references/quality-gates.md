@@ -215,7 +215,11 @@ Report these; do not block on them.
   `goal`, and every unit-test `description`. Flag: *Assesses…*, *A grader must see…*, *mastery
   threshold*, *observable behaviors*, *exactly… exactly… exactly…* in goals, one-sentence unit
   descriptions with no next-unit hook, about paragraphs that open on literacy surveys rather than
-  the learner's situation. Fix by rewriting the surface copy; do not weaken assessment contracts.
+  the learner's situation. Also flag seminar voice: journal volume/page on the page, *canonical
+  textbook*, a vendor course-catalogue count, *minority capability not a unique one*, *dominated
+  rather than merely imperfect*, titles that award a profession (*like an industrial engineer*).
+  Fix by rewriting the surface copy; do not weaken assessment contracts. Keep the result, cut the
+  prosecution.
 - **Feel** — the rest of the first-hour and density checks (stacked openings, fat compares, glossary
   timing, platform restatement, honesty too early) live in `learner-pass.md`. Stage 8 runs that
   pass after these gates; do not re-implement it here.
