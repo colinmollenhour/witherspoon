@@ -5,6 +5,10 @@
  *   npm run build -- --course ../course-from-apps-to-machines
  *   npm run dev   -- --course ../course-from-apps-to-machines [--host <ip>] [--port <n>]
  *
+ * Dev picks a free port (4321, then 4322, …) and, when a Tailscale interface is
+ * up, listens on localhost plus that address so the tailnet name works. Pass
+ * --host / --port to opt out of either default.
+ *
  * Three things happen before Astro runs:
  *   1. the TypeScript runtime is bundled to a single classic script
  *   2. the CSS partials are bundled to a single stylesheet
@@ -20,6 +24,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as esbuild from 'esbuild';
+import { formatPreviewBanner, planDevListen } from './dev-listen.mjs';
 
 const HERE = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 
@@ -36,7 +41,7 @@ const invoke = (cmd) => (viaCli ? `${cliInvoke} ${cmd}` : `npm run ${cmd} --`);
 function usage(message) {
   console.error(`${message}\n`);
   console.error(`Usage: ${invoke('build')} --course <path-to-course-dir>`);
-  console.error(`       ${invoke('dev')} --course <path-to-course-dir> [--host <ip>] [--port <n>]`);
+  console.error(`       ${invoke('dev')} --course <path-to-course-dir> [--host [ip]] [--port <n>]`);
   process.exit(2);
 }
 
@@ -45,13 +50,19 @@ const dev = argv.includes('--dev');
 const at = argv.indexOf('--course');
 if (at === -1 || !argv[at + 1]) usage('Missing --course.');
 
-/** Optional passthrough to `astro dev`, so the preview can be reached from another machine. */
+/**
+ * `--host` with no value means all interfaces, matching `astro dev --host`.
+ * `--host <ip>` pins one address. Absent, we pick localhost (+ Tailscale).
+ */
 const flag = (name) => {
   const i = argv.indexOf(name);
-  return i === -1 ? null : argv[i + 1] ?? null;
+  if (i === -1) return { present: false, value: null };
+  const next = argv[i + 1];
+  if (next === undefined || next.startsWith('-')) return { present: true, value: true };
+  return { present: true, value: next };
 };
-const host = flag('--host');
-const port = flag('--port');
+const hostFlag = flag('--host');
+const portFlag = flag('--port');
 
 const courseDir = path.resolve(argv[at + 1]);
 if (!fs.existsSync(courseDir)) usage(`No such directory: ${courseDir}`);
@@ -73,8 +84,9 @@ if (!fs.existsSync(courseJson)) {
       'This template builds an approved course directory — run course-builder first.',
   );
 }
+let course;
 try {
-  JSON.parse(fs.readFileSync(courseJson, 'utf8'));
+  course = JSON.parse(fs.readFileSync(courseJson, 'utf8'));
 } catch (err) {
   usage(`${courseJson} does not parse: ${err.message}`);
 }
@@ -102,6 +114,7 @@ const cssOptions = {
   loader: { '.woff2': 'file' },
 };
 
+let listen = null;
 if (dev) {
   // The runtime and the design system are deliberately outside Astro's pipeline
   // (see the header comment), which also puts them outside its hot reload. Without
@@ -112,6 +125,18 @@ if (dev) {
     esbuild.context(cssOptions),
   ]);
   await Promise.all([jsCtx.watch(), cssCtx.watch()]);
+
+  listen = await planDevListen({
+    host: hostFlag.present ? hostFlag.value : null,
+    port: portFlag.present ? portFlag.value : null,
+  });
+  if (listen.error) {
+    console.error(listen.error);
+    process.exit(1);
+  }
+  console.log(
+    `${formatPreviewBanner(listen, { title: course.title || path.basename(courseDir) })}\n`,
+  );
   console.log('Watching src/runtime/ and src/styles/ for changes.');
 } else {
   await esbuild.build(jsOptions);
@@ -169,6 +194,29 @@ function prune(dir, base = dir) {
  */
 const require = createRequire(path.join(HERE, 'package.json'));
 const astroEntry = path.join(path.dirname(require.resolve('astro/package.json')), 'astro.js');
+/** Merge an inherited Vite allow-list with the hosts this listen plan needs. */
+function devAllowedHostEnv(plan) {
+  if (!dev || !plan) return {};
+  const hosts = [];
+  const add = (raw) => {
+    if (!raw) return;
+    for (const part of String(raw).split(',')) {
+      const h = part.trim();
+      if (h && !hosts.includes(h)) hosts.push(h);
+    }
+  };
+  add(process.env.__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS);
+  add(process.env.COURSE_DEV_ALLOWED_HOSTS);
+  for (const h of plan.allowedHosts ?? []) add(h);
+  if (!hosts.length) return {};
+  return {
+    // Vite 6.4 reads this as a single host; the first name is the one people type.
+    __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS: hosts[0],
+    // Astro config expands this into server.allowedHosts so every name works.
+    COURSE_DEV_ALLOWED_HOSTS: hosts.join(','),
+  };
+}
+
 const astroEnv = {
   ...process.env,
   COURSE_DIR: courseDir,
@@ -178,19 +226,24 @@ const astroEnv = {
   // either, and telemetry writes to a config dir that may not be writable.
   ASTRO_TELEMETRY_DISABLED: '1',
   /**
-   * Only when a port was asked for by name. Astro otherwise walks forward to the
-   * next free port, which reads as success while the browser keeps talking to a
-   * server started earlier on the requested one — every fix then appears to do
-   * nothing, because the page under test is stale output from another process.
-   * Asking for a specific port and silently getting a different one is never what
-   * the caller wanted; failing to start says so immediately.
+   * We always pick the port ourselves in dev (free 4321, or the next free one;
+   * fail only when --port was named and that port is taken). Pin Astro to it so
+   * it cannot walk again after we have already printed the URL.
    */
-  ...(dev && port ? { COURSE_STRICT_PORT: '1' } : {}),
+  ...(dev && listen ? { COURSE_STRICT_PORT: '1' } : {}),
+  ...(dev && listen?.alsoListen
+    ? {
+        // IPv4 loopback as well: Vite's default `localhost` is often [::1] only.
+        COURSE_DEV_ALSO_LISTEN: ['127.0.0.1', listen.alsoListen].join(','),
+      }
+    : {}),
+  ...devAllowedHostEnv(listen),
 };
 
 const astroArgs = [dev ? 'dev' : 'build'];
-if (dev && host) astroArgs.push('--host', host);
-if (dev && port) astroArgs.push('--port', port);
+if (dev && listen?.astroHost === true) astroArgs.push('--host');
+else if (dev && typeof listen?.astroHost === 'string') astroArgs.push('--host', listen.astroHost);
+if (dev && listen?.port) astroArgs.push('--port', String(listen.port));
 
 const child = spawn(process.execPath, [astroEntry, ...astroArgs], {
   cwd: HERE,

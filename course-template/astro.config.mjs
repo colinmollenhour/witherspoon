@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { alsoListenPlugin } from './tools/dev-listen.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 
@@ -41,8 +42,23 @@ export default defineConfig({
 
   // See the note in tools/build.mjs: a requested port that silently becomes a
   // different port leaves the browser on a stale server, and every subsequent fix
-  // looks like it did nothing.
-  vite: { server: { strictPort: process.env.COURSE_STRICT_PORT === '1' } },
+  // looks like it did nothing. The extra-listen plugin binds the Tailscale
+  // address when COURSE_DEV_ALSO_LISTEN is set — Vite itself only takes one host.
+  vite: {
+    plugins: [alsoListenPlugin()],
+    server: {
+      strictPort: process.env.COURSE_STRICT_PORT === '1',
+      // Vite only reads __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS when this is
+      // already an array. Setting it here is what makes the tailnet hostname
+      // not 403; IPs are allowed by default.
+      allowedHosts: (process.env.COURSE_DEV_ALLOWED_HOSTS ??
+        process.env.__VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS ??
+        '')
+        .split(',')
+        .map((h) => h.trim())
+        .filter(Boolean),
+    },
+  },
 
   markdown: {
     /**

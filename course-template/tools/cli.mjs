@@ -31,7 +31,11 @@ const PKG = JSON.parse(fs.readFileSync(path.join(HERE, '..', 'package.json'), 'u
  */
 const COMMANDS = {
   build: { tool: 'build.mjs', blurb: 'build the site into <course>/dist' },
-  dev: { tool: 'build.mjs', extra: ['--dev'], blurb: 'live preview [--host <ip>] [--port <n>]' },
+  dev: {
+    tool: 'build.mjs',
+    extra: ['--dev'],
+    blurb: 'live preview (Tailscale + free port; [--host [ip]] [--port <n>])',
+  },
   verify: { tool: 'verify.mjs', takesDist: true, blurb: 'static build gates S1–S15' },
   test: { tool: 'test-runtime.mjs', takesDist: true, blurb: 'runtime behaviour in jsdom' },
   'check-widgets': { tool: 'check-widgets.mjs', blurb: 'validate widget JSON, no build' },

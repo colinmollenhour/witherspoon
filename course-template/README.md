@@ -7,7 +7,7 @@ Before a course has been published, run the shared template directly:
 ```bash
 npm install                                        # first run only
 npm run build -- --course ../course-<slug>         # → ../course-<slug>/dist
-npm run dev   -- --course ../course-<slug>         # live preview
+npm run dev   -- --course ../course-<slug>         # live preview (Tailscale + free port)
 npm run verify -- ../course-<slug>/dist            # gates S1–S15
 npm run test   -- ../course-<slug>/dist            # runtime behaviour in jsdom
 npm run check-widgets -- --course ../course-<slug> # widget JSON, without a build
