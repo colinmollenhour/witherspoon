@@ -47,9 +47,11 @@ one line and leave it — that is a user decision, not a critic one.
    setup has failed — strip it.
 
 5. **Contracts do not paste the ledger.** Grounded facts (filled later) will be claims, numbers,
-   and `[src N]` ids. A generation prompt that says "use the ACRLog quotes" or "quote RFC 1918
-   verbatim" will put that quote on the page. Rewrite it to "teach the claim; do not paste the
-   source." Error messages and a command's own output may still be named as objects of study.
+   and `[src N]` ids. A generation prompt that says "use the ACRLog quotes", "quote RFC 1918
+   verbatim", or "cite Theorem 8.3 as printed, p. 106" will put the citation on the page. Rewrite
+   it to "teach the claim; do not paste the source." Same for "competitive framing" and "folk
+   wisdom is wrong" as narrator instructions — those produce a seminar. Error messages and a
+   command's own output may still be named as objects of study.
 
 6. **Every reading does something.** Each contract's READ request names a typed, clicked, or
    opened action in the opening, not only in a later project. "The file does not exist yet —

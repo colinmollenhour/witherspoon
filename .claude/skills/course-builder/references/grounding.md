@@ -71,12 +71,14 @@ Return: the misconception, why it is tempting, what actually happens, and where 
 How do existing courses and tutorials sequence this, and **what do they all skip**?
 
 The gap is the course's reason to exist, and it becomes the "why this over the official docs" FAQ
-answer. The real example:
+answer — **one specific omission**, not a census of the market. The real example:
 
 > The NVIDIA docs are thorough but they don't explain why things are slow before showing you how to
 > fix them.
 
-Return: what the existing treatments cover, what they consistently omit, and the sequencing they use.
+A product count ("of 326 published titles, one contains the word…") is a ledger row. It is not a
+FAQ. Return: what the existing treatments cover, what they consistently omit, and the sequencing
+they use.
 
 ## Scaling the expedition
 
@@ -124,7 +126,7 @@ Rules:
 | A provisional number was wrong | Correct the spine, subtitle, and every contract citing it. Note the delta in the report. |
 | An API/version/flag drifted | Update every affected objective, contract, and project environment. |
 | A better misconception surfaced (A4) | Promote it to a distractor; if it beats the provisional failure moment, swap it and rewrite the two unit descriptions involved. |
-| A gap confirmed (A5) | Write it into the "why this over the docs" FAQ, in specific terms. |
+| A gap confirmed (A5) | Write it into the "why this over the docs" FAQ as one specific omission. Do not turn the A5 notes into a vendor survey on the homepage. |
 | The primary source restructures the material better than the outline | Re-sequence topics. Keep the spine; the running example does not change. |
 | A claim cannot be grounded | Cut it, or rewrite the topic to teach how to find it. Record it under **Ungrounded**. Never ship it silently. |
 | **The premise is invalidated** — the transformation does not hold, the tool is dead, the numbers are off by an order of magnitude | **Stop.** Report what you found and what it means for the course. This is the only finding that reopens the approval gate. |

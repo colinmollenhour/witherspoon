@@ -42,8 +42,8 @@ These are the quality bar. Do not proceed past a stage that violates one.
    numbers. If you cannot name the numbers, you do not understand the course yet.
 3. **Every load-bearing number, API, and claim traces to `SOURCES.md`.** Nothing is written from
    recall alone. An ungrounded figure is a defect, not a placeholder. The ledger stays in
-   `SOURCES.md`; the page teaches the claim. `[src N]` and researcher quotes do not ship in
-   learner-facing files.
+   `SOURCES.md`; the page teaches the claim. `[src N]`, researcher quotes, and journal citations
+   do not ship in learner-facing files.
 4. **Objectives are observable actions with the real API, term, or artifact embedded.** Three per
    topic. "Understand X" is a defect; "Use `X` to do Y" is an objective. The string that ships to the
    learner is that action in natural language — not checklist-speak (see learner-facing voice below).
@@ -55,9 +55,10 @@ These are the quality bar. Do not proceed past a stage that violates one.
    weights summing to 100, at least one adversarial test case, a pinned environment.
 8. **Learner-facing voice is energetic, direct, and credible.** Hero copy, about, unit descriptions,
     project goals, skills, and readings lead with capability and real situations — not compliance
-    metrics, literacy surveys, or assessment bureaucracy. Short sentences. Age-appropriate without
-    sounding childish, slangy, or patronizing. Exact numbers stay where the learner needs them for
-    instructions, scoring, or transparency.
+    metrics, literacy surveys, assessment bureaucracy, or a seminar proving it has read the
+    literature. Short sentences. Age-appropriate without sounding childish, slangy, or patronizing.
+    Exact numbers stay where the learner needs them for instructions, scoring, or transparency.
+    Journal citations and competitor catalogues stay in `SOURCES.md`.
 9. **The first hour is a thing they do, not a lecture they survive.** Topic 1 puts the running
    example in the learner's hands before any design-rationale or "why this tool" topic. Details:
    `references/spine.md` → First hour.
@@ -211,7 +212,8 @@ Apply the findings, per the rules in `references/grounding.md`:
 - **API or version drifted** → update every affected objective and contract.
 - **Misconceptions harvested** → wire them into distractors, and into the failure moment if one lands
   better than the provisional choice.
-- **Prior-art gap found** → it becomes the "why this over the official docs" FAQ answer.
+- **Prior-art gap found** → it becomes the "why this over the official docs" FAQ as one
+  specific omission, not a vendor survey.
 - **Premise invalidated** → stop and tell the user. This is the one thing that reopens the gate.
 - **A claim that could not be grounded** → cut it, or rewrite the topic to teach the method for
   finding it. Never ship it unmarked.
@@ -238,7 +240,7 @@ is what matters, the concurrency is only speed.
 Agents do not talk to each other and do not read sibling topics. The contract is the interface. Tell
 each agent its final message is a one-line status, not a summary of what it wrote, and that it must
 not introduce a number absent from its grounded facts, must write the default dialect only, and
-must not put `[src N]` or ledger quotes on the page.
+must not put `[src N]`, journal citations, or literature combat on the page.
 
 A topic agent writes `read.md` as prose — including any ```` ```widget ```` blocks its reading earns,
 per `references/activity-specs.md` — and returns its **quiz and flashcards as structured data**,
@@ -321,4 +323,5 @@ pipeline is how visuals get orphaned.
 - **Assessability is for the author and the grader; the page is for the learner.** Keep machine-checkable
   criteria, `(objective N)` citations, and adversarial tests. Do not paste "Assesses whether…",
   "A grader must see…", "course-defined mastery threshold", or "state exactly… exactly… exactly…" onto
-  surfaces the learner reads first. Full voice rules live in `references/outline-contract.md`.
+  surfaces the learner reads first. Do not paste a literature review either. Full voice rules live
+  in `references/outline-contract.md`.

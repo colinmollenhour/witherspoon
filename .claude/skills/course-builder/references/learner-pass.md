@@ -52,6 +52,7 @@ Look for things that make the course hard to start, hard to finish, or harder th
 | Widget is a wall of text | `compare` with four or more columns, or cells that are paragraphs; `anatomy` used on a system or a topology | `match`, a `flow`, or a small diagram. Spatial ideas (topology, a cut link, two timelines) need a picture, not another table |
 | Honesty too early | Docs-vs-code, ungrounded published numbers, "the official page is wrong" in the first hour | Move to an FAQ or a later topic that has earned it |
 | Glossary only at the end | The only definition table is in the last unit | A ten-word first-hour table in topic 1; the last unit may keep the full card |
+| Seminar voice | Journal volume and page on the page; "canonical textbook"; a vendor course-catalogue count; the narrator gloating over a quote; titles that award a profession (*like an industrial engineer*); skills that say *dominated rather than merely imperfect* | Keep the result. Cut the prosecution. Citations stay in `SOURCES.md`. |
 
 Do not hunt these as a scorecard. One real issue, named, is worth more than seven maybes.
 

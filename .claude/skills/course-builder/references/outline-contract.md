@@ -24,6 +24,10 @@ assessment bureaucracy on hero, about, unit intros, project goals, skills, or CT
 | Build the folder, capture the path, notice how many clicks it cost. | State exactly where it lives, exactly what URL shows, and exactly what it cost. |
 | A strong answer covers three things: … | A grader must see three things: … |
 | How this works / evidence from your screen / checks | How this runs / captured evidence / grading scripts |
+| People use "min" two ways. This name only means the first. | The naming is deliberate. Practitioners disagree… |
+| The two policies cost the same number of trips. | Dominated rather than merely imperfect. |
+| Heskett introduced the ratio in 1963. Low goes closest to the door. | Heskett, 1963 (*Journal Title* vol. 3, April, pp. 27–31). |
+| The book's min/max section is blank. Here is what to do. | The canonical textbook has the same hole, empty across releases spanning 1998 to 2019. |
 
 **Metrics stay** where the learner acts on them: command budgets, pass %, ports, sizes, weights, field
 rules in `completionCriteria`. Cohort studies, librarian surveys, and competitor audits belong in
@@ -35,6 +39,13 @@ about, unit copy) do **not** carry `[src N]`, view-count rhetoric ("56,565 views
 from researchers, librarians, or RFC preambles. Allowed on the page: an error message, a command's
 own output, or a single sentence that *is* the object of study. A generation prompt that says "use
 the ACRLog quotes" will put those quotes on the page — do not write that prompt.
+
+**The page is a trainer, not a seminar.** Isolated writers with a rich ledger perform credibility:
+they prosecute the textbook, survey competitors, and stack journal citations. Keep the result (the
+theorem, the year of origin, the one named alternative). Cut the prosecution. Journal, volume,
+issue, and page belong in `SOURCES.md`. A quoted sentence that *is* the object of study may stay;
+the narrator must not then gloat over it. Titles name the thing they will do, not a profession they
+are joining (*Reading a pick face*, not *Reading a pick face like an industrial engineer*).
 
 **Sentence craft:** short and direct. One idea per sentence. One concrete payoff per paragraph.
 A sentence over ~25 words is a candidate to split. A 50-word clause-stack is a defect, even when
@@ -66,7 +77,7 @@ what they can do, not with a feature list.
 
 1. **Hook that corrects a misconception.** Name the belief the reader arrives with, then break it
    with the transformation numbers. Open on the situation, not on a survey of how far behind "a
-   generation" is.
+   generation" is, and not by prosecuting the field.
 2. **The straight-line build.** Unit by unit, in prose, ending on what they will have.
 3. **Prerequisites and promise.** What they need, what they don't, and why the material is
    trustworthy.
@@ -94,14 +105,17 @@ Format: `title` (2–4 words, scannable) + `description` (one sentence, what the
 ### `faqs[]` — 4 to 6
 
 Answer objections a skeptical buyer would actually raise. At least one must be *"what makes this
-different from the official docs / the free tutorial?"* and the answer must be specific.
+different from the official docs / the free tutorial?"* and the answer must be **one specific
+omission**, not a census of the market.
 
 > **What makes this different from the NVIDIA documentation?**
 > The NVIDIA docs are thorough but they don't explain why things are slow before showing you how to
 > fix them.
 
 Others worth covering: hardware/tooling needed, prerequisite depth, what the course is *not* about.
-Keep answers concrete; do not open with a multi-product survey unless the contrast *is* the answer.
+Keep answers concrete. Do not open with a multi-product survey. Do not count a vendor's course
+catalogue or help topics. "A minority capability, not a unique one" is research-note hedging; if
+other products already do a piece of this, name the piece in one sentence and move on.
 
 ## Units
 
@@ -185,9 +199,11 @@ One per topic. This exact shape:
 ## Topic generation prompt
 
 <3–6 sentences. What to teach, in what order, anchored to the running example. Name the
-specific numbers, listings, API calls, or figures to use — not "paste this quote". State
-explicitly what NOT to cover because a later topic owns it. Write the default dialect;
-variants are a short box, not a second outline.>
+specific numbers, listings, API calls, or figures to use — not "paste this quote" and not
+"cite the 1963 paper with volume and page". State explicitly what NOT to cover because a
+later topic owns it. Write the default dialect; variants are a short box, not a second
+outline. Do not ask the writer to prosecute a textbook, a vendor catalogue, or "folk
+wisdom".>
 
 ## Grounded facts
 
