@@ -43,8 +43,8 @@ export function tailscaleFromStatus(status) {
   const ip = (self.TailscaleIPs ?? []).find((addr) => net.isIPv4(addr));
   if (!ip) return null;
   const dnsName = typeof self.DNSName === 'string' ? self.DNSName.replace(/\.$/, '') : '';
-  // MagicDNS short name is what people type (`seamus`); the FQDN is what
-  // the tailnet resolves when split-DNS is off.
+  // MagicDNS short name is what people type; the FQDN is what the tailnet
+  // resolves when split-DNS is off.
   const host = (dnsName && dnsName.split('.')[0]) || self.HostName || null;
   return { ip, host: host || dnsName || null, dnsName: dnsName || null, iface: null };
 }

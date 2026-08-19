@@ -9,24 +9,28 @@ import {
   tailscaleFromStatus,
 } from './dev-listen.mjs';
 
+const TS_IP = '100.64.1.10';
+const TS_HOST = 'devbox';
+const TS_DNS = 'devbox.tailexample.ts.net';
+
 const TAIL_IFACES = {
   lo: [{ address: '127.0.0.1', family: 'IPv4', internal: true }],
-  enp86s0: [{ address: '192.168.234.80', family: 'IPv4', internal: false }],
-  tailscale0: [{ address: '100.110.251.42', family: 'IPv4', internal: false }],
+  eth0: [{ address: '192.168.1.50', family: 'IPv4', internal: false }],
+  tailscale0: [{ address: TS_IP, family: 'IPv4', internal: false }],
 };
 
 const STATUS = {
   BackendState: 'Running',
   Self: {
-    DNSName: 'seamus.tail76dcf8.ts.net.',
-    HostName: 'bazzite',
-    TailscaleIPs: ['100.110.251.42', 'fd7a:115c:a1e0::b038:fb2a'],
+    DNSName: `${TS_DNS}.`,
+    HostName: 'testhost',
+    TailscaleIPs: [TS_IP, 'fd7a:115c:a1e0::1'],
   },
 };
 
 test('tailscaleFromIfaces uses a named Tailscale interface', () => {
   const found = tailscaleFromIfaces(TAIL_IFACES);
-  assert.equal(found.ip, '100.110.251.42');
+  assert.equal(found.ip, TS_IP);
   assert.equal(found.iface, 'tailscale0');
 });
 
@@ -41,16 +45,16 @@ test('tailscaleFromIfaces ignores CGNAT on a non-Tailscale iface', () => {
 
 test('tailscaleFromIfaces accepts family: 4 (older Node)', () => {
   const found = tailscaleFromIfaces({
-    Tailscale: [{ address: '100.110.251.42', family: 4, internal: false }],
+    Tailscale: [{ address: TS_IP, family: 4, internal: false }],
   });
-  assert.equal(found.ip, '100.110.251.42');
+  assert.equal(found.ip, TS_IP);
 });
 
 test('tailscaleFromStatus strips the trailing DNS dot', () => {
   const found = tailscaleFromStatus(STATUS);
-  assert.equal(found.ip, '100.110.251.42');
-  assert.equal(found.host, 'seamus');
-  assert.equal(found.dnsName, 'seamus.tail76dcf8.ts.net');
+  assert.equal(found.ip, TS_IP);
+  assert.equal(found.host, TS_HOST);
+  assert.equal(found.dnsName, TS_DNS);
 });
 
 test('tailscaleFromStatus ignores a stopped backend', () => {
@@ -74,15 +78,15 @@ test('planDevListen auto-binds Tailscale and allow-lists the MagicDNS host', asy
   assert.equal(plan.error, undefined);
   assert.equal(plan.astroHost, null);
   assert.equal(plan.port, DEFAULT_DEV_PORT);
-  assert.equal(plan.alsoListen, '100.110.251.42');
-  assert.equal(plan.allowedHost, 'seamus');
-  assert.deepEqual(plan.allowedHosts, ['seamus', 'seamus.tail76dcf8.ts.net']);
+  assert.equal(plan.alsoListen, TS_IP);
+  assert.equal(plan.allowedHost, TS_HOST);
+  assert.deepEqual(plan.allowedHosts, [TS_HOST, TS_DNS]);
   assert.deepEqual(
     plan.urls.map((u) => u.label),
     ['Local', 'Tailscale'],
   );
-  assert.equal(plan.urls[1].href, 'http://seamus.tail76dcf8.ts.net:4321/');
-  assert.equal(plan.urls[1].extra, '100.110.251.42');
+  assert.equal(plan.urls[1].href, `http://${TS_DNS}:4321/`);
+  assert.equal(plan.urls[1].extra, TS_IP);
 });
 
 test('planDevListen walks forward when the default port is taken', async () => {
@@ -123,8 +127,8 @@ test('an explicit --host skips auto-binding the Tailscale IP', async () => {
   );
   assert.equal(plan.astroHost, '0.0.0.0');
   assert.equal(plan.alsoListen, null);
-  assert.equal(plan.allowedHost, 'seamus');
-  assert.deepEqual(plan.allowedHosts, ['seamus', 'seamus.tail76dcf8.ts.net']);
+  assert.equal(plan.allowedHost, TS_HOST);
+  assert.deepEqual(plan.allowedHosts, [TS_HOST, TS_DNS]);
   assert.equal(plan.urls[1].label, 'Tailscale');
 });
 
@@ -133,7 +137,7 @@ test('formatPreviewBanner mentions a moved port', () => {
     {
       urls: [
         { label: 'Local', href: 'http://localhost:4322/' },
-        { label: 'Tailscale', href: 'http://seamus.tail76dcf8.ts.net:4322/', extra: '100.110.251.42' },
+        { label: 'Tailscale', href: `http://${TS_DNS}:4322/`, extra: TS_IP },
       ],
       movedFrom: 4321,
       port: 4322,
@@ -142,13 +146,13 @@ test('formatPreviewBanner mentions a moved port', () => {
   );
   assert.match(text, /Previewing Same File, Three Addresses/);
   assert.match(text, /Local\s+http:\/\/localhost:4322\//);
-  assert.match(text, /Tailscale\s+http:\/\/seamus\.tail76dcf8\.ts\.net:4322\/\s+\(100\.110\.251\.42\)/);
+  assert.match(text, new RegExp(`Tailscale\\s+http://${TS_DNS.replaceAll('.', '\\.')}:4322/\\s+\\(${TS_IP.replaceAll('.', '\\.')}\\)`));
   assert.match(text, /Port 4321 is in use — using 4322/);
 });
 
 test('findFreePort skips occupied ports on every bind host', async () => {
-  const taken = new Set(['4321@127.0.0.1', '4321@100.110.251.42', '4322@100.110.251.42']);
-  const port = await findFreePort(4321, ['127.0.0.1', '100.110.251.42'], async (p, host) => {
+  const taken = new Set([`4321@127.0.0.1`, `4321@${TS_IP}`, `4322@${TS_IP}`]);
+  const port = await findFreePort(4321, ['127.0.0.1', TS_IP], async (p, host) => {
     return !taken.has(`${p}@${host}`);
   });
   assert.equal(port, 4323);
