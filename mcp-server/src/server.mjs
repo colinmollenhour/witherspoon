@@ -376,7 +376,8 @@ When the gates pass, call \`witherspoon_publish\`.`,
         'or permanent with an API key), with Vercel Drop/CLI as advanced alternatives, or Netlify, ' +
         'Cloudflare Pages, or any host the user names. Handles authentication, optional custom ' +
         'domains, and verifies the live site from the public internet before reporting. Never ' +
-        'deploys through GitHub. Use when the user asks to publish, deploy, host, upload, or share ' +
+        'deploys through GitHub (a committed Pages workflow the scaffolder writes is the user-pushed ' +
+        'republish path). Use when the user asks to publish, deploy, host, upload, or share ' +
         'the course website.',
       annotations: { readOnlyHint: true, openWorldHint: false },
     },

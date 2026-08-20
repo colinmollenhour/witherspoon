@@ -104,7 +104,15 @@ check(
 );
 
 const publish = await callText('witherspoon_publish');
-check(publish.includes('No GitHub'), 'publish keeps the no-GitHub rule');
+check(
+  publish.includes('never deploys through GitHub'),
+  'publish keeps the agent-never-deploys-through-GitHub rule',
+);
+check(publish.includes('Never `git push`'), 'publish still forbids agent git push');
+check(
+  publish.includes('.github/workflows/publish.yml'),
+  'publish documents the committed Pages workflow',
+);
 check(publish.includes('here.now'), 'publish defaults to here.now');
 check(publish.includes('witherspoon-course publish'), 'publish names the template command');
 check(!publish.includes('publish.sh'), 'publish no longer shells out to publish.sh');

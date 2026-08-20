@@ -22,6 +22,58 @@ import path from 'node:path';
 const TEMPLATE = 'witherspoon-course-template';
 const TEMPLATE_RANGE = '^1.1.0';
 
+/**
+ * GitHub Pages workflow. `distRel` is posix, relative to the workspace root
+ * (the directory that contains package.json). Built in CI because dist/ is
+ * gitignored. Node, not Bun: GitHub-hosted runners have Node. No secrets —
+ * GITHUB_TOKEN is enough for actions/deploy-pages.
+ */
+function pagesWorkflow(distRel) {
+  return `# Written by create-witherspoon-course. Enable once: Settings → Pages → Source: GitHub Actions.
+name: Publish course
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npm run build
+      - run: npm run verify
+      - run: npm run test
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ${JSON.stringify(distRel)}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: \${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+`;
+}
+
 const argv = process.argv.slice(2);
 const has = (flag) => argv.includes(flag);
 const valueOf = (flag) => {
@@ -192,9 +244,29 @@ bun run dev
 bun run build
 bun run verify
 \`\`\`
+
+A GitHub Action in \`.github/workflows/publish.yml\` builds and publishes to GitHub Pages on
+push to \`main\`. Enable Pages once (Settings → Pages → Source: GitHub Actions).
 `,
   );
   say('Wrote README.md (provenance)');
+}
+
+// Pages workflow: only when the course lives inside this workspace, so the
+// artifact path is inside the repo. Never overwrite a customised one.
+const relToCourse = path.relative(cwd, courseDir);
+const courseInsideWorkspace =
+  relToCourse !== '' && !relToCourse.startsWith('..') && !path.isAbsolute(relToCourse);
+const workflowPath = path.join(cwd, '.github', 'workflows', 'publish.yml');
+if (!courseInsideWorkspace) {
+  say('Skipped GitHub Pages workflow — the course directory is outside this workspace.');
+} else if (fs.existsSync(workflowPath)) {
+  say('Found an existing .github/workflows/publish.yml — leaving it.');
+} else {
+  const distRel = `${relToCourse.split(path.sep).join('/')}/dist`;
+  fs.mkdirSync(path.dirname(workflowPath), { recursive: true });
+  fs.writeFileSync(workflowPath, pagesWorkflow(distRel));
+  say(`Wrote ${path.relative(cwd, workflowPath)}`);
 }
 
 // ---- 4. install and build ----------------------------------------------------
@@ -267,6 +339,9 @@ Next:
 ${pending.length ? `${pending.join('\n')}\n` : ''}  ${pm} run verify     check the build gates
   ${pm} run test       runtime behaviour in jsdom
   ${pm} run dev        preview with live reload — the best way to read it back
+
+If you push this workspace to GitHub, enable Pages (Settings → Pages → Source: GitHub Actions)
+and a push to main publishes the site.
 
 To inspect the built output itself (or to test a subpath deploy):
   cd ${rel}/dist && python3 -m http.server 8000

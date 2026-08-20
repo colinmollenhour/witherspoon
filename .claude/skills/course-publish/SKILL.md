@@ -1,6 +1,6 @@
 ---
 name: course-publish
-description: Publish a built course site's dist/ to a public URL using the user's preferred static host. Defaults to here.now — witherspoon-course publish (create → upload → finalize) to a {slug}.here.now URL, with optional anonymous 24h Sites or permanent Sites via saved login. Vercel Drop and the Vercel CLI remain available as advanced alternatives. Handles authentication, optional custom domains, and end-to-end verification. Use when the user asks to publish, deploy, host, upload, or share a course website. Never uses GitHub.
+description: Publish a built course site's dist/ to a public URL using the user's preferred static host. Defaults to here.now — witherspoon-course publish (create → upload → finalize) to a {slug}.here.now URL, with optional anonymous 24h Sites or permanent Sites via saved login. Vercel Drop and the Vercel CLI remain available as advanced alternatives. Handles authentication, optional custom domains, and end-to-end verification. Use when the user asks to publish, deploy, host, upload, or share a course website. The agent never deploys through GitHub.
 ---
 
 # Course Publish
@@ -27,7 +27,11 @@ separate matter — see [Stage 7](#stage-7--iterate-after-publishing) — and is
 
 ## Non-negotiables
 
-- **No GitHub.** Never use GitHub Pages, Actions, Releases, repository deployment, or a Git remote.
+- **The agent never deploys through GitHub.** Never `git push`, never create a repository, never
+  ask for a PAT, never use GitHub Releases or a Git remote as the upload mechanism. A
+  `.github/workflows/publish.yml` written by `create-witherspoon-course` is a user-pushed Pages
+  republish path, not something this skill runs. If the user names GitHub Pages, follow
+  [GitHub Pages, when the user asks](#github-pages-when-the-user-asks).
 - Upload only the **contents** of `<course-dir>/dist/`, never the course source and never `dist/` as
   an extra path segment.
 - Never request an access key or long-lived secret in chat. Use the provider's browser login, OAuth
@@ -219,12 +223,37 @@ For another provider:
    after comparing a complete remote inventory with the local inventory and only inside that
    dedicated destination. If complete inventory is unavailable, leave unknown keys rather than
    risking deletion.
-10. If a requested host only supports Git-based deployment, do not use it. Offer its direct-upload
-    mode or return to Stage 1's other choices.
+10. If a requested host only supports Git-based deployment (connect the repo, the host builds), do
+    not use it. Offer its direct-upload mode or return to Stage 1's other choices. GitHub Pages via
+    the workflow this workspace already contains is different: CI builds `dist/` and uploads the
+    artifact. When the user names GitHub Pages, follow
+    [GitHub Pages, when the user asks](#github-pages-when-the-user-asks).
 
 For an existing/custom host, follow the user's stated mechanism and preserve the same invariants:
-public artifact URL, correct MIME types, clean scope, no source upload, no GitHub, and end-to-end
-verification.
+public artifact URL, correct MIME types, clean scope, no source upload, the agent never deploys
+through GitHub, and end-to-end verification.
+
+### GitHub Pages, when the user asks
+
+This is not a Stage 1 option and not a first-time default. Use it only when the user names GitHub
+Pages (including under Other). The workspace scaffolder writes `.github/workflows/publish.yml`;
+that workflow builds, verifies, tests, and deploys `dist/` to GitHub Pages on push to `main` /
+`master`. The agent does not run it.
+
+1. Confirm the file exists at the workspace root. If it is missing, re-run
+   `bun create witherspoon-course` (or `npm create witherspoon-course`) from the directory that
+   contains `course-<slug>/` — it writes the workflow when absent and does not overwrite a
+   customised one. Do not hand-write the YAML.
+2. Do not `git init`, `git push`, create a GitHub repository, or ask for a PAT.
+3. Tell the user the one-time setting: repo **Settings → Pages → Source: GitHub Actions**. The
+   URL will be `https://<owner>.github.io/<repo>/` (or `https://<owner>.github.io/` for a
+   `<owner>.github.io` repo). The site is path-independent, so a subpath deploy is expected.
+4. The next push **they** make to `main` (or `master`) deploys. `workflow_dispatch` covers a
+   republish without a dummy commit. Stop and wait for a URL, as with a browser upload.
+5. When they return a URL, verify it at Stage 5. Record `provider: "github-pages"`,
+   `method: "actions"`, `destination` as the repo, `entryUrl` as the verified Pages URL.
+6. Do not add a `scripts.deploy` for Pages — there is no local deploy command. Do not also
+   publish to here.now unless they asked for both.
 
 ### Stage 4 — Custom hostname, when requested
 
@@ -284,8 +313,9 @@ After verification, create or update `<course-dir>/.course-publish.json`:
 ```
 
 Use the actual provider and destination. `provider` is `"here.now"` for the default host, or
-`"vercel"` / another host when chosen. `method` records how the files got there — `"api"` for
-here.now's template publish command, `"drop"` for a browser upload, `"cli"` for a provider CLI — because
+`"vercel"` / `"github-pages"` / another host when chosen. `method` records how the files got there —
+`"api"` for here.now's template publish command, `"drop"` for a browser upload, `"cli"` for a
+provider CLI, `"actions"` for GitHub Pages — because
 the repeat-publish loop differs between them and the next session should not have to ask. Set
 `accountScope` to the provider's non-secret team, account, or organization identifier when
 destination names are account-scoped; leave it `null` when the destination ID is globally
@@ -411,7 +441,8 @@ good — "looks good", "perfect", "ship it", "yes, that's right", any plain appr
 saw — do these in order, without asking again:
 
 1. **Commit the course source**, when the workspace is a git repository. Stage the course files you
-   actually changed, write a message naming the change, and stop there. Never `git push`, never
+   actually changed, write a message naming the change, and stop there. Never `git push` — a push is
+   the user's to make; the committed Pages workflow is what runs after they do — never
    `git init` a workspace that is not already a repository, and never commit `dist/`,
    `node_modules/`, `.vercel/`, or `.herenow/` — if `dist/` is untracked and unignored, leave it untracked and say
    so once. Outside a repository, skip this step silently; it is a convenience, not a gate.
@@ -420,7 +451,8 @@ saw — do these in order, without asking again:
 3. **Hand back the absolute `dist/` path** with the re-upload instruction for the recorded method:
    `bun run deploy` for here.now/API or a CLI publish; the drop walkthrough plus the name-reclaiming
    step from [references/vercel.md](references/vercel.md) for a Vercel browser upload; see
-   [references/here-now.md](references/here-now.md) for `--slug` updates on here.now.
+   [references/here-now.md](references/here-now.md) for `--slug` updates on here.now; for GitHub
+   Pages, they push to `main` (you still do not).
 
 An approval of a change is not an instruction to publish it. Build, commit, and offer — then wait.
 The user decides when learners see the new version, and on the drop route they are the only one who
