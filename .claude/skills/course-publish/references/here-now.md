@@ -167,7 +167,8 @@ footer. Do not call the course published from a successful publish command exit 
 
 ## What not to do
 
-- Do not deploy through GitHub, Git remotes, or CI.
+- Do not treat a Git remote or GitHub Actions as this command's publish path. A Pages workflow in
+  the workspace is a separate, user-pushed republish path.
 - Do not upload course source — only dist/ contents.
 - Do not invent a {slug}.here.now URL before the API returns one.
 - Do not present .herenow/state.json as a URL or as proof of auth mode.

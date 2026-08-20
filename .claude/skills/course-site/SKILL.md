@@ -108,8 +108,9 @@ bun create witherspoon-course        # or: npm create witherspoon-course
 
 That is the whole build, first time and every time. It finds the course directory, writes a
 `package.json` carrying the build scripts, installs the template, and runs the build. The scaffolder
-also writes a workspace-root provenance `README.md` when that file is missing (who / when / why /
-Witherspoon); it never overwrites an existing one and never replaces the learner-facing
+also writes `.github/workflows/publish.yml` when that file is missing (GitHub Pages on push to
+`main`), and a workspace-root provenance `README.md` when that file is missing (who / when / why /
+Witherspoon); it never overwrites either and never replaces the learner-facing
 `course-<slug>/README.md`. If you build without that path for some reason and the workspace README is
 still missing, write the same provenance README before reporting. Afterwards:
 
@@ -160,9 +161,10 @@ Rights: <© year holder | no named holder> · <license label>
 Preview locally:
   bun run dev        (or: npm run dev) — live reload, edit a reading and the page updates
 
-Publish: say the word and I'll put this on a public URL. The easiest route is dragging the built
-folder onto vercel.com/drop — nothing to install — and I'll walk you through it and check the
-live site. Or name another host. Nothing is deployed through GitHub.
+Publish: say the word and I'll put this on a public URL. The easiest route is here.now — I'll
+upload the built folder and check the live site. Or name another host. If this workspace is on
+GitHub, push to main also publishes via `.github/workflows/publish.yml` once Pages is set to
+GitHub Actions.
 ```
 
 **Offer the dev server, not a static file server.** `npm run dev` (or `bun run dev` — both are fully
@@ -212,9 +214,10 @@ without asking a confirming question:
 
 1. **Commit the course source**, when the workspace is a git repository (`git rev-parse
    --git-dir`). Stage the course files you actually changed and write a message naming the change.
-   Never `git push` — nothing here publishes through a remote — never `git init` a workspace that is
-   not already a repository, and never commit `dist/`, `node_modules/` or `.vercel/`. Outside a
-   repository, skip this silently; it is a convenience, not a gate.
+   Never `git push` — a push is the user's to make; the committed Pages workflow is what runs after
+   they do — never `git init` a workspace that is not already a repository, and never commit `dist/`,
+   `node_modules/` or `.vercel/`. Outside a repository, skip this silently; it is a convenience, not
+   a gate.
 2. **Rebuild and re-run the gates** — `bun run build`, then `bun run verify` and `bun run test`. The
    dev server renders from source and proves nothing about the artifact anyone will upload.
 3. **Report the absolute `dist/` path** and say it is ready to publish or re-upload. If the course is

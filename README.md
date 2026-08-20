@@ -145,11 +145,16 @@ cd course-<slug>/dist && python3 -m http.server 8000
 **5 · Publish — free.** Ask your agent to publish the course. The default is
 [here.now](https://here.now/docs): the agent uploads `course-<slug>/dist` with
 `witherspoon-course publish` (create → upload → finalize) and returns the live URL from that publish
-result. No GitHub, no CI, no browser drag-and-drop. Anonymous publishes need no account and expire
+result. Anonymous publishes need no account and expire
 in 24 hours;
 a free account makes Sites permanent once the agent saves an API key locally (credentials file or
 env var — never paste a key into chat) — see [pricing](https://here.now/pricing.md). The agent opens
-the resulting URL from the public internet to check it before calling it published.
+the resulting URL from the public internet to check it before calling it published. The agent never
+`git push`es; a first public URL does not require a repository.
+
+`create-witherspoon-course` also writes `.github/workflows/publish.yml`. If you later push the
+workspace to GitHub, enable Pages once (Settings → Pages → Source: GitHub Actions) and every push to
+`main` rebuilds and publishes.
 
 Vercel remains available as an **advanced alternative**: drag `dist/` onto
 [vercel.com/drop](https://vercel.com/drop), or use the Vercel CLI for one-command republishes into the
@@ -160,7 +165,7 @@ A course site is static files with no backend, which makes it essentially free t
 the default because an agent can publish the built folder directly and the shareable link is a bare
 hostname (`https://your-course.here.now`) with `index.html` at the root. Netlify and Cloudflare Pages
 are built in too, and naming any other provider and upload mechanism will use that instead. Every
-route is direct artifact upload; nothing goes through a repository or CI.
+agent route is direct artifact upload.
 
 **Then keep editing.** `bun run dev` for small changes — a reworded paragraph appears on save. When
 you say it looks good, the agent commits the course source and re-cuts the build, then republishes

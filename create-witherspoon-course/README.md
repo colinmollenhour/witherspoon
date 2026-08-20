@@ -39,6 +39,11 @@ course, when, why, and that [Witherspoon](https://github.com/colinmollenhour/wit
 it — it never overwrites an existing README, and it is separate from the learner-facing
 `README.md` inside `course-<slug>/`.
 
+`.github/workflows/publish.yml` is written when missing and the course directory sits inside the
+workspace. It builds, verifies, tests, and deploys `dist/` to GitHub Pages on push to `main` (or
+`master`). Enable Pages once in the repo (Settings → Pages → Source: GitHub Actions). An existing
+workflow file is left alone.
+
 
 ## Options
 
