@@ -1,0 +1,62 @@
+# Publish create-witherspoon-course and witherspoon-course-template when
+# package.json carries a version the registry does not have yet. No npm token:
+# GitHub Actions authenticates with OIDC (trusted publishing).
+#
+# One-time per package on npmjs.com → package Settings → Trusted Publisher:
+#   Organization or user: colinmollenhour
+#   Repository: witherspoon
+#   Workflow filename: publish-npm.yml
+#   Environment: (leave empty)
+#
+# After that, bump the version in the package's package.json, merge to main,
+# and this workflow publishes. A version that is already on the registry is
+# skipped, so ordinary commits do not fail.
+name: Publish npm packages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    if: github.repository == 'colinmollenhour/witherspoon' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - dir: create-witherspoon-course
+            test: npm test
+          - dir: course-template
+            test: npm run test:tools
+    defaults:
+      run:
+        working-directory: ${{ matrix.dir }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      # Trusted publishing needs a current npm; the Node 24 image may lag.
+      - run: npm install -g npm@latest
+      - run: ${{ matrix.test }}
+      - name: Publish if unpublished
+        env:
+          # setup-node writes an always-auth .npmrc when registry-url is set;
+          # a dummy NODE_AUTH_TOKEN would shadow OIDC. Leave it empty.
+          NODE_AUTH_TOKEN: ''
+        run: |
+          set -euo pipefail
+          name=$(node -p "require('./package.json').name")
+          version=$(node -p "require('./package.json').version")
+          if npm view "$name@$version" version >/dev/null 2>&1; then
+            echo "$name@$version is already on the registry — skipping"
+            exit 0
+          fi
+          npm publish --access public

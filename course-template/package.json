@@ -1,6 +1,6 @@
 {
   "name": "witherspoon-course-template",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "description": "Shared Astro template that builds a self-contained static site from any approved course directory.",
   "keywords": [
@@ -17,7 +17,7 @@
     "url": "git+https://github.com/colinmollenhour/witherspoon.git",
     "directory": "course-template"
   },
-  "homepage": "https://github.com/colinmollenhour/witherspoon#readme",
+  "homepage": "https://witherspoon.app",
   "bin": {
     "witherspoon-course": "tools/cli.mjs",
     "witherspoon-course-template": "tools/cli.mjs"
