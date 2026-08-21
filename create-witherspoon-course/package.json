@@ -1,6 +1,6 @@
 {
   "name": "create-witherspoon-course",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "description": "Set up the Witherspoon site builder around a generated course directory, install it, and build the site.",
   "keywords": [
@@ -17,7 +17,7 @@
     "url": "git+https://github.com/colinmollenhour/witherspoon.git",
     "directory": "create-witherspoon-course"
   },
-  "homepage": "https://github.com/colinmollenhour/witherspoon#readme",
+  "homepage": "https://witherspoon.app",
   "bin": {
     "create-witherspoon-course": "index.mjs"
   },
