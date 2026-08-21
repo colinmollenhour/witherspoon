@@ -1,0 +1,32 @@
+# Publish website/ to the here.now Site lemon-gorge-75zm (witherspoon.app).
+# The landing page is already static HTML — there is no build step.
+# Auth is the HERENOW_API_KEY Actions secret; never put a key in this file.
+name: Publish website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    if: github.repository == 'colinmollenhour/witherspoon' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Publish to here.now
+        env:
+          HERENOW_API_KEY: ${{ secrets.HERENOW_API_KEY }}
+        run: |
+          set -euo pipefail
+          if [ -z "${HERENOW_API_KEY}" ]; then
+            echo "HERENOW_API_KEY secret is not set" >&2
+            exit 1
+          fi
+          node course-template/tools/publish.mjs website --slug lemon-gorge-75zm --client github-actions
