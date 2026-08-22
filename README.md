@@ -4,7 +4,7 @@ Generate a complete, grounded course — readings, flashcards, quizzes, unit tes
 hands-on projects — then build it into a self-contained static website and host it for free — *zero
 programming knowledge needed*.
 
-**→ [See a finished course](https://course-from-apps-to-machines.vercel.app)** — *Same File, Three Addresses*: 4 units, 12 topics, quizzes and tests, interactive widgets, and a
+**→ [See a finished course](https://course-from-apps-to-machines.vercel.app)** — *Out of the Sandbox*: 4 units, 12 topics, quizzes and tests, interactive widgets, and a
 printable certificate.
 
 **Connect to MCP**
@@ -528,7 +528,7 @@ licenses the course under the GPL than writing an essay in a GPL editor does.
 
 ## Sources
 
-*Same File, Three Addresses* is grounded in **186 ledger rows across 41 distinct sources**, recorded in
+*Out of the Sandbox* is grounded in **186 ledger rows across 41 distinct sources**, recorded in
 its [`SOURCES.md`](course-from-apps-to-machines/SOURCES.md) with a verbatim quote against each claim.
 The bulk are primary and normative: Microsoft Learn for the WSL and Windows paths, the RFC Editor for
 HTTP and IP behaviour, Ubuntu man pages and the Open Group base specifications for shell commands,

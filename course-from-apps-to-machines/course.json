@@ -1,5 +1,5 @@
 {
-  "title": "Same File, Three Addresses",
+  "title": "Out of the Sandbox",
   "slug": "from-apps-to-machines",
   "subtitle": "Start with a file you can only open by double-clicking. Finish with that same page loading on your phone across the room — no coding required.",
   "about": "You already know how to open a file: you tap it. A computer does not tap. It needs an address. That mismatch is why a terminal feels impossible, and why `it works on my laptop` is not the same as `it works on my phone`.\n\nYou make one page at `~/projects/first-site/index.html` and carry it the whole way. Unit 1: create it with a mouse and read its `file://` URL. Unit 2: delete it, rebuild it from the keyboard, then generate it with `>` and `|`. Unit 3: find the machine's LAN IP, start `python3 -m http.server 8000`, load `http://localhost:8000` — then type that same URL on your phone. Unit 4 is why it failed, the third address, and a two-line runbook.\n\nYou need a Mac, a Linux machine, or Windows with WSL; a phone on the same Wi-Fi; and no prior experience. You do not need to code, and this course does not teach coding — HTML is a text file a browser happens to render. Every number and error message traces to a primary source in `SOURCES.md`. Where something could not be checked, the course says so.",

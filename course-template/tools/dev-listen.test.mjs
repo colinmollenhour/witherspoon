@@ -142,9 +142,9 @@ test('formatPreviewBanner mentions a moved port', () => {
       movedFrom: 4321,
       port: 4322,
     },
-    { title: 'Same File, Three Addresses' },
+    { title: 'Out of the Sandbox' },
   );
-  assert.match(text, /Previewing Same File, Three Addresses/);
+  assert.match(text, /Previewing Out of the Sandbox/);
   assert.match(text, /Local\s+http:\/\/localhost:4322\//);
   assert.match(text, new RegExp(`Tailscale\\s+http://${TS_DNS.replaceAll('.', '\\.')}:4322/\\s+\\(${TS_IP.replaceAll('.', '\\.')}\\)`));
   assert.match(text, /Port 4321 is in use — using 4322/);
