@@ -142,7 +142,11 @@ function renderEl(el: VizEl, s: ElState, poster: boolean): string {
     'data-el': el.id,
     'data-tone': el.tone,
     'data-state': s.state || undefined,
-    'data-hidden': !poster && s.hidden ? '' : undefined,
+    // Must be a non-empty value: `attrs` drops '' along with undefined, so an
+    // empty marker silently vanished and every element hidden at the poster
+    // phase rendered anyway in the no-JS frame (the runtime's own
+    // `toggleAttribute` writes '', and `[data-hidden]` matches either form).
+    'data-hidden': !poster && s.hidden ? 'true' : undefined,
     transform: s.dx || s.dy ? `translate(${round(s.dx)} ${round(s.dy)})` : undefined,
   };
 
