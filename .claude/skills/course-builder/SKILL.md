@@ -38,8 +38,11 @@ These are the quality bar. Do not proceed past a stage that violates one.
 1. **One running example threads the whole course.** The same artifact is carried, modified, and
    re-measured in every unit. Pick it in Stage 2, before outlining. A topic that only *mentions*
    the artifact has failed — its leaving state must differ from the one it inherited.
-2. **The transformation is measurable.** The subtitle states a concrete before→after with real
-   numbers. If you cannot name the numbers, you do not understand the course yet.
+2. **The transformation is measurable, and the pitch sells the power.** The spine states a concrete
+   before→after with real numbers — if you cannot name the numbers, you do not understand the course
+   yet. The title and subtitle sell what the learner *becomes* and must survive the skeptic's shrug
+   ("I can already do that with an app"); numbers appear in the pitch only when the number itself is
+   the impressive thing (spine.md §4).
 3. **Every load-bearing number, API, and claim traces to `SOURCES.md`.** Nothing is written from
    recall alone. An ungrounded figure is a defect, not a placeholder. The ledger stays in
    `SOURCES.md`; the page teaches the claim. `[src N]`, researcher quotes, and journal citations
@@ -141,7 +144,8 @@ the interview answer is copied exactly into `course.json`.
 - the measurable transformation (before number → after number)
 - the designed failure moment (which unit, what wall, what cliffhanger)
 - the default dialect and which topic owns the platform map
-- the title and the subtitle stating the transformation
+- the title and the subtitle — drafted as candidates and passed through the skeptic test in
+  spine.md §4, not taken as the first idea
 
 Numbers here are provisional — best-effort from what you know, to be confirmed or corrected in
 Stage 5. Mark any figure you are not certain of with `?`.
@@ -166,7 +170,8 @@ then continue.
 
 ### Stage 4 — Approve
 
-Present the **criticised** outline as a compact syllabus: title, subtitle, the transformation
+Present the **criticised** outline as a compact syllabus: title and subtitle (with the runner-up
+title in one line, so redirecting the pitch costs the user one word), the transformation
 numbers (marked where provisional), the failure moment, the default dialect, the selected license
 and copyright holder, and the unit/topic tree. In one line, say what the critic cut and why. Then
 state exactly:

@@ -49,7 +49,10 @@ for each topic contract:
   FAIL the topic-as-topic if Inherits == Leaves
 ```
 
-Then read the home copy, Unit 1 in order, every `brief.md`, and two later readings.
+Then read the home copy, Unit 1 in order, every `brief.md`, and two later readings. On the home
+copy, apply the skeptic test from `course-builder/references/spine.md` §4: a title that summarises
+the mechanism, or a subtitle whose payoff an app the learner already has could deliver, is selling
+the demo instead of the power — a finding, same as any other.
 
 Write findings the way `learner-pass` specifies. End with the verdict. Then state exactly:
 
