@@ -1,0 +1,496 @@
+{
+  "title": "One name, two standpoints",
+  "canvas": {
+    "width": 800,
+    "height": 396,
+    "minWidth": 660
+  },
+  "poster": "never-moved",
+  "elements": [
+    {
+      "id": "disk-box",
+      "kind": "box",
+      "x": 24,
+      "y": 18,
+      "w": 752,
+      "h": 54,
+      "r": 10,
+      "dash": true,
+      "tone": "ghost",
+      "label": "On disk — this does not move"
+    },
+    {
+      "id": "disk-path",
+      "kind": "text",
+      "x": 40,
+      "y": 60,
+      "text": "/home/you/projects/first-site/index.html",
+      "mono": true,
+      "size": 12
+    },
+    {
+      "id": "disk-holds",
+      "kind": "text",
+      "x": 380,
+      "y": 60,
+      "text": "holds   <h1>Ground Zero</h1>",
+      "mono": true,
+      "size": 12
+    },
+    {
+      "id": "sh-box",
+      "kind": "box",
+      "x": 24,
+      "y": 88,
+      "w": 352,
+      "h": 64,
+      "r": 10,
+      "label": "Where the shell stands — pwd prints this"
+    },
+    {
+      "id": "sh-cwd",
+      "kind": "text",
+      "x": 40,
+      "y": 136,
+      "text": "/home/you/projects/first-site",
+      "mono": true,
+      "size": 13
+    },
+    {
+      "id": "cmd-box",
+      "kind": "box",
+      "x": 392,
+      "y": 88,
+      "w": 384,
+      "h": 64,
+      "r": 10,
+      "tone": "term",
+      "label": "What you type"
+    },
+    {
+      "id": "cmd-text",
+      "kind": "text",
+      "x": 408,
+      "y": 136,
+      "text": "$ pwd",
+      "mono": true,
+      "size": 13,
+      "tone": "term"
+    },
+    {
+      "id": "w-derive",
+      "kind": "wire",
+      "points": [[167, 152], [167, 176]],
+      "arrow": true,
+      "dash": true,
+      "tone": "accent",
+      "hidden": true
+    },
+    {
+      "id": "slot-from",
+      "kind": "box",
+      "x": 24,
+      "y": 176,
+      "w": 286,
+      "h": 54,
+      "r": 10,
+      "dash": true,
+      "label": "measured from",
+      "hidden": true
+    },
+    {
+      "id": "from-val",
+      "kind": "text",
+      "x": 38,
+      "y": 220,
+      "text": "/home/you/projects/first-site",
+      "mono": true,
+      "size": 12,
+      "hidden": true
+    },
+    {
+      "id": "plus",
+      "kind": "text",
+      "x": 322,
+      "y": 214,
+      "text": "+",
+      "size": 18,
+      "weight": 700,
+      "hidden": true
+    },
+    {
+      "id": "slot-name",
+      "kind": "box",
+      "x": 340,
+      "y": 176,
+      "w": 164,
+      "h": 54,
+      "r": 10,
+      "dash": true,
+      "label": "the name you typed",
+      "hidden": true
+    },
+    {
+      "id": "w-lookup",
+      "kind": "wire",
+      "points": [[264, 232], [264, 252]],
+      "arrow": true,
+      "dash": true,
+      "tone": "accent",
+      "hidden": true
+    },
+    {
+      "id": "look-cap",
+      "kind": "text",
+      "x": 24,
+      "y": 248,
+      "text": "the lookup resolves to",
+      "size": 10,
+      "hidden": true
+    },
+    {
+      "id": "look-box",
+      "kind": "box",
+      "x": 24,
+      "y": 254,
+      "w": 452,
+      "h": 48,
+      "r": 10,
+      "hidden": true
+    },
+    {
+      "id": "look-val",
+      "kind": "text",
+      "x": 38,
+      "y": 284,
+      "text": "/home/you/projects/first-site/index.html",
+      "mono": true,
+      "size": 13,
+      "hidden": true
+    },
+    {
+      "id": "ev-box",
+      "kind": "box",
+      "x": 24,
+      "y": 316,
+      "w": 752,
+      "h": 68,
+      "r": 10,
+      "tone": "term",
+      "label": "What came back, from each standpoint"
+    },
+    {
+      "id": "ev1",
+      "kind": "text",
+      "x": 40,
+      "y": 360,
+      "mono": true,
+      "size": 11,
+      "tone": "term",
+      "hidden": true,
+      "spans": [
+        {
+          "t": "/home/you/projects/first-site",
+          "tone": "term"
+        },
+        {
+          "t": "   $ cat index.html   ->   <h1>Ground Zero</h1>"
+        }
+      ]
+    },
+    {
+      "id": "ev2",
+      "kind": "text",
+      "x": 40,
+      "y": 380,
+      "mono": true,
+      "size": 11,
+      "tone": "term",
+      "hidden": true,
+      "spans": [
+        {
+          "t": "/home/you/projects",
+          "tone": "term"
+        },
+        {
+          "t": "   $ cat index.html   ->   No such file or directory"
+        }
+      ]
+    },
+    {
+      "id": "typed",
+      "kind": "chip",
+      "x": 494,
+      "y": 136,
+      "label": "index.html",
+      "mono": true,
+      "hidden": true
+    },
+    {
+      "id": "v-ok",
+      "kind": "chip",
+      "x": 620,
+      "y": 278,
+      "label": "<h1>Ground Zero</h1>",
+      "mono": true,
+      "tone": "ok",
+      "hidden": true
+    },
+    {
+      "id": "v-bad",
+      "kind": "chip",
+      "x": 620,
+      "y": 278,
+      "label": "No such file or directory",
+      "tone": "bad",
+      "hidden": true
+    }
+  ],
+  "phases": [
+    {
+      "id": "stand",
+      "title": "Ask where you stand",
+      "ms": 2400,
+      "narration": "`pwd` prints one line. The shell is standing in `/home/you/projects/first-site` — and every name you type without a leading `/` is measured from there.",
+      "actions": [
+        {
+          "state": {
+            "el": "sh-box",
+            "value": "active"
+          }
+        }
+      ]
+    },
+    {
+      "id": "half-an-address",
+      "title": "A relative name is half an address",
+      "ms": 2800,
+      "narration": "You type `cat index.html`. There is no leading `/`, so that name is not a place on its own. It is measured from the folder the shell is standing in.",
+      "actions": [
+        {
+          "state": {
+            "el": "sh-box",
+            "value": ""
+          }
+        },
+        {
+          "text": {
+            "el": "cmd-text",
+            "value": "$ cat index.html"
+          }
+        },
+        {
+          "show": "typed"
+        },
+        {
+          "show": "w-derive"
+        },
+        {
+          "show": "slot-from"
+        },
+        {
+          "show": "from-val"
+        },
+        {
+          "show": "plus"
+        },
+        {
+          "show": "slot-name"
+        },
+        {
+          "move": {
+            "el": "typed",
+            "path": [[494, 136], [468, 172], [420, 216]]
+          }
+        }
+      ]
+    },
+    {
+      "id": "hit",
+      "title": "The lookup lands on the file",
+      "ms": 2800,
+      "narration": "Measured from `/home/you/projects/first-site`, the name resolves to `/home/you/projects/first-site/index.html`. A file has that path, so `cat` prints the line you saved.",
+      "actions": [
+        {
+          "show": "w-lookup"
+        },
+        {
+          "show": "look-cap"
+        },
+        {
+          "show": "look-box"
+        },
+        {
+          "show": "look-val"
+        },
+        {
+          "state": {
+            "el": "look-box",
+            "value": "ok"
+          }
+        },
+        {
+          "show": "v-ok"
+        },
+        {
+          "show": "ev1"
+        }
+      ]
+    },
+    {
+      "id": "cd-up",
+      "title": "`cd ..` moves the shell, not the file",
+      "ms": 2800,
+      "narration": "`..` is the parent. The shell now stands in `/home/you/projects`. Read the top band again — nothing on disk moved when you typed that.",
+      "actions": [
+        {
+          "text": {
+            "el": "cmd-text",
+            "value": "$ cd .."
+          }
+        },
+        {
+          "hide": "typed"
+        },
+        {
+          "hide": "v-ok"
+        },
+        {
+          "hide": "look-val"
+        },
+        {
+          "hide": "look-cap"
+        },
+        {
+          "hide": "look-box"
+        },
+        {
+          "hide": "w-lookup"
+        },
+        {
+          "text": {
+            "el": "sh-cwd",
+            "value": "/home/you/projects"
+          }
+        },
+        {
+          "text": {
+            "el": "from-val",
+            "value": "/home/you/projects"
+          }
+        },
+        {
+          "state": {
+            "el": "sh-box",
+            "value": "active"
+          }
+        },
+        {
+          "state": {
+            "el": "disk-box",
+            "value": "active"
+          }
+        }
+      ]
+    },
+    {
+      "id": "same-characters",
+      "title": "The same characters, a new standpoint",
+      "ms": 2800,
+      "narration": "You type the same `cat index.html`. The characters are identical. The folder they are measured from is not.",
+      "actions": [
+        {
+          "state": {
+            "el": "sh-box",
+            "value": ""
+          }
+        },
+        {
+          "state": {
+            "el": "disk-box",
+            "value": ""
+          }
+        },
+        {
+          "text": {
+            "el": "cmd-text",
+            "value": "$ cat index.html"
+          }
+        },
+        {
+          "jump": {
+            "el": "typed",
+            "to": [494, 136]
+          }
+        },
+        {
+          "show": "typed"
+        },
+        {
+          "move": {
+            "el": "typed",
+            "path": [[494, 136], [468, 172], [420, 216]]
+          }
+        }
+      ]
+    },
+    {
+      "id": "miss",
+      "title": "The lookup lands on nothing",
+      "ms": 3000,
+      "narration": "Measured from `/home/you/projects`, the same name resolves to `/home/you/projects/index.html`. No file has that path. The reply is `No such file or directory`.",
+      "actions": [
+        {
+          "text": {
+            "el": "look-val",
+            "value": "/home/you/projects/index.html"
+          }
+        },
+        {
+          "show": "w-lookup"
+        },
+        {
+          "show": "look-cap"
+        },
+        {
+          "show": "look-box"
+        },
+        {
+          "show": "look-val"
+        },
+        {
+          "state": {
+            "el": "look-box",
+            "value": "bad"
+          }
+        },
+        {
+          "show": "v-bad"
+        },
+        {
+          "show": "ev2"
+        }
+      ]
+    },
+    {
+      "id": "never-moved",
+      "title": "The file never moved",
+      "ms": 3400,
+      "narration": "One name, two standpoints, two different paths. `index.html` is still in `first-site`, where it has been all along — the lookup missed, the bytes did not. Run `pwd` before you decide a file is gone.",
+      "actions": [
+        {
+          "state": {
+            "el": "disk-box",
+            "value": "ok"
+          }
+        },
+        {
+          "text": {
+            "el": "disk-holds",
+            "value": "still holds   <h1>Ground Zero</h1>   — unchanged"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -60,6 +60,8 @@ Two lines. The heading from `>`, then the paragraph from `>>`. You did not type 
 
 Run the first `echo` with `>` again and the paragraph vanishes. Wipe, then write. That is the whole difference. Use `>` once, at the start. Use `>>` for every line after that. Swap them and you either wipe the page or append to yesterday's markup.
 
+![Simulation of one file written twice. Cat prints the page from Unit 1. Echo on its own prints the heading to the terminal; adding a redirect empties index.html first and only then writes the heading into the empty file. A double arrow appends a paragraph without emptying anything. Running the first line again empties the file a second time, so the appended paragraph is gone, and the ledger of line counts reads one, zero, one, two, zero, one.](assets/viz/wipe-then-write.svg "Play it, or step through the phases. The empty frame is the whole difference between the two arrows.")
+
 A **pipe** (`|`) hands one program's stdout to the next program as input. The next program reads what this one printed. Nothing extra is written to disk. That is the other fork from stdout. `>` puts the printout in a file. `|` hands the printout to another program. Both steal the text from the screen. Only `>` leaves a file behind.
 
 ```bash

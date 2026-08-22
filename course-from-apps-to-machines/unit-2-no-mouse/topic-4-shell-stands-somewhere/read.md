@@ -85,6 +85,8 @@ This is why a good path can still fail. Stand in the wrong folder and type a rel
 
 People often read that message as a broken file. It is a lookup that found nothing. The bytes on disk did not change when you typed `cd ..`. Only your vantage point did.
 
+![Simulation of one relative name looked up twice. Standing in first-site, the name index.html is measured from that folder, resolves to a path that exists, and cat prints Ground Zero. After cd dot-dot the identical name is measured from the parent, resolves to a path no file has, and the reply is No such file or directory. The file on disk never moves.](assets/viz/name-and-standpoint.svg "Play it, or step through the phases. The paths are the Linux form — on a Mac home is `/Users/you`.")
+
 Run `pwd` before you decide the file is gone. If the path is not the folder you meant, move with `cd` and try the name again.
 
 ## Home, back, and the prompt

@@ -1,0 +1,527 @@
+{
+  "title": "Wipe, then write",
+  "canvas": {
+    "width": 800,
+    "height": 340,
+    "minWidth": 660
+  },
+  "poster": "use-once",
+  "elements": [
+    {
+      "id": "term-box",
+      "kind": "box",
+      "x": 24,
+      "y": 18,
+      "w": 752,
+      "h": 88,
+      "r": 10,
+      "tone": "term",
+      "label": "Terminal — standing in ~/projects/first-site"
+    },
+    {
+      "id": "term-cmd",
+      "kind": "text",
+      "x": 40,
+      "y": 68,
+      "text": "$ cat index.html",
+      "mono": true,
+      "size": 13,
+      "tone": "term"
+    },
+    {
+      "id": "term-ghost",
+      "kind": "text",
+      "x": 40,
+      "y": 92,
+      "text": "(nothing on the screen — the redirect took it)",
+      "mono": true,
+      "size": 11,
+      "tone": "ghost",
+      "hidden": true
+    },
+    {
+      "id": "file-box",
+      "kind": "box",
+      "x": 24,
+      "y": 120,
+      "w": 360,
+      "h": 206,
+      "r": 10,
+      "label": "~/projects/first-site/index.html"
+    },
+    {
+      "id": "file-cap",
+      "kind": "text",
+      "x": 40,
+      "y": 162,
+      "text": "what cat index.html prints",
+      "size": 10
+    },
+    {
+      "id": "w-file-rule",
+      "kind": "wire",
+      "points": [[40, 174], [368, 174]],
+      "width": 1,
+      "tone": "ghost"
+    },
+    {
+      "id": "fl1",
+      "kind": "text",
+      "x": 40,
+      "y": 204,
+      "text": "<h1>Ground Zero</h1>",
+      "mono": true,
+      "size": 13,
+      "hidden": true
+    },
+    {
+      "id": "fl-empty",
+      "kind": "text",
+      "x": 40,
+      "y": 204,
+      "text": "(nothing — the file is empty)",
+      "size": 13,
+      "tone": "warn",
+      "hidden": true
+    },
+    {
+      "id": "file-state",
+      "kind": "text",
+      "x": 40,
+      "y": 308,
+      "text": "1 line on disk",
+      "size": 11
+    },
+    {
+      "id": "led-box",
+      "kind": "box",
+      "x": 400,
+      "y": 120,
+      "w": 376,
+      "h": 206,
+      "r": 10,
+      "label": "The file after each command"
+    },
+    {
+      "id": "r1a",
+      "kind": "text",
+      "x": 416,
+      "y": 176,
+      "text": "the page you typed in Unit 1",
+      "mono": true,
+      "size": 11,
+      "hidden": true
+    },
+    {
+      "id": "r1b",
+      "kind": "text",
+      "x": 684,
+      "y": 176,
+      "text": "1 line",
+      "mono": true,
+      "size": 11,
+      "hidden": true
+    },
+    {
+      "id": "r2a",
+      "kind": "text",
+      "x": 416,
+      "y": 200,
+      "text": "> emptied the file first",
+      "mono": true,
+      "size": 11,
+      "tone": "warn",
+      "hidden": true
+    },
+    {
+      "id": "r2b",
+      "kind": "text",
+      "x": 684,
+      "y": 200,
+      "text": "0 lines",
+      "mono": true,
+      "size": 11,
+      "tone": "warn",
+      "hidden": true
+    },
+    {
+      "id": "r3a",
+      "kind": "text",
+      "x": 416,
+      "y": 224,
+      "text": "> then wrote the heading",
+      "mono": true,
+      "size": 11,
+      "tone": "ok",
+      "hidden": true
+    },
+    {
+      "id": "r3b",
+      "kind": "text",
+      "x": 684,
+      "y": 224,
+      "text": "1 line",
+      "mono": true,
+      "size": 11,
+      "tone": "ok",
+      "hidden": true
+    },
+    {
+      "id": "r4a",
+      "kind": "text",
+      "x": 416,
+      "y": 248,
+      "text": ">> added the paragraph",
+      "mono": true,
+      "size": 11,
+      "tone": "ok",
+      "hidden": true
+    },
+    {
+      "id": "r4b",
+      "kind": "text",
+      "x": 684,
+      "y": 248,
+      "text": "2 lines",
+      "mono": true,
+      "size": 11,
+      "tone": "ok",
+      "hidden": true
+    },
+    {
+      "id": "r5a",
+      "kind": "text",
+      "x": 416,
+      "y": 272,
+      "text": "> again: emptied the file",
+      "mono": true,
+      "size": 11,
+      "tone": "bad",
+      "hidden": true
+    },
+    {
+      "id": "r5b",
+      "kind": "text",
+      "x": 684,
+      "y": 272,
+      "text": "0 lines",
+      "mono": true,
+      "size": 11,
+      "tone": "bad",
+      "hidden": true
+    },
+    {
+      "id": "r6a",
+      "kind": "text",
+      "x": 416,
+      "y": 296,
+      "text": "> then wrote the heading",
+      "mono": true,
+      "size": 11,
+      "hidden": true
+    },
+    {
+      "id": "r6b",
+      "kind": "text",
+      "x": 684,
+      "y": 296,
+      "text": "1 line",
+      "mono": true,
+      "size": 11,
+      "hidden": true
+    },
+    {
+      "id": "led-lost",
+      "kind": "text",
+      "x": 416,
+      "y": 318,
+      "text": "the appended paragraph went with it",
+      "size": 10,
+      "tone": "bad",
+      "hidden": true
+    },
+    {
+      "id": "chip-h1",
+      "kind": "chip",
+      "x": 620,
+      "y": 68,
+      "label": "<h1>Ground Zero</h1>",
+      "mono": true,
+      "hidden": true
+    },
+    {
+      "id": "chip-p",
+      "kind": "chip",
+      "x": 620,
+      "y": 68,
+      "label": "<p>Generated.</p>",
+      "mono": true,
+      "hidden": true
+    }
+  ],
+  "phases": [
+    {
+      "id": "on-disk",
+      "title": "The page you typed is still there",
+      "ms": 2400,
+      "narration": "The folder is back from Unit 1. `cat index.html` prints the page you typed — those are the bytes on disk right now.",
+      "actions": [
+        {
+          "show": "fl1"
+        },
+        {
+          "show": "r1a"
+        },
+        {
+          "show": "r1b"
+        },
+        {
+          "state": {
+            "el": "file-box",
+            "value": "active"
+          }
+        }
+      ]
+    },
+    {
+      "id": "echo-alone",
+      "title": "`echo` prints to the screen",
+      "ms": 2600,
+      "narration": "`echo` writes its argument to **stdout** — the stream that lands in your terminal unless you send it somewhere else. On its own it prints the heading, then stops.",
+      "actions": [
+        {
+          "state": {
+            "el": "file-box",
+            "value": ""
+          }
+        },
+        {
+          "text": {
+            "el": "term-cmd",
+            "value": "$ echo '<h1>Ground Zero</h1>'"
+          }
+        },
+        {
+          "show": "chip-h1"
+        },
+        {
+          "move": {
+            "el": "chip-h1",
+            "path": [[620, 68], [420, 80], [190, 90]]
+          }
+        }
+      ]
+    },
+    {
+      "id": "wipe",
+      "title": "`>` empties the file first",
+      "ms": 3000,
+      "narration": "Now add `> index.html`. The terminal never sees the heading. Before anything is written, `>` empties the file: same name, same place, nothing in it.",
+      "actions": [
+        {
+          "text": {
+            "el": "term-cmd",
+            "value": "$ echo '<h1>Ground Zero</h1>' > index.html"
+          }
+        },
+        {
+          "hide": "chip-h1"
+        },
+        {
+          "show": "term-ghost"
+        },
+        {
+          "hide": "fl1"
+        },
+        {
+          "show": "fl-empty"
+        },
+        {
+          "text": {
+            "el": "file-state",
+            "value": "0 bytes — the same file, emptied"
+          }
+        },
+        {
+          "state": {
+            "el": "file-box",
+            "value": "warn"
+          }
+        },
+        {
+          "show": "r2a"
+        },
+        {
+          "show": "r2b"
+        }
+      ]
+    },
+    {
+      "id": "then-writes",
+      "title": "Then it writes",
+      "ms": 2800,
+      "narration": "Then the heading lands in the empty file. The old page is not sitting in a bin — those bytes were replaced. That is why `>` starts a generated file, not a way to add a line.",
+      "actions": [
+        {
+          "hide": "fl-empty"
+        },
+        {
+          "state": {
+            "el": "file-box",
+            "value": ""
+          }
+        },
+        {
+          "text": {
+            "el": "file-state",
+            "value": "1 line on disk"
+          }
+        },
+        {
+          "jump": {
+            "el": "chip-h1",
+            "to": [620, 68]
+          }
+        },
+        {
+          "show": "chip-h1"
+        },
+        {
+          "show": "r3a"
+        },
+        {
+          "show": "r3b"
+        },
+        {
+          "move": {
+            "el": "chip-h1",
+            "path": [[620, 68], [470, 140], [130, 204]]
+          }
+        }
+      ]
+    },
+    {
+      "id": "append",
+      "title": "`>>` leaves what is there",
+      "ms": 2800,
+      "narration": "`>>` appends: it adds at the end and leaves what was already in the file. The paragraph joins the heading. Same path, two lines.",
+      "actions": [
+        {
+          "hide": "chip-h1"
+        },
+        {
+          "show": "fl1"
+        },
+        {
+          "text": {
+            "el": "term-cmd",
+            "value": "$ echo '<p>Generated.</p>' >> index.html"
+          }
+        },
+        {
+          "text": {
+            "el": "file-state",
+            "value": "2 lines on disk"
+          }
+        },
+        {
+          "state": {
+            "el": "file-box",
+            "value": "ok"
+          }
+        },
+        {
+          "show": "r4a"
+        },
+        {
+          "show": "r4b"
+        },
+        {
+          "show": "chip-p"
+        },
+        {
+          "move": {
+            "el": "chip-p",
+            "path": [[620, 68], [470, 150], [126, 232]]
+          }
+        }
+      ]
+    },
+    {
+      "id": "again",
+      "title": "Run the first line again",
+      "ms": 3000,
+      "narration": "Same `>`, same path. It empties the file before it writes — so the paragraph you just appended goes with everything else. Wipe, then write. That is the whole difference.",
+      "actions": [
+        {
+          "text": {
+            "el": "term-cmd",
+            "value": "$ echo '<h1>Ground Zero</h1>' > index.html"
+          }
+        },
+        {
+          "hide": "chip-p"
+        },
+        {
+          "hide": "fl1"
+        },
+        {
+          "show": "fl-empty"
+        },
+        {
+          "text": {
+            "el": "file-state",
+            "value": "0 bytes — the same file, emptied"
+          }
+        },
+        {
+          "state": {
+            "el": "file-box",
+            "value": "bad"
+          }
+        },
+        {
+          "show": "r5a"
+        },
+        {
+          "show": "r5b"
+        },
+        {
+          "show": "led-lost"
+        }
+      ]
+    },
+    {
+      "id": "use-once",
+      "title": "Use `>` once, at the start",
+      "ms": 3200,
+      "narration": "Then it writes the heading back. One line where two stood. Use `>` once, at the start of the file, and `>>` for every line after that. Swap them and you either wipe the page or append to yesterday's markup.",
+      "actions": [
+        {
+          "hide": "fl-empty"
+        },
+        {
+          "show": "fl1"
+        },
+        {
+          "state": {
+            "el": "file-box",
+            "value": ""
+          }
+        },
+        {
+          "text": {
+            "el": "file-state",
+            "value": "1 line on disk — the paragraph is gone"
+          }
+        },
+        {
+          "show": "r6a"
+        },
+        {
+          "show": "r6b"
+        }
+      ]
+    }
+  ]
+}
