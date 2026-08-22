@@ -446,6 +446,75 @@ for (const kind of ['anatomy', 'flow', 'terminal', 'match', 'order', 'sequence']
   }
 }
 
+// ------------------------------------------------- 9. viz scenes derive frames
+// The scene ships settled at its poster phase (the informative no-JS frame);
+// enhancement must rewind it to phase 0 and step deterministically. These are
+// the halves a grep cannot see: the rewind actually happened, and stepping is a
+// pure derivation — landing on a phase always produces its settled frame.
+{
+  const vizPage = findPageWith(/data-viz="/);
+  if (!vizPage) {
+    console.log('  --   viz: no scene in this course, skipped');
+  } else {
+    const raw = fs.readFileSync(vizPage, 'utf8');
+    check('viz: static markup carries the phase storyboard',
+      /viz__phase\b/.test(raw) && /data-viz-timeline/.test(raw));
+
+    const { dom, errors, thrown } = load({ storage: memoryStorage(), file: vizPage });
+    const doc = dom.window.document;
+    const rel = path.relative(dist, vizPage);
+    check(`viz: scene on ${rel} loads without error`, !thrown && errors.length === 0,
+      thrown?.message ?? errors[0] ?? '');
+
+    for (const v of doc.querySelectorAll('[data-viz]')) {
+      const phases = [...v.querySelectorAll('.viz__phase[data-phase]')];
+      check('viz: scene was enhanced', v.hasAttribute('data-enhanced'));
+      check('viz: transport is revealed', !v.querySelector('[data-viz-bar]')?.hidden);
+      check('viz: enhancement rewound to phase 1',
+        phases[0]?.hasAttribute('data-active') === true);
+      check('viz: status names the phase',
+        /^1 of \d+ — ./.test(v.querySelector('[data-viz-status]')?.textContent ?? ''),
+        v.querySelector('[data-viz-status]')?.textContent ?? '');
+
+      const click = (el) => el?.dispatchEvent(new dom.window.Event('click', { bubbles: true }));
+      click(v.querySelector('[data-viz-next]'));
+      check('viz: Next settles the following phase', phases[1]?.hasAttribute('data-active') === true);
+
+      // A settled phase must include its movement's end state, not its start.
+      const last = phases.length - 1;
+      click(v.querySelector(`[data-viz-goto="${last}"]`));
+      check('viz: jumping to a phase lands its settled frame',
+        phases[last]?.hasAttribute('data-active') === true);
+      const moved = [...v.querySelectorAll('svg [data-el]')].some(
+        (el) => (el.getAttribute('transform') ?? '').startsWith('translate'),
+      );
+      check('viz: a settled move leaves its element displaced', moved);
+
+      // Derivation, not residue: returning to phase 1 restores the initial frame.
+      click(v.querySelector('[data-viz-goto="0"]'));
+      const stray = [...v.querySelectorAll('svg [data-el]')].filter(
+        (el) => el.getAttribute('transform'),
+      );
+      check('viz: rewinding clears every displacement', stray.length === 0,
+        stray.map((el) => el.getAttribute('data-el')).join(', '));
+
+      // The shipped SVG is settled at the poster phase, so a later phase's text
+      // swap is baked into the markup. Rewinding must restore the *authored*
+      // text from the payload — the DOM is not a source of truth for it.
+      const payload = JSON.parse(v.querySelector('[data-viz-timeline]')?.textContent ?? '{}');
+      const swappedAtZero = new Set(
+        (payload.phases?.[0]?.actions ?? []).map((a) => a.text?.el).filter(Boolean),
+      );
+      const wrongText = (payload.els ?? [])
+        .filter(([id, , , , , text]) => typeof text === 'string' && !swappedAtZero.has(id))
+        .filter(([id, , , , , text]) =>
+          v.querySelector(`svg [data-el="${id}"]`)?.textContent !== text);
+      check('viz: rewinding restores authored text', wrongText.length === 0,
+        wrongText.map(([id]) => id).join(', '));
+    }
+  }
+}
+
 // ---------------------------------------------------------------- report
 const failed = results.filter((r) => !r.ok);
 for (const r of results) {

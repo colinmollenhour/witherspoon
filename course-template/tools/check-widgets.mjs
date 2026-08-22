@@ -115,11 +115,67 @@ for (const file of walk(courseDir)) {
   if (n > 2) notes.push(`${rel} has ${n} widgets — the budget is two per topic`);
 }
 
+// Scene visualizations live beside the assets as `assets/viz/<name>.viz.json`
+// and are embedded as an image of the sibling `<name>.svg` (see lib/viz.ts).
+// Same policy as widgets: shape-check here, leave the deep rules to the build.
+const VIZ_KINDS = ['box', 'chip', 'text', 'wire'];
+const ACTIONS = ['show', 'hide', 'state', 'text', 'move', 'jump'];
+const vizDir = path.join(courseDir, 'assets', 'viz');
+const vizFiles = fs.existsSync(vizDir)
+  ? fs.readdirSync(vizDir).filter((f) => f.endsWith('.viz.json')).sort()
+  : [];
+const allMd = walk(courseDir).map((f) => fs.readFileSync(f, 'utf8')).join('\n');
+
+for (const file of vizFiles) {
+  const rel = path.join('assets', 'viz', file);
+  let spec;
+  try {
+    spec = JSON.parse(fs.readFileSync(path.join(vizDir, file), 'utf8'));
+  } catch (err) {
+    errors.push(`${rel}: not valid JSON — ${err.message}`);
+    continue;
+  }
+  const svg = rel.replace(/\.viz\.json$/, '.svg');
+  if (!allMd.includes(`(${svg}`)) {
+    notes.push(`${rel} is not embedded anywhere — reference it as ![alt](${svg} "caption") in a read.md`);
+  }
+  if (!spec?.canvas || !(spec.canvas.width > 0) || !(spec.canvas.height > 0)) {
+    errors.push(`${rel}: \`canvas\` needs positive width and height`);
+  }
+  const ids = new Set();
+  for (const [i, el] of (Array.isArray(spec?.elements) ? spec.elements : []).entries()) {
+    if (!el?.id) errors.push(`${rel}: elements[${i}] needs an \`id\``);
+    else if (ids.has(el.id)) errors.push(`${rel}: duplicate element id "${el.id}"`);
+    else ids.add(el.id);
+    if (!VIZ_KINDS.includes(el?.kind)) {
+      errors.push(`${rel}: elements[${i}] has unknown kind ${JSON.stringify(el?.kind)} — expected one of ${VIZ_KINDS.join(', ')}`);
+    }
+  }
+  if (!ids.size) errors.push(`${rel}: \`elements\` must be a non-empty array`);
+  const phases = Array.isArray(spec?.phases) ? spec.phases : [];
+  if (!phases.length) errors.push(`${rel}: \`phases\` must be a non-empty array`);
+  for (const [pi, p] of phases.entries()) {
+    if (!p?.id || !p?.title) errors.push(`${rel}: phases[${pi}] needs \`id\` and \`title\``);
+    for (const [ai, a] of (p?.actions ?? []).entries()) {
+      const keys = Object.keys(a ?? {}).filter((k) => ACTIONS.includes(k));
+      if (!keys.length) errors.push(`${rel}: phase "${p?.id}" actions[${ai}] needs one of ${ACTIONS.join(', ')}`);
+      for (const k of keys) {
+        const ref = typeof a[k] === 'string' ? a[k] : a[k]?.el;
+        if (!ids.has(ref)) errors.push(`${rel}: phase "${p?.id}" actions[${ai}] refers to unknown element "${ref}"`);
+      }
+    }
+  }
+  if (spec?.poster && !phases.some((p) => p?.id === spec.poster)) {
+    errors.push(`${rel}: \`poster\` names phase "${spec.poster}" which does not exist`);
+  }
+}
+
 for (const e of errors) console.log(`  ✗ ${e}`);
 for (const a of notes) console.log(`  · ${a}`);
+const vizNote = vizFiles.length ? ` and ${vizFiles.length} scene(s)` : '';
 console.log(
   errors.length
-    ? `\n${errors.length} malformed widget(s) of ${total}.`
-    : `\n${total} widget(s) checked, all well-formed.`,
+    ? `\n${errors.length} problem(s) across ${total} widget(s)${vizNote}.`
+    : `\n${total} widget(s)${vizNote} checked, all well-formed.`,
 );
 process.exit(errors.length ? 1 : 0);

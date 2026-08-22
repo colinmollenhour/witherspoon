@@ -257,6 +257,12 @@ child.on('exit', (code) => {
     if (removed.length) {
       console.log(`Pruned ${removed.length} non-site file(s): ${removed.join(', ')}`);
     }
+    // Course assets were staged before Astro ran, but the build itself can
+    // regenerate a viz poster into the course's assets/ (lib/viz.ts) — too late
+    // for that staging pass. Re-sync so a first build ships the fresh poster.
+    if (fs.existsSync(courseAssets)) {
+      fs.cpSync(courseAssets, path.join(dist, 'assets'), { recursive: true });
+    }
     // `astro build` removes .astro/ on its way out, taking the generated types
     // with it, so sync runs afterwards. This is what makes `npm run typecheck`
     // and editor completion resolve the `astro:content` virtual module.

@@ -1,0 +1,114 @@
+/* Animated scene visualizations. Markup is compiled at build time by lib/viz.ts;
+   runtime/viz.ts adds the clock and transport on top.
+
+   The scene ships settled at its poster phase with the whole phase list printed
+   below it, so the un-enhanced state is complete — same rule as widgets.css.
+
+   Tone/state colours here MUST mirror `paintFor` in lib/viz.ts, which bakes the
+   same mapping into the standalone poster SVG (a file no stylesheet reaches).
+   Add a tone in one place and you must add it in the other. */
+
+.viz__stage { padding: 1rem 1.1rem; overflow-x: auto; background: var(--surface); }
+.viz__svg { display: block; width: 100%; height: auto; }
+.viz__svg text { font-family: var(--font); }
+.viz__svg .vz-mono, .viz__svg .vz-mono tspan { font-family: var(--mono); }
+
+/* Colour changes ease gently; positions never do — motion is owned by the one
+   scene clock in runtime/viz.ts, and a CSS transition on transform would drift
+   against it. */
+.viz__svg rect, .viz__svg text, .viz__svg tspan, .viz__svg .vz-wire__path, .viz__svg .vz-wire__head {
+  transition: fill var(--speed) var(--ease), stroke var(--speed) var(--ease);
+}
+.viz__svg .vz { transition: opacity var(--speed) var(--ease); }
+.viz__svg .vz[data-hidden] { opacity: 0; visibility: hidden; }
+
+/* ---- tone / state mapping (state attribute wins: declared later) ---- */
+
+.vz-box > rect { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1.4; }
+.vz-box > .vz-box__label { fill: var(--text-dim); }
+.vz-chip > rect { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1.4; }
+.vz-chip > text { fill: var(--text); }
+.vz-text { fill: var(--text); }
+.vz-wire .vz-wire__path { stroke: var(--border-strong); fill: none; }
+.vz-wire .vz-wire__head { fill: var(--border-strong); }
+
+.vz[data-tone="accent"] > rect { fill: var(--accent-wash); stroke: var(--accent); }
+.vz[data-tone="accent"] > text, .vz-text[data-tone="accent"] { fill: var(--accent); }
+.vz[data-tone="ok"] > rect { fill: var(--ok-bg); stroke: var(--ok); }
+.vz[data-tone="ok"] > text, .vz-text[data-tone="ok"] { fill: var(--ok); }
+.vz[data-tone="bad"] > rect { fill: var(--bad-bg); stroke: var(--bad); }
+.vz[data-tone="bad"] > text, .vz-text[data-tone="bad"] { fill: var(--bad); }
+.vz[data-tone="warn"] > rect { fill: var(--warn-bg); stroke: var(--warn); }
+.vz[data-tone="warn"] > text, .vz-text[data-tone="warn"] { fill: var(--warn); }
+.vz[data-tone="ghost"] > rect { fill: none; stroke: var(--border); }
+.vz[data-tone="ghost"] > text, .vz-text[data-tone="ghost"] { fill: var(--text-faint); }
+
+/* Terminal panes stay dark in both themes, like the terminal widget. */
+.vz[data-tone="term"] > rect { fill: var(--term-bg); stroke: var(--term-bg); }
+.vz[data-tone="term"] > .vz-box__label { fill: var(--term-dim); }
+.vz-text[data-tone="term"], .vz[data-tone="term"] > text { fill: var(--term-ink); }
+
+.vz-wire[data-tone="accent"] .vz-wire__path { stroke: var(--accent); }
+.vz-wire[data-tone="accent"] .vz-wire__head { fill: var(--accent); }
+.vz-wire[data-tone="ghost"] .vz-wire__path { stroke: var(--border); }
+.vz-wire[data-tone="ghost"] .vz-wire__head { fill: var(--border); }
+
+.vz[data-state="active"] > rect { fill: var(--accent-wash); stroke: var(--accent); stroke-width: 2; }
+.vz[data-state="active"] > text { fill: var(--accent); }
+.vz-text[data-state="active"] { fill: var(--accent); }
+.vz[data-state="ok"] > rect { fill: var(--ok-bg); stroke: var(--ok); }
+.vz[data-state="ok"] > text, .vz-text[data-state="ok"] { fill: var(--ok); }
+.vz[data-state="bad"] > rect { fill: var(--bad-bg); stroke: var(--bad); }
+.vz[data-state="bad"] > text, .vz-text[data-state="bad"] { fill: var(--bad); }
+.vz[data-state="warn"] > rect { fill: var(--warn-bg); stroke: var(--warn); }
+.vz[data-state="warn"] > text, .vz-text[data-state="warn"] { fill: var(--warn); }
+.vz[data-state="dim"] { opacity: .45; }
+
+.vz-wire[data-state="active"] .vz-wire__path { stroke: var(--accent); stroke-width: 2.5; }
+.vz-wire[data-state="active"] .vz-wire__head { fill: var(--accent); }
+.vz-wire[data-state="bad"] .vz-wire__path { stroke: var(--bad); }
+.vz-wire[data-state="bad"] .vz-wire__head { fill: var(--bad); }
+
+/* Toned runs inside one line of text (log fields, mostly on a dark pane). */
+.viz__svg tspan[data-tone="ok"] { fill: var(--ok); }
+.viz__svg tspan[data-tone="bad"] { fill: var(--bad); }
+.viz__svg tspan[data-tone="warn"] { fill: var(--warn); }
+.viz__svg tspan[data-tone="accent"] { fill: var(--accent); }
+.viz__svg tspan[data-tone="term"] { fill: var(--term-accent); }
+.viz__svg tspan[data-tone="ghost"] { fill: var(--term-dim); }
+.vz[data-tone="term"] tspan:not([data-tone]) { fill: var(--term-ink); }
+
+/* ---- transport ---- */
+
+.viz__bar { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap;
+  padding: .7rem 1.1rem; border-top: 1px solid var(--border); background: var(--surface-2); }
+.viz__status { color: var(--text-dim); font-size: .88rem; margin-left: auto; }
+
+/* ---- phase storyboard ---- */
+
+.viz__phases { list-style: none; margin: 0; padding: .5rem .6rem;
+  border-top: 1px solid var(--border); display: grid; gap: 2px; }
+.viz__phase-btn { display: flex; gap: .6rem; align-items: baseline; width: 100%;
+  text-align: left; font: inherit; color: inherit; background: none; border: 0;
+  border-radius: var(--radius-sm); padding: .42rem .5rem; }
+.viz__phase-btn:not(:disabled) { cursor: pointer; }
+.viz__phase-btn:not(:disabled):hover { background: var(--accent-wash); }
+.viz__phase-n { flex: none; width: 1.35rem; height: 1.35rem; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: .72rem; font-weight: 700; background: var(--surface-3); color: var(--text-dim);
+  transform: translateY(.15rem); }
+.viz__phase-text { font-size: .92rem; }
+.viz__phase-text b { font-weight: 640; }
+.viz__phase-note { color: var(--text-dim); }
+.viz__phase[data-active] .viz__phase-btn { background: var(--accent-wash); }
+.viz__phase[data-active] .viz__phase-n { background: var(--accent); color: var(--accent-ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .viz__svg rect, .viz__svg text, .viz__svg tspan, .viz__svg .vz,
+  .viz__svg .vz-wire__path, .viz__svg .vz-wire__head { transition: none; }
+}
+
+@media print {
+  .viz__bar { display: none; }
+  .viz__stage { overflow: visible; }
+}

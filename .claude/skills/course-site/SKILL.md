@@ -68,6 +68,14 @@ Walk every topic and decide, listing the plan before you build anything:
   lesson, an exchange between parties, or a hierarchy. Give the type, the topic, and the one sentence
   it makes land. **At most two per topic.**
 - **Diagrams** — only for structure a widget genuinely cannot carry.
+- **Scenes** — an animated, steppable simulation, for a process that is invisible *and temporal*:
+  the order is the lesson and a table could only assert the outcome. Watch for the telltales as you
+  read: prose that says "watch what happens", a compare table whose columns are really successive
+  attempts, hidden state changing meaning, evidence that appears (or pointedly does not), a failure
+  walked step by step. At most a handful per course, each where a unit's drama turns. **Read
+  `references/viz.md` and run its design method** — insight sentence, three divergent sketches,
+  storyboard — before any spec; the plan lists the insight sentence and the chosen visual grammar,
+  not just "add a scene".
 - **One unit hero per unit, at most** — atmospheric illustration of that unit's before→after, with
   the takeaway in the caption (not painted into the pixels).
 - **Optional course hero** — home-page artwork if none exists yet.
@@ -84,6 +92,11 @@ than they add, and a widget between every paragraph reads as decoration.
 paragraph each one illustrates. Follow the catalogue in `references/widgets.md` for the shape of each
 type. Every fact inside a widget obeys the same grounding contract as prose — an invented `ls` output
 is fabrication whether it sits in a paragraph or in JSON.
+
+**Scenes** are a spec file at `assets/viz/<name>.viz.json`, embedded in `read.md` as an ordinary
+image of the poster the build generates beside it — `![alt](assets/viz/<name>.svg "caption")` — so
+the markdown stays readable and every other renderer shows a real diagram. `references/viz.md` has
+the spec; commit the generated poster.
 
 **Images** follow `references/visuals.md` exactly. Three non-obvious rules:
 
@@ -150,7 +163,7 @@ which, plainly.
 ```
 Built: dist/ — <N> pages · <N> quizzes · <N> widgets · <N> images · <total size>
 Widgets: <N> anatomy · <N> flow · <N> compare · <N> terminal · <N> match · <N> order ·
-         <N> sequence · <N> tree
+         <N> sequence · <N> tree · <N> scene(s)
 Visuals: course hero <yes|no> · <N> unit heroes · <N> in-reading figures ·
          <N> tldraw/SVG diagrams · <N> skipped (reason)
 Gates: <all passed | what needed fixing | what still fails>

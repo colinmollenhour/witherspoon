@@ -14,6 +14,7 @@ import { initReset } from './reset';
 import { initSearch } from './search';
 import { initSubnav } from './subnav';
 import { initTheme } from './theme';
+import { initVizScenes } from './viz';
 import { initWidgets } from './widgets';
 import { render } from './progress';
 import { Store } from './store';
@@ -40,6 +41,7 @@ function boot(): void {
   initSubnav();
   initReadbar();
   initWidgets();
+  initVizScenes();
 }
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);

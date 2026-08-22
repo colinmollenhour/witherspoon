@@ -1,0 +1,777 @@
+{
+  "title": "Where each request actually goes",
+  "canvas": {
+    "width": 780,
+    "height": 396,
+    "minWidth": 640
+  },
+  "poster": "proof",
+  "elements": [
+    {
+      "id": "lap",
+      "kind": "box",
+      "x": 20,
+      "y": 20,
+      "w": 350,
+      "h": 360,
+      "label": "Laptop"
+    },
+    {
+      "id": "lap-browser",
+      "kind": "box",
+      "x": 76,
+      "y": 56,
+      "w": 220,
+      "h": 74,
+      "label": "Browser tab"
+    },
+    {
+      "id": "lap-term",
+      "kind": "box",
+      "x": 64,
+      "y": 212,
+      "w": 286,
+      "h": 148,
+      "label": "python3 -m http.server 8000",
+      "tone": "term"
+    },
+    {
+      "id": "phone",
+      "kind": "box",
+      "x": 560,
+      "y": 88,
+      "w": 200,
+      "h": 292,
+      "label": "Phone"
+    },
+    {
+      "id": "ph-browser",
+      "kind": "box",
+      "x": 580,
+      "y": 124,
+      "w": 160,
+      "h": 74,
+      "label": "Browser"
+    },
+    {
+      "id": "fw",
+      "kind": "box",
+      "x": 390,
+      "y": 268,
+      "w": 10,
+      "h": 44,
+      "r": 3,
+      "tone": "warn",
+      "dash": true,
+      "hidden": true
+    },
+    {
+      "id": "lap-loop",
+      "kind": "wire",
+      "points": [
+        [
+          100,
+          134
+        ],
+        [
+          100,
+          194
+        ]
+      ],
+      "arrow": true,
+      "dash": true,
+      "tone": "ghost"
+    },
+    {
+      "id": "ph-loop",
+      "kind": "wire",
+      "points": [
+        [
+          660,
+          202
+        ],
+        [
+          660,
+          278
+        ]
+      ],
+      "arrow": true,
+      "dash": true,
+      "tone": "ghost"
+    },
+    {
+      "id": "lan",
+      "kind": "wire",
+      "points": [
+        [
+          352,
+          288
+        ],
+        [
+          558,
+          288
+        ]
+      ],
+      "arrow": "both",
+      "width": 2.5
+    },
+    {
+      "id": "door-loop",
+      "kind": "chip",
+      "x": 100,
+      "y": 206,
+      "label": ":8000",
+      "mono": true,
+      "tone": "accent"
+    },
+    {
+      "id": "door-lan",
+      "kind": "chip",
+      "x": 350,
+      "y": 288,
+      "label": ":8000",
+      "mono": true,
+      "tone": "accent"
+    },
+    {
+      "id": "lap-ip",
+      "kind": "chip",
+      "x": 370,
+      "y": 252,
+      "label": "192.168.1.42",
+      "mono": true
+    },
+    {
+      "id": "ph-ip",
+      "kind": "chip",
+      "x": 560,
+      "y": 252,
+      "label": "192.168.1.66",
+      "mono": true
+    },
+    {
+      "id": "lap-me",
+      "kind": "chip",
+      "x": 100,
+      "y": 173,
+      "label": "127.0.0.1",
+      "mono": true,
+      "tone": "ghost"
+    },
+    {
+      "id": "ph-me",
+      "kind": "chip",
+      "x": 660,
+      "y": 244,
+      "label": "127.0.0.1",
+      "mono": true,
+      "tone": "ghost"
+    },
+    {
+      "id": "lap-url",
+      "kind": "text",
+      "x": 86,
+      "y": 100,
+      "text": "http://localhost:8000",
+      "mono": true,
+      "size": 11.5
+    },
+    {
+      "id": "lap-status",
+      "kind": "text",
+      "x": 86,
+      "y": 120,
+      "text": "your page",
+      "size": 11,
+      "weight": 600,
+      "tone": "ok",
+      "hidden": true
+    },
+    {
+      "id": "lap-resolve",
+      "kind": "text",
+      "x": 152,
+      "y": 177,
+      "text": "localhost → 127.0.0.1 (this laptop)",
+      "size": 11,
+      "tone": "accent",
+      "hidden": true
+    },
+    {
+      "id": "banner",
+      "kind": "text",
+      "x": 76,
+      "y": 256,
+      "text": "Serving HTTP on 0.0.0.0 port 8000 ...",
+      "mono": true,
+      "size": 10,
+      "tone": "term"
+    },
+    {
+      "id": "log1",
+      "kind": "text",
+      "x": 76,
+      "y": 280,
+      "mono": true,
+      "size": 10,
+      "tone": "term",
+      "hidden": true,
+      "spans": [
+        {
+          "t": "127.0.0.1",
+          "tone": "term"
+        },
+        {
+          "t": " - - \"GET / HTTP/1.1\" 200 -"
+        }
+      ]
+    },
+    {
+      "id": "log-ghost",
+      "kind": "text",
+      "x": 76,
+      "y": 302,
+      "text": "(nothing — the request never left the phone)",
+      "mono": true,
+      "size": 10,
+      "tone": "ghost",
+      "hidden": true
+    },
+    {
+      "id": "log2",
+      "kind": "text",
+      "x": 76,
+      "y": 302,
+      "mono": true,
+      "size": 10,
+      "tone": "term",
+      "hidden": true,
+      "spans": [
+        {
+          "t": "192.168.1.66",
+          "tone": "term"
+        },
+        {
+          "t": " - - \"GET / HTTP/1.1\" 200 -"
+        }
+      ]
+    },
+    {
+      "id": "log-ghost2",
+      "kind": "text",
+      "x": 76,
+      "y": 324,
+      "text": "(no new line — dropped before the server)",
+      "mono": true,
+      "size": 10,
+      "tone": "ghost",
+      "hidden": true
+    },
+    {
+      "id": "ph-url",
+      "kind": "text",
+      "x": 588,
+      "y": 164,
+      "text": "http://localhost:8000",
+      "mono": true,
+      "size": 9.5
+    },
+    {
+      "id": "ph-status",
+      "kind": "text",
+      "x": 588,
+      "y": 184,
+      "text": "can't connect",
+      "size": 10.5,
+      "weight": 600,
+      "hidden": true
+    },
+    {
+      "id": "ph-resolve",
+      "kind": "text",
+      "x": 660,
+      "y": 220,
+      "text": "localhost → 127.0.0.1 (this phone)",
+      "size": 10,
+      "tone": "accent",
+      "anchor": "middle",
+      "hidden": true
+    },
+    {
+      "id": "ph-noserver",
+      "kind": "text",
+      "x": 660,
+      "y": 304,
+      "text": "port 8000 — nothing is listening",
+      "size": 10.5,
+      "tone": "ghost",
+      "anchor": "middle"
+    },
+    {
+      "id": "ph-refused",
+      "kind": "text",
+      "x": 660,
+      "y": 324,
+      "text": "connection refused",
+      "size": 11,
+      "weight": 600,
+      "tone": "bad",
+      "anchor": "middle",
+      "hidden": true
+    },
+    {
+      "id": "lan-label",
+      "kind": "text",
+      "x": 455,
+      "y": 316,
+      "text": "Wi-Fi — one network: 192.168.1.x",
+      "size": 10.5,
+      "tone": "ghost",
+      "anchor": "middle"
+    },
+    {
+      "id": "fw-label",
+      "kind": "text",
+      "x": 395,
+      "y": 344,
+      "text": "firewall",
+      "size": 10,
+      "tone": "warn",
+      "anchor": "middle",
+      "hidden": true
+    },
+    {
+      "id": "packet",
+      "kind": "chip",
+      "x": 100,
+      "y": 134,
+      "label": "GET /",
+      "mono": true,
+      "tone": "accent",
+      "hidden": true
+    },
+    {
+      "id": "resp",
+      "kind": "chip",
+      "x": 100,
+      "y": 200,
+      "label": "200 OK",
+      "mono": true,
+      "tone": "ok",
+      "hidden": true
+    }
+  ],
+  "phases": [
+    {
+      "id": "stage",
+      "title": "Two machines, one Wi-Fi",
+      "ms": 3000,
+      "narration": "The server on the laptop said `Serving HTTP on 0.0.0.0 port 8000` — it listens at every door the laptop has, loopback included. The phone has its own doors, with nothing behind them.",
+      "actions": []
+    },
+    {
+      "id": "laptop-asks",
+      "title": "The laptop asks localhost",
+      "ms": 2600,
+      "narration": "`localhost` is not a shared name — it means the machine that is asking. Here, that is the laptop. The request loops back inside and never touches the Wi-Fi.",
+      "actions": [
+        {
+          "state": {
+            "el": "lap-browser",
+            "value": "active"
+          }
+        },
+        {
+          "show": "lap-resolve"
+        },
+        {
+          "show": "packet"
+        },
+        {
+          "move": {
+            "el": "packet",
+            "path": [
+              [
+                100,
+                134
+              ],
+              [
+                100,
+                182
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "laptop-answered",
+      "title": "The log names the asker",
+      "ms": 2400,
+      "narration": "A server is behind the laptop's `:8000` door, so the page comes back — and a line lands in the access log. The first field names the asker: `127.0.0.1`. The laptop asked itself.",
+      "actions": [
+        {
+          "hide": "packet"
+        },
+        {
+          "jump": {
+            "el": "resp",
+            "to": [
+              100,
+              182
+            ]
+          }
+        },
+        {
+          "show": "resp"
+        },
+        {
+          "move": {
+            "el": "resp",
+            "path": [
+              [
+                100,
+                182
+              ],
+              [
+                100,
+                134
+              ]
+            ]
+          }
+        },
+        {
+          "show": "lap-status"
+        },
+        {
+          "show": "log1"
+        }
+      ]
+    },
+    {
+      "id": "phone-asks",
+      "title": "The phone asks the same letters",
+      "ms": 2600,
+      "narration": "`localhost` still means the machine that is asking — and now that is the phone. The request loops back inside the *phone*, hunting for a server on the phone's own port `8000`.",
+      "actions": [
+        {
+          "hide": "resp"
+        },
+        {
+          "state": {
+            "el": "lap-browser",
+            "value": ""
+          }
+        },
+        {
+          "hide": "lap-resolve"
+        },
+        {
+          "state": {
+            "el": "ph-browser",
+            "value": "active"
+          }
+        },
+        {
+          "show": "ph-resolve"
+        },
+        {
+          "state": {
+            "el": "packet",
+            "value": ""
+          }
+        },
+        {
+          "jump": {
+            "el": "packet",
+            "to": [
+              660,
+              202
+            ]
+          }
+        },
+        {
+          "show": "packet"
+        },
+        {
+          "move": {
+            "el": "packet",
+            "path": [
+              [
+                660,
+                202
+              ],
+              [
+                660,
+                276
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "nothing-there",
+      "title": "Silence is the evidence",
+      "ms": 2400,
+      "narration": "Nothing on the phone serves the site, so the request dies where it was born. Look at the laptop's log: no new line. The laptop was never asked.",
+      "actions": [
+        {
+          "state": {
+            "el": "packet",
+            "value": "bad"
+          }
+        },
+        {
+          "show": "ph-refused"
+        },
+        {
+          "show": "ph-status"
+        },
+        {
+          "state": {
+            "el": "ph-status",
+            "value": "bad"
+          }
+        },
+        {
+          "show": "log-ghost"
+        },
+        {
+          "state": {
+            "el": "lan",
+            "value": "dim"
+          }
+        }
+      ]
+    },
+    {
+      "id": "third-address",
+      "title": "The phone types the third address",
+      "ms": 3000,
+      "narration": "`192.168.1.42` is not a name for \"me\"; it is a place on the network. The request leaves the phone, crosses the Wi-Fi, and knocks at a door `0.0.0.0` had already opened.",
+      "actions": [
+        {
+          "hide": "ph-refused"
+        },
+        {
+          "hide": "ph-status"
+        },
+        {
+          "hide": "log-ghost"
+        },
+        {
+          "state": {
+            "el": "lan",
+            "value": "active"
+          }
+        },
+        {
+          "text": {
+            "el": "ph-url",
+            "value": "http://192.168.1.42:8000"
+          }
+        },
+        {
+          "text": {
+            "el": "ph-resolve",
+            "value": "192.168.1.42 — a place, not a name"
+          }
+        },
+        {
+          "state": {
+            "el": "packet",
+            "value": ""
+          }
+        },
+        {
+          "jump": {
+            "el": "packet",
+            "to": [
+              660,
+              202
+            ]
+          }
+        },
+        {
+          "move": {
+            "el": "packet",
+            "path": [
+              [
+                660,
+                202
+              ],
+              [
+                608,
+                250
+              ],
+              [
+                558,
+                288
+              ],
+              [
+                398,
+                288
+              ]
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "proof",
+      "title": "Proof in the first field",
+      "ms": 3000,
+      "narration": "The page loads, and a new log line appears. Its first field is `192.168.1.66` — the phone. Two lines, two different first fields, two different askers. That field is the proof the second device arrived.",
+      "actions": [
+        {
+          "hide": "packet"
+        },
+        {
+          "jump": {
+            "el": "resp",
+            "to": [
+              352,
+              288
+            ]
+          }
+        },
+        {
+          "show": "resp"
+        },
+        {
+          "move": {
+            "el": "resp",
+            "path": [
+              [
+                352,
+                288
+              ],
+              [
+                558,
+                288
+              ],
+              [
+                608,
+                250
+              ],
+              [
+                660,
+                197
+              ]
+            ]
+          }
+        },
+        {
+          "show": "log2"
+        },
+        {
+          "show": "ph-status"
+        },
+        {
+          "text": {
+            "el": "ph-status",
+            "value": "your page"
+          }
+        },
+        {
+          "state": {
+            "el": "ph-status",
+            "value": "ok"
+          }
+        },
+        {
+          "state": {
+            "el": "ph-browser",
+            "value": "ok"
+          }
+        }
+      ]
+    },
+    {
+      "id": "firewall",
+      "title": "When a firewall eats the packet",
+      "ms": 3000,
+      "narration": "If the right address still fails, watch the log. A firewall can drop the request at the laptop's edge: the bind is `0.0.0.0`, the address is right, and still no line appears. The request stopped before the server ever saw it.",
+      "actions": [
+        {
+          "hide": "resp"
+        },
+        {
+          "show": "fw"
+        },
+        {
+          "show": "fw-label"
+        },
+        {
+          "state": {
+            "el": "lan",
+            "value": ""
+          }
+        },
+        {
+          "state": {
+            "el": "packet",
+            "value": "warn"
+          }
+        },
+        {
+          "jump": {
+            "el": "packet",
+            "to": [
+              660,
+              202
+            ]
+          }
+        },
+        {
+          "show": "packet"
+        },
+        {
+          "move": {
+            "el": "packet",
+            "path": [
+              [
+                660,
+                202
+              ],
+              [
+                608,
+                250
+              ],
+              [
+                558,
+                288
+              ],
+              [
+                432,
+                288
+              ]
+            ]
+          }
+        },
+        {
+          "show": "log-ghost2"
+        },
+        {
+          "text": {
+            "el": "ph-status",
+            "value": "still waiting…"
+          }
+        },
+        {
+          "state": {
+            "el": "ph-status",
+            "value": "warn"
+          }
+        },
+        {
+          "state": {
+            "el": "ph-browser",
+            "value": "active"
+          }
+        }
+      ]
+    }
+  ]
+}

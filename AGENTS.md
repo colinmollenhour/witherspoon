@@ -157,6 +157,15 @@ tools/                build.mjs · verify.mjs · test-runtime.mjs · check-widge
   (catalogue: `.claude/skills/course-site/references/widgets.md`). The un-enhanced markup is already
   complete; `src/runtime/widgets.ts` only sets `data-enhanced` and hides rather than removes, which is
   what lets the print stylesheet bring everything back. A malformed widget fails the build by design.
+- **Scene visualizations are a separate file, embedded as an image.** An animated simulation lives
+  at `<course-dir>/assets/viz/<name>.viz.json` and `read.md` references `assets/viz/<name>.svg` as an
+  ordinary markdown image. `src/lib/viz.ts` claims that image before the figure pass, renders the
+  scene inline (settled at its `poster` phase, storyboard printed below — gate S4 holds without JS),
+  and regenerates the poster SVG beside the spec so GitHub shows a real diagram; `tools/build.mjs`
+  re-syncs course assets after Astro so a first build ships it. `src/lib/viz-model.ts` is the pure
+  model shared with `src/runtime/viz.ts`: every frame is derived from `{phase, progress}`, never
+  accumulated, which is what makes the poster, the no-JS frame and `?vizphase=N` screenshots
+  identical. Spec format: `.claude/skills/course-site/references/viz.md`.
 - **Diagrams are SVG, not Mermaid.** Mermaid needs a runtime library and would break the
   no-external-requests rule. Fallback for a failed visual is inline SVG or a table — and the build
   never blocks on a missing picture.

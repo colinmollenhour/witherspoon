@@ -135,6 +135,8 @@ Do not guess the number.
 Read the one the server just printed.
 The different first field is the proof the second device arrived.
 
+![Simulation of three requests. The laptop asking localhost answers itself and logs 127.0.0.1. The phone asking localhost dies inside the phone, and the laptop logs nothing. The phone asking the laptop's LAN address crosses the Wi-Fi, and the log's first field is the phone's address.](assets/viz/three-attempts.svg "Play it, or step through the phases. The addresses are examples — read yours from `ip -4 addr` and from the log.")
+
 ```widget
 {
   "type": "compare",

@@ -19,6 +19,7 @@ import {
   type RawUnit,
 } from './course';
 import { compileFigures, resolveUnitHero } from './figures';
+import { compileViz } from './viz';
 import { compileWidgets } from './widgets';
 
 const DEFAULT_ACCENT = '#3f7ac4';
@@ -229,16 +230,19 @@ export function topicsLoader(): Loader {
 
           const id = `${unitSlug(ui)}/${topicSlug(ti)}`;
           const data = await parseData({ id, data: raw });
-          // Figures then widgets: each pass lifts its fences/images to tokens so
-          // the markdown processor never rewrites their internals, then injects
-          // compiled HTML after render. Topic pages sit one directory deep.
-          const f = await compileFigures(body, readPath, 1);
+          // Viz, then figures, then widgets: each pass lifts its fences/images
+          // to tokens so the markdown processor never rewrites their internals,
+          // then injects compiled HTML after render. Viz goes first because a
+          // scene is embedded as an image and the figure pass would otherwise
+          // claim it. Topic pages sit one directory deep.
+          const v = await compileViz(body, readPath);
+          const f = await compileFigures(v.markdown, readPath, 1);
           const w = await compileWidgets(f.markdown, readPath);
           const rendered = await renderMarkdown(w.markdown);
           store.set({
             id,
             data,
-            rendered: { ...rendered, html: f.inject(w.inject(rendered.html)) },
+            rendered: { ...rendered, html: v.inject(f.inject(w.inject(rendered.html))) },
             digest: generateDigest(data),
           });
         }
@@ -316,13 +320,14 @@ export function projectsLoader(): Loader {
           const id = `${unitSlug(ui)}/${projectSlug(pi)}`;
           const data = await parseData({ id, data: raw });
           const briefBody = rewriteBriefLinks(stripTitle(briefMd));
-          const f = await compileFigures(briefBody, `${p.path}/brief.md`, 1);
+          const v = await compileViz(briefBody, `${p.path}/brief.md`);
+          const f = await compileFigures(v.markdown, `${p.path}/brief.md`, 1);
           const w = await compileWidgets(f.markdown, `${p.path}/brief.md`);
           const rendered = await renderMarkdown(w.markdown);
           store.set({
             id,
             data,
-            rendered: { ...rendered, html: f.inject(w.inject(rendered.html)) },
+            rendered: { ...rendered, html: v.inject(f.inject(w.inject(rendered.html))) },
             digest: generateDigest(data),
           });
         }
