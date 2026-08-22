@@ -1,6 +1,6 @@
 # Out of the Sandbox
 
-Start with a file you can only open by double-clicking. Finish with that same page loading on your phone across the room — no coding required.
+An app is a clean sandbox where you can't get hurt. Shake the sand off, grab a shovel, and dig into what lies beneath: learn the shell and launch a server on your own network.
 
 ---
 
